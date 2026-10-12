@@ -9,13 +9,54 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   
-  <link rel="stylesheet" href="style.css" />
+  <!-- Cache-busted Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=2.2" />
+
+  <!-- Critical Inlined Layout & Auth Gate CSS (Ensures zero styling glitches even on cold cache) -->
+  <style>
+    :root {
+      --font-scale: 1;
+      --bg-primary: #090c12;
+      --bg-card: #131926;
+      --border-color: #1e283d;
+      --text-primary: #f1f5f9;
+      --text-muted: #64748b;
+      --accent-primary: #3b82f6;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    .auth-gate {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+      background: radial-gradient(circle at top, #141d30 0%, #090c12 100%);
+    }
+    .auth-gate-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 36px 32px;
+      max-width: 420px;
+      width: 100%;
+      box-sizing: border-box;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+  </style>
 </head>
 <body data-theme="dark">
 
-  <!-- MANDATORY AUTH GATE (REQUIRED ACCOUNT TO ACCESS) -->
+  <!-- MANDATORY AUTH GATE -->
   <div id="auth-gate" class="auth-gate">
     <div class="auth-gate-card">
       <div class="auth-gate-logo">
@@ -27,7 +68,7 @@
         </svg>
       </div>
       <h2 class="auth-gate-title">ISE 291 Question Bank</h2>
-      <p class="auth-gate-subtitle" id="lbl-auth-gate-sub">Account required. Sign in or create an account to access the question bank.</p>
+      <p class="auth-gate-subtitle">Account required. Sign in or create an account to start practicing.</p>
 
       <!-- Auth Mode Switcher -->
       <div class="auth-switch">
@@ -42,17 +83,17 @@
           <line x1="12" y1="9" x2="12" y2="13"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        <span id="lbl-gate-warning">Notice: Once you create your account, it cannot be deleted.</span>
+        <span>Notice: Once you create your account, it cannot be deleted.</span>
       </div>
 
       <!-- Form -->
       <form id="gate-auth-form" class="auth-form" onsubmit="return false;">
         <div class="form-field">
-          <label id="lbl-gate-username">Username</label>
+          <label>Username</label>
           <input type="text" id="gate-input-username" placeholder="Enter username..." required autocomplete="username" />
         </div>
         <div class="form-field">
-          <label id="lbl-gate-password">Password</label>
+          <label>Password</label>
           <input type="password" id="gate-input-password" placeholder="Enter password..." required autocomplete="current-password" />
         </div>
 
@@ -60,20 +101,16 @@
 
         <button type="submit" class="btn-primary btn-large btn-block" id="btn-gate-submit">Sign In</button>
       </form>
-
-      <div class="auth-gate-footer">
-        <button class="icon-btn-text" id="btn-gate-lang">العربية</button>
-      </div>
     </div>
   </div>
 
-  <!-- MAIN APP WRAPPER (SHOWN ONLY AFTER SIGN IN) -->
+  <!-- MAIN APP WRAPPER -->
   <div id="app-wrapper" class="app-wrapper hidden">
 
     <!-- COLLAPSIBLE SIDEBAR -->
     <aside id="app-sidebar" class="app-sidebar">
       
-      <!-- Sidebar Brand & Toggle -->
+      <!-- Sidebar Header -->
       <div class="sidebar-header">
         <div class="sidebar-brand">
           <div class="brand-logo-sm">
@@ -91,7 +128,7 @@
         </button>
       </div>
 
-      <!-- User Info Card -->
+      <!-- User Info Box -->
       <div class="sidebar-user-box">
         <div class="user-avatar-sm" id="sidebar-user-avatar">?</div>
         <div class="sidebar-user-details">
@@ -104,46 +141,46 @@
       <nav class="sidebar-nav">
         <button class="sidebar-nav-item active" data-tab="explorer" id="nav-explorer">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          <span id="lbl-nav-explorer">Topics & Questions</span>
+          <span>Questions</span>
         </button>
         <button class="sidebar-nav-item" data-tab="quiz" id="nav-quiz">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          <span id="lbl-nav-quiz">Practice Quiz</span>
+          <span>Practice Quiz</span>
         </button>
         <button class="sidebar-nav-item" data-tab="exam" id="nav-exam">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span id="lbl-nav-exam">Midterm Simulator</span>
+          <span>Midterm Simulator</span>
         </button>
         <button class="sidebar-nav-item" data-tab="saved" id="nav-saved">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          <span id="lbl-nav-saved">Saved (<span id="saved-count">0</span>)</span>
+          <span>Saved (<span id="saved-count">0</span>)</span>
         </button>
         <button class="sidebar-nav-item" data-tab="progress" id="nav-progress">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span id="lbl-nav-progress">Friends & Progress</span>
+          <span>Classmates Progress</span>
         </button>
       </nav>
 
-      <!-- Sidebar Filters Section (Moved here from the main canvas!) -->
+      <!-- Sidebar Filters Section -->
       <div class="sidebar-section">
-        <div class="sidebar-section-title" id="lbl-sidebar-filters">Filters & Search</div>
+        <div class="sidebar-section-title">Filter Questions</div>
         
         <!-- Search -->
         <div class="sidebar-search">
-          <input type="text" id="input-search" placeholder="Search questions..." />
+          <input type="text" id="input-search" placeholder="Search keywords, code..." />
         </div>
 
-        <!-- Topics List in Sidebar -->
+        <!-- Topics List -->
         <div class="sidebar-topic-list" id="sidebar-topic-list">
           <!-- Rendered via JS -->
         </div>
 
-        <!-- Source File Accordion in Sidebar -->
+        <!-- Source Files Accordion -->
         <div class="accordion-group" style="margin-top: 10px;">
           <button class="accordion-toggle collapsed" id="toggle-files-filter" aria-expanded="false">
             <span class="accordion-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
-              <span id="lbl-filter-file">Source Files</span>
+              <span>Source Files</span>
             </span>
             <span class="chevron-icon">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>
@@ -156,7 +193,7 @@
           </div>
         </div>
 
-        <!-- Status Filter in Sidebar -->
+        <!-- Status Filter -->
         <div class="sidebar-status-group">
           <button class="status-pill active" data-status="all" id="btn-status-all">All</button>
           <button class="status-pill" data-status="unanswered" id="btn-status-unanswered">Unanswered</button>
@@ -166,80 +203,85 @@
 
         <!-- Quick Question Actions -->
         <div class="sidebar-actions-grid">
-          <button class="btn-sm" id="btn-reveal-all" title="Show all answers">
-            <span id="lbl-reveal-all">Reveal</span>
-          </button>
-          <button class="btn-sm" id="btn-shuffle" title="Shuffle questions">
-            <span id="lbl-shuffle">Shuffle</span>
-          </button>
-          <button class="btn-sm btn-ghost" id="btn-reset" title="Reset answers">
-            <span id="lbl-reset">Reset</span>
-          </button>
+          <button class="btn-sm" id="btn-reveal-all" title="Show all answers">Reveal</button>
+          <button class="btn-sm" id="btn-shuffle" title="Shuffle questions">Shuffle</button>
+          <button class="btn-sm btn-ghost" id="btn-reset" title="Reset answers">Reset</button>
         </div>
 
       </div>
 
       <!-- Sidebar Footer -->
       <div class="sidebar-footer">
-        <button class="icon-btn-sm" id="btn-lang" title="Toggle Language">
-          <span class="lang-tag" id="lang-indicator">العربية</span>
-        </button>
-        <button class="icon-btn-sm" id="btn-theme" title="Toggle Theme">
-          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
-        <button class="icon-btn-sm btn-logout" id="btn-sidebar-logout" title="Log Out">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-        </button>
+        <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="sidebar-source-link" id="link-source-materials" title="View Source Files & Materials">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>Source Materials</span>
+        </a>
+
+        <div class="sidebar-footer-icons">
+          <button class="icon-btn-sm" id="btn-theme" title="Toggle Theme">
+            <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+          <button class="icon-btn-sm btn-logout" id="btn-sidebar-logout" title="Log Out">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
       </div>
 
     </aside>
 
-    <!-- Backdrop for mobile sidebar -->
+    <!-- Mobile Backdrop -->
     <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
-    <!-- MAIN CANVAS (MINIMALIST & CLEAN) -->
+    <!-- MAIN CANVAS -->
     <div class="main-canvas">
       
-      <!-- Slim Top Bar -->
+      <!-- Minimal Top Bar with Font Size Scaler & Source Link -->
       <header class="canvas-topbar">
         <div class="canvas-topbar-left">
-          <button class="btn-sidebar-open" id="btn-sidebar-open" title="Open Sidebar">
+          <button class="btn-sidebar-open" id="btn-sidebar-open" title="Toggle Sidebar">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          <span class="topbar-view-title" id="topbar-view-title">Topics & Questions</span>
+          <span class="topbar-view-title" id="topbar-view-title">Questions</span>
         </div>
 
         <div class="canvas-topbar-right">
-          <span class="topbar-countdown" id="countdown-timer">⏱️ Calculating...</span>
+          <!-- Font Size Scaler (Makes UI Bigger or Smaller) -->
+          <div class="font-scaler" title="Adjust Text & UI Size">
+            <button class="font-btn" id="btn-font-dec" title="Decrease font size">A−</button>
+            <button class="font-btn font-btn-reset" id="btn-font-reset" title="Reset font size">A</button>
+            <button class="font-btn" id="btn-font-inc" title="Increase font size">A+</button>
+          </div>
+
+          <!-- Direct Source Link -->
+          <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="topbar-source-link" id="topbar-link-source" title="View Source Course Materials">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Source Drive</span>
+          </a>
         </div>
       </header>
 
       <!-- Views Container -->
       <main class="canvas-body">
 
-        <!-- VIEW 1: TOPIC EXPLORER & QUESTIONS (PURE MINIMALIST STREAM) -->
+        <!-- VIEW 1: QUESTIONS STREAM -->
         <section id="view-explorer" class="view-section active">
-          
-          <!-- Stream of Question Cards -->
           <div id="questions-stream" class="questions-stream">
             <!-- Rendered via JS -->
           </div>
 
-          <!-- Pagination -->
           <div class="pagination-footer" id="pagination-footer">
             <button id="btn-load-more" class="btn-primary">Load More Questions</button>
           </div>
-
         </section>
 
         <!-- VIEW 2: PRACTICE QUIZ MODE -->
@@ -260,7 +302,7 @@
             </div>
 
             <div id="quiz-completion-card" class="exam-card hidden" style="text-align: center; margin-top: 20px;">
-              <h2 id="lbl-quiz-complete-title">Practice Quiz Completed!</h2>
+              <h2>Practice Quiz Completed!</h2>
               <div class="results-score-display" style="margin: 20px 0;">
                 <div class="score-large" id="quiz-final-score-pct">100%</div>
                 <div class="score-sub" id="quiz-final-score-fraction">20 / 20 Correct</div>
@@ -279,17 +321,16 @@
         <section id="view-exam" class="view-section">
           <div class="exam-wrapper">
             
-            <!-- Setup Screen -->
             <div id="exam-setup-card" class="exam-card">
-              <div class="exam-badge">KFUPM ISE 291 Environment</div>
-              <h2 class="exam-title" id="lbl-exam-title">Midterm Exam Simulator</h2>
-              <p class="exam-desc" id="lbl-exam-desc">
-                Simulate a realistic midterm exam environment with randomized conceptual and coding questions selected across all course topics. Immediate feedback is hidden until submission.
+              <div class="exam-badge">KFUPM ISE 291</div>
+              <h2 class="exam-title">Midterm Exam Simulator</h2>
+              <p class="exam-desc">
+                Simulate a realistic midterm exam environment with randomized questions selected across all topics. Immediate feedback is hidden until submission.
               </p>
 
               <div class="exam-options-grid">
                 <div class="option-field">
-                  <label id="lbl-exam-qcount">Number of Questions</label>
+                  <label>Number of Questions</label>
                   <select id="exam-select-count">
                     <option value="20">20 Questions (Standard Quiz)</option>
                     <option value="30" selected>30 Questions (Midterm Simulation)</option>
@@ -298,7 +339,7 @@
                   </select>
                 </div>
                 <div class="option-field">
-                  <label id="lbl-exam-time">Time Limit</label>
+                  <label>Time Limit</label>
                   <select id="exam-select-time">
                     <option value="30">30 Minutes</option>
                     <option value="45" selected>45 Minutes</option>
@@ -311,7 +352,6 @@
               <button id="btn-start-exam" class="btn-primary btn-large">Start Midterm Exam</button>
             </div>
 
-            <!-- Active Exam Screen -->
             <div id="exam-active-card" class="exam-card hidden">
               <div class="exam-live-header">
                 <div class="exam-info">
@@ -321,13 +361,9 @@
                 <button class="btn-danger btn-sm" id="btn-finish-exam">Submit Exam</button>
               </div>
 
-              <div class="exam-nav-grid" id="exam-nav-grid">
-                <!-- Grid of 1..N question buttons -->
-              </div>
+              <div class="exam-nav-grid" id="exam-nav-grid"></div>
 
-              <div id="exam-active-question">
-                <!-- Rendered question -->
-              </div>
+              <div id="exam-active-question"></div>
 
               <div class="exam-footer-nav">
                 <button class="btn-secondary" id="btn-exam-prev">Previous</button>
@@ -336,18 +372,15 @@
               </div>
             </div>
 
-            <!-- Exam Results Screen -->
             <div id="exam-results-card" class="exam-card hidden">
               <div class="results-badge" id="results-grade-badge">A+</div>
-              <h2 class="results-title" id="lbl-results-title">Exam Summary & Score</h2>
+              <h2 class="results-title">Exam Summary & Score</h2>
               <div class="results-score-display">
                 <div class="score-large" id="results-score-pct">92%</div>
                 <div class="score-sub" id="results-score-fraction">28 / 30 Correct</div>
               </div>
 
-              <div class="results-topic-breakdown" id="results-topics-list">
-                <!-- Breakdown per topic -->
-              </div>
+              <div class="results-topic-breakdown" id="results-topics-list"></div>
 
               <div class="results-actions">
                 <button class="btn-primary" id="btn-exam-review">Review Detailed Answers</button>
@@ -361,77 +394,67 @@
         <!-- VIEW 4: SAVED QUESTIONS -->
         <section id="view-saved" class="view-section">
           <div class="saved-header">
-            <h2 id="lbl-saved-title">Bookmarked Questions</h2>
-            <p id="lbl-saved-desc">Review and practice the questions you have saved for focused revision.</p>
+            <h2>Bookmarked Questions</h2>
+            <p>Review and practice the questions you have saved for focused revision.</p>
           </div>
-          <div id="saved-stream" class="questions-stream">
-            <!-- Rendered saved questions -->
-          </div>
+          <div id="saved-stream" class="questions-stream"></div>
         </section>
 
-        <!-- VIEW 5: FRIENDS & PROGRESS TRACKER -->
+        <!-- VIEW 5: FRIENDS & CLASSMATES PROGRESS -->
         <section id="view-progress" class="view-section">
           <div class="progress-section-container">
             
-            <!-- My Progress Card -->
             <div class="user-my-progress-card">
               <div class="my-progress-header">
                 <div class="my-progress-user-info">
                   <div class="user-avatar-lg" id="my-profile-avatar">?</div>
                   <div>
                     <h2 class="my-profile-name" id="my-profile-username">User</h2>
-                    <p class="my-profile-sub">Account active and cloud synced across all your devices.</p>
+                    <p class="my-profile-sub">Account active and cloud synced across devices.</p>
                   </div>
                 </div>
                 <div class="my-progress-actions">
                   <button class="btn-secondary btn-sm" id="btn-refresh-progress" title="Refresh friends list">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                    <span id="lbl-refresh">Refresh</span>
+                    <span>Refresh</span>
                   </button>
                 </div>
               </div>
 
-              <!-- Quick KPI Cards -->
               <div class="kpi-grid">
                 <div class="kpi-card">
                   <div class="kpi-num" id="my-kpi-answered">0 / 253</div>
-                  <div class="kpi-lbl" id="lbl-kpi-answered">Questions Solved</div>
+                  <div class="kpi-lbl">Questions Solved</div>
                 </div>
                 <div class="kpi-card">
                   <div class="kpi-num stat-green" id="my-kpi-accuracy">0%</div>
-                  <div class="kpi-lbl" id="lbl-kpi-accuracy">Overall Accuracy</div>
+                  <div class="kpi-lbl">Overall Accuracy</div>
                 </div>
                 <div class="kpi-card">
                   <div class="kpi-num stat-purple" id="my-kpi-exams">0</div>
-                  <div class="kpi-lbl" id="lbl-kpi-exams">Midterms Taken</div>
+                  <div class="kpi-lbl">Midterms Taken</div>
                 </div>
                 <div class="kpi-card">
                   <div class="kpi-num stat-amber" id="my-kpi-bookmarks">0</div>
-                  <div class="kpi-lbl" id="lbl-kpi-bookmarks">Saved Questions</div>
+                  <div class="kpi-lbl">Saved Questions</div>
                 </div>
               </div>
 
-              <!-- Topic Progress Breakdown -->
-              <div class="my-topic-breakdown" id="my-topic-breakdown">
-                <!-- Rendered dynamically -->
-              </div>
+              <div class="my-topic-breakdown" id="my-topic-breakdown"></div>
             </div>
 
-            <!-- All Users Directory -->
             <div class="friends-directory-card">
               <div class="directory-header">
                 <div>
-                  <h3 id="lbl-friends-dir-title">Friends & Classmates Progress</h3>
-                  <p id="lbl-friends-dir-desc">Click on any friend to inspect their detailed topic breakdown and question history.</p>
+                  <h3>Classmates Progress</h3>
+                  <p>Click on any friend to inspect their detailed topic breakdown and question history.</p>
                 </div>
                 <div class="directory-search">
                   <input type="text" id="input-search-friends" placeholder="Search friends by username..." />
                 </div>
               </div>
 
-              <div class="friends-list" id="friends-list">
-                <!-- Rendered list of friends -->
-              </div>
+              <div class="friends-list" id="friends-list"></div>
             </div>
 
           </div>
@@ -443,7 +466,7 @@
 
   </div>
 
-  <!-- DETAILED USER PROGRESS INSPECTOR MODAL -->
+  <!-- USER DETAIL INSPECTOR MODAL -->
   <div id="user-detail-modal" class="user-detail-modal hidden">
     <div class="user-detail-backdrop" id="user-detail-backdrop"></div>
     <div class="user-detail-card">
@@ -460,27 +483,23 @@
       <div class="kpi-grid" style="margin: 20px 0;">
         <div class="kpi-card">
           <div class="kpi-num" id="detail-kpi-solved">0 / 253</div>
-          <div class="kpi-lbl" id="lbl-detail-solved">Questions Solved</div>
+          <div class="kpi-lbl">Questions Solved</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-num stat-green" id="detail-kpi-acc">0%</div>
-          <div class="kpi-lbl" id="lbl-detail-acc">Accuracy</div>
+          <div class="kpi-lbl">Accuracy</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-num stat-purple" id="detail-kpi-exams">0</div>
-          <div class="kpi-lbl" id="lbl-detail-exams">Midterms Taken</div>
+          <div class="kpi-lbl">Midterms Taken</div>
         </div>
       </div>
 
-      <h4 id="lbl-detail-topic-title" style="margin-bottom: 12px;">Topic Mastery</h4>
-      <div class="detail-topic-bars" id="detail-topic-bars">
-        <!-- Rendered topic bars -->
-      </div>
+      <h4 style="margin-bottom: 12px;">Topic Mastery</h4>
+      <div class="detail-topic-bars" id="detail-topic-bars"></div>
 
-      <h4 id="lbl-detail-recent-title" style="margin: 20px 0 12px 0;">Recent Question History</h4>
-      <div class="detail-recent-answers" id="detail-recent-answers">
-        <!-- Rendered recent question answers -->
-      </div>
+      <h4 style="margin: 20px 0 12px 0;">Recent Question History</h4>
+      <div class="detail-recent-answers" id="detail-recent-answers"></div>
     </div>
   </div>
 
@@ -490,27 +509,6 @@
     <div class="lightbox-content">
       <button class="lightbox-close" id="lightbox-close">&times;</button>
       <img id="lightbox-img" src="" alt="Enlarged Diagram / Figure" />
-    </div>
-  </div>
-
-  <!-- Permanent Shutdown Screen (Tombstone) -->
-  <div id="shutdown-screen" class="shutdown-screen hidden">
-    <div class="shutdown-modal">
-      <div class="shutdown-icon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-      </div>
-      <h2>Access Concluded</h2>
-      <p>
-        The ISE 291 Interactive Question Bank was scheduled to operate until <strong>Wednesday, October 14, 2026 at 9:00 PM AST</strong>.
-      </p>
-      <p class="shutdown-sub">
-        The service access window has concluded and is now permanently shut down.
-      </p>
-      <div class="shutdown-stamp">Archived Service • KFUPM ISE 291</div>
     </div>
   </div>
 

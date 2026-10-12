@@ -1,170 +1,15 @@
 // ISE 291 Interactive Question Bank
-// Version 2.1 - Minimalist Collapsible Sidebar & Mandatory Account Gate
+// Version 2.2 - Pure English, Font Scaler, Clean Collapsible Sidebar, Mandatory Cloud Accounts
 
-// 1. Internationalization Dictionaries (100% Key Parity Required)
-const STRINGS = {
-  en: {
-    bannerText: "⏱️ Active until Wednesday Oct 14, 2026, 9:00 PM AST",
-    subtitle: "Question Bank",
-    tabExplorer: "Topics & Questions",
-    tabQuiz: "Practice Quiz",
-    tabExam: "Midterm Simulator",
-    tabSaved: "Saved",
-    tabProgress: "Friends & Progress",
-    statTotal: "Total Questions",
-    statAnswered: "Answered",
-    statAccuracy: "Accuracy",
-    statBookmarked: "Bookmarked",
-    filterTopic: "Filter by Syllabus Topic",
-    filterFile: "Source Files",
-    searchPlaceholder: "Search questions...",
-    allTopics: "All Topics",
-    allFiles: "All Files",
-    allStatus: "All",
-    unanswered: "Unanswered",
-    correct: "Correct",
-    incorrect: "Incorrect",
-    revealAll: "Reveal",
-    shuffle: "Shuffle",
-    reset: "Reset",
-    loadMore: "Load More Questions",
-    revealSolution: "Show Solution",
-    hideSolution: "Hide Solution",
-    solutionLabel: "Verified Solution",
-    examTitle: "Midterm Exam Simulator",
-    examDesc: "Simulate a realistic midterm exam environment with randomized conceptual and coding questions selected across all course topics. Immediate feedback is hidden until submission.",
-    examQCount: "Number of Questions",
-    examTime: "Time Limit",
-    startExam: "Start Midterm Exam",
-    submitExam: "Submit Exam",
-    prevBtn: "Previous",
-    nextBtn: "Next",
-    flagBtn: "Flag for Review",
-    resultsTitle: "Exam Summary & Score",
-    reviewAnswers: "Review Detailed Answers",
-    retakeExam: "Take Another Exam",
-    savedTitle: "Bookmarked Questions",
-    savedDesc: "Review and practice the questions you have saved for focused revision.",
-    noSaved: "No saved questions yet. Click the star icon on any question to bookmark it.",
-    noResults: "No questions match your current search or filters.",
-    copyCode: "Copy",
-    copied: "Copied!",
-    countdownExpired: "Expired",
-    codeSnippet: "Python",
-    quizCompleteTitle: "Practice Quiz Completed!",
-    takeNewQuiz: "Take New Quiz",
-    quizScore: "Score",
-    quizFinish: "Finish Quiz",
-    examUntimed: "No Time Limit",
-    wrapCode: "Wrap",
-    unwrapCode: "No Wrap",
-    authTitle: "Account Required",
-    authSubtitle: "Account required. Sign in or create an account to access the question bank.",
-    authSignIn: "Sign In",
-    authSignUp: "Create Account",
-    authWarning: "Notice: Once you create your account, it cannot be deleted.",
-    authUsername: "Username",
-    authPassword: "Password",
-    authLogout: "Log Out",
-    authGuest: "User",
-    friendsTitle: "Friends & Classmates Progress",
-    friendsDesc: "Click on any friend to inspect their detailed topic breakdown and question history.",
-    searchFriends: "Search friends by username...",
-    inspectProgress: "Inspect Details",
-    refreshBtn: "Refresh",
-    lastActive: "Last active",
-    topicMastery: "Topic Mastery",
-    recentHistory: "Recent Question History",
-    solvedOf: "Questions Solved",
-    sidebarFilters: "Filters & Search",
-    authRequired: "Please sign in or create an account to view questions."
-  },
-  ar: {
-    bannerText: "⏱️ نشط حتى الأربعاء 14 أكتوبر 2026، 9:00 مساءً بتوقيت مكة المكرمة",
-    subtitle: "بنك الأسئلة",
-    tabExplorer: "المواضيع والأسئلة",
-    tabQuiz: "اختبار تدريبي",
-    tabExam: "محاكي الميدتيرم",
-    tabSaved: "المحفوظات",
-    tabProgress: "تقدم الزملاء",
-    statTotal: "إجمالي الأسئلة",
-    statAnswered: "تم حلها",
-    statAccuracy: "الدقة",
-    statBookmarked: "المفضلة",
-    filterTopic: "تصفية حسب مواضيع المنهج",
-    filterFile: "الملفات المصدرية",
-    searchPlaceholder: "البحث في الأسئلة...",
-    allTopics: "جميع المواضيع",
-    allFiles: "جميع الملفات",
-    allStatus: "الكل",
-    unanswered: "غير محلول",
-    correct: "صحيح",
-    incorrect: "غير صحيح",
-    revealAll: "إظهار",
-    shuffle: "خلط",
-    reset: "إعادة ضبط",
-    loadMore: "تحميل المزيد من الأسئلة",
-    revealSolution: "عرض الحل والشرح",
-    hideSolution: "إخفاء الحل والشرح",
-    solutionLabel: "الحل المعتمد",
-    examTitle: "محاكي الاختبار الفصلي (Midterm)",
-    examDesc: "محاكاة واقعية لاختبار الميدتيرم بأسئلة مفاهيمية وبرمجية مختارة عشوائياً من كافة مواضيع المقرر مع إخفاء الإجابات حتى الاعتماد النهائي.",
-    examQCount: "عدد الأسئلة",
-    examTime: "الوقت المحدد",
-    startExam: "بدء اختبار الميدتيرم",
-    submitExam: "تسليم الاختبار",
-    prevBtn: "السابق",
-    nextBtn: "التالي",
-    flagBtn: "تحديد للمراجعة",
-    resultsTitle: "ملخص ودرجة الاختبار",
-    reviewAnswers: "مراجعة تفاصيل الحلول",
-    retakeExam: "خوض اختبار جديد",
-    savedTitle: "الأسئلة المحفوظة في المفضلة",
-    savedDesc: "راجع وتمرن على الأسئلة التي قمت بحفظها للمراجعة المركزة.",
-    noSaved: "لا توجد أسئلة محفوظة حتى الآن. انقر على أيقونة النجمة بجانب أي سؤال لإضافته هنا.",
-    noResults: "لم يتم العثور على أي أسئلة مطابقة للبحث.",
-    copyCode: "نسخ",
-    copied: "تم النسخ!",
-    countdownExpired: "منتهي",
-    codeSnippet: "بايثون",
-    quizCompleteTitle: "تم إكمال الاختبار التدريبي بنجاح!",
-    takeNewQuiz: "خوض اختبار تدريبي جديد",
-    quizScore: "الدرجة",
-    quizFinish: "إنهاء الاختبار",
-    examUntimed: "بدون توقيت",
-    wrapCode: "التفاف",
-    unwrapCode: "بدون التفاف",
-    authTitle: "تسجيل الدخول مطلوب",
-    authSubtitle: "إنشاء حساب مطلوب للوصول إلى بنك الأسئلة والتدريبات.",
-    authSignIn: "تسجيل الدخول",
-    authSignUp: "إنشاء حساب جديد",
-    authWarning: "تنبيه: بمجرد إنشاء الحساب، لا يمكن حذفه.",
-    authUsername: "اسم المستخدم",
-    authPassword: "كلمة المرور",
-    authLogout: "تسجيل الخروج",
-    authGuest: "مستخدم",
-    friendsTitle: "تقدم الزملاء والأصدقاء",
-    friendsDesc: "انقر على أي زميل لعرض تفاصيل إتقانه للمواضيع وتاريخ حله للأسئلة.",
-    searchFriends: "البحث عن صديق باسم المستخدم...",
-    inspectProgress: "عرض التفاصيل",
-    refreshBtn: "تحديث",
-    lastActive: "آخر نشاط",
-    topicMastery: "إتقان المواضيع",
-    recentHistory: "سجل الأسئلة الأخيرة",
-    solvedOf: "الأسئلة المحلولة",
-    sidebarFilters: "البحث والتصفية",
-    authRequired: "يرجى تسجيل الدخول أو إنشاء حساب للوصول إلى بنك الأسئلة."
-  }
-};
-
-// 2. Constants & Endpoints
+// 1. Constants & Endpoints
 const KV_BASE = 'https://kvdb.io/Vc3nLuNA8mMdWRX5VSH33j/';
+
 const SYLLABUS_TOPICS = [
-  { id: "Topic 1: Introduction to Data Science", nameEn: "T1: Intro to Data Science", nameAr: "م1: مقدمة علم البيانات", count: 2 },
-  { id: "Topic 2: Python Review", nameEn: "T2: Python Review", nameAr: "م2: مراجعة بايثون", count: 54 },
-  { id: "Topic 3: Basic Statistics", nameEn: "T3: Basic Statistics", nameAr: "م3: الإحصاء الأساسي", count: 59 },
-  { id: "Topic 4: Structured Data and Visualization", nameEn: "T4: Structured Data & Viz", nameAr: "م4: البيانات والتمثيل البياني", count: 70 },
-  { id: "Topic 5: Data Understanding and Preparation", nameEn: "T5: Data Understanding & Prep", nameAr: "م5: فهم وتجهيز البيانات", count: 68 }
+  { id: "Topic 1: Introduction to Data Science", name: "Topic 1: Intro to Data Science", count: 2 },
+  { id: "Topic 2: Python Review", name: "Topic 2: Python Review", count: 54 },
+  { id: "Topic 3: Basic Statistics", name: "Topic 3: Basic Statistics", count: 59 },
+  { id: "Topic 4: Structured Data and Visualization", name: "Topic 4: Structured Data & Viz", count: 70 },
+  { id: "Topic 5: Data Understanding and Preparation", name: "Topic 5: Data Understanding & Prep", count: 68 }
 ];
 
 const SOURCE_FILES = [
@@ -178,10 +23,10 @@ const SOURCE_FILES = [
   "Sol-Practice Questions Topic5.docx"
 ];
 
-// 3. Application State
+// 2. Application State
 const STATE = {
-  lang: localStorage.getItem('ise291_lang') || 'en',
   theme: localStorage.getItem('ise291_theme') || 'dark',
+  fontScale: parseFloat(localStorage.getItem('ise291_font_scale') || '1'),
   activeTab: 'explorer',
   
   allQuestions: window.QUESTION_BANK || [],
@@ -221,45 +66,9 @@ const STATE = {
   expirationTime: new Date("2026-10-14T21:00:00+03:00").getTime()
 };
 
-let expirationInterval = null;
 let cloudSyncTimeout = null;
 
-// 4. Expiration Guard & Countdown
-function checkExpiration() {
-  const now = Date.now();
-  const diff = STATE.expirationTime - now;
-
-  if (diff <= 0) {
-    if (expirationInterval) {
-      clearInterval(expirationInterval);
-      expirationInterval = null;
-    }
-    const shutdownScreen = document.getElementById('shutdown-screen');
-    if (shutdownScreen) {
-      shutdownScreen.classList.remove('hidden');
-    }
-    document.body.innerHTML = '';
-    if (shutdownScreen) {
-      document.body.appendChild(shutdownScreen);
-    }
-    STATE.allQuestions = [];
-    STATE.filteredQuestions = [];
-    window.QUESTION_BANK = null;
-    return true;
-  }
-
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-  const timerEl = document.getElementById('countdown-timer');
-  if (timerEl) {
-    timerEl.textContent = `⏱️ ${hours}h ${mins}m ${secs}s`;
-  }
-  return false;
-}
-
-// 5. Cloud Storage & User Sync Engine
+// 3. Cloud Storage API Engine
 async function apiGet(key) {
   try {
     const res = await fetch(KV_BASE + encodeURIComponent(key), { cache: 'no-cache' });
@@ -332,21 +141,31 @@ async function syncUserProgressToCloud() {
   await apiPost('ise_dir', dir);
 }
 
-// 6. Application Initialization & Auth Gatekeeper
+// 4. Initialization & Auth Gatekeeper
 document.addEventListener('DOMContentLoaded', () => {
-  if (checkExpiration()) return;
-  expirationInterval = setInterval(checkExpiration, 1000);
+  // Silent expiration guard
+  if (Date.now() >= STATE.expirationTime) {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#030712;color:#f9fafb;text-align:center;padding:20px;font-family:sans-serif;">
+        <div style="max-width:480px;background:#111827;border:1px solid #374151;border-radius:16px;padding:36px;">
+          <h2 style="color:#f87171;margin-bottom:12px;">Service Concluded</h2>
+          <p style="color:#9ca3af;line-height:1.6;">The ISE 291 Interactive Question Bank operating window concluded on Wednesday, October 14, 2026 at 9:00 PM AST.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
 
   applyTheme(STATE.theme);
-  applyLanguage(STATE.lang);
+  applyFontScale(STATE.fontScale);
 
   bindAuthGate();
   bindSidebar();
+  bindFontScaler();
   bindQuizMode();
   bindExamSimulator();
   bindLightbox();
 
-  // Check if user is logged in
   if (STATE.currentUser) {
     unlockApp();
   } else {
@@ -374,13 +193,52 @@ function unlockApp() {
   updateMyProgressSection();
 }
 
+// 5. Font Size Controls (Bigger & Smaller UI)
+function bindFontScaler() {
+  const btnInc = document.getElementById('btn-font-inc');
+  const btnDec = document.getElementById('btn-font-dec');
+  const btnReset = document.getElementById('btn-font-reset');
+
+  if (btnInc) {
+    btnInc.addEventListener('click', () => {
+      if (STATE.fontScale < 1.35) {
+        STATE.fontScale = Math.round((STATE.fontScale + 0.1) * 100) / 100;
+        applyFontScale(STATE.fontScale);
+      }
+    });
+  }
+
+  if (btnDec) {
+    btnDec.addEventListener('click', () => {
+      if (STATE.fontScale > 0.85) {
+        STATE.fontScale = Math.round((STATE.fontScale - 0.1) * 100) / 100;
+        applyFontScale(STATE.fontScale);
+      }
+    });
+  }
+
+  if (btnReset) {
+    btnReset.addEventListener('click', () => {
+      STATE.fontScale = 1;
+      applyFontScale(STATE.fontScale);
+    });
+  }
+}
+
+function applyFontScale(scale) {
+  STATE.fontScale = scale;
+  document.documentElement.style.setProperty('--font-scale', scale);
+  document.documentElement.style.setProperty('--font-base', `${Math.round(15 * scale)}px`);
+  localStorage.setItem('ise291_font_scale', scale);
+}
+
+// 6. Mandatory Auth Gate Form
 function bindAuthGate() {
   const tabLogin = document.getElementById('btn-gate-tab-login');
   const tabSignup = document.getElementById('btn-gate-tab-signup');
   const warningBanner = document.getElementById('gate-signup-warning');
   const btnSubmit = document.getElementById('btn-gate-submit');
   const form = document.getElementById('gate-auth-form');
-  const btnLang = document.getElementById('btn-gate-lang');
 
   let mode = 'login';
 
@@ -389,21 +247,12 @@ function bindAuthGate() {
     tabLogin.classList.toggle('active', mode === 'login');
     tabSignup.classList.toggle('active', mode === 'signup');
     warningBanner.style.display = mode === 'signup' ? 'flex' : 'none';
-    btnSubmit.textContent = mode === 'login' ? STRINGS[STATE.lang].authSignIn : STRINGS[STATE.lang].authSignUp;
+    btnSubmit.textContent = mode === 'login' ? 'Sign In' : 'Create Account';
     hideGateMsg();
   }
 
   tabLogin.addEventListener('click', () => setMode('login'));
   tabSignup.addEventListener('click', () => setMode('signup'));
-
-  if (btnLang) {
-    btnLang.addEventListener('click', () => {
-      const nextLang = STATE.lang === 'en' ? 'ar' : 'en';
-      applyLanguage(nextLang);
-      btnLang.textContent = nextLang === 'en' ? 'العربية' : 'English';
-      btnSubmit.textContent = mode === 'login' ? STRINGS[nextLang].authSignIn : STRINGS[nextLang].authSignUp;
-    });
-  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -423,7 +272,7 @@ function bindAuthGate() {
       if (existing) {
         showGateMsg('Username already taken. Please choose another.', 'error');
         btnSubmit.disabled = false;
-        btnSubmit.textContent = STRINGS[STATE.lang].authSignUp;
+        btnSubmit.textContent = 'Create Account';
         return;
       }
 
@@ -431,23 +280,21 @@ function bindAuthGate() {
       localStorage.setItem('ise291_user', JSON.stringify(STATE.currentUser));
       await syncUserProgressToCloud();
       showGateMsg('Account created successfully! Entering...', 'success');
-      setTimeout(() => {
-        unlockApp();
-      }, 500);
+      setTimeout(() => unlockApp(), 400);
 
     } else {
       const userData = await apiGet('u_' + username);
       if (!userData) {
-        showGateMsg('Account not found. Please click "Create Account".', 'error');
+        showGateMsg('Account not found. Click "Create Account" above to register.', 'error');
         btnSubmit.disabled = false;
-        btnSubmit.textContent = STRINGS[STATE.lang].authSignIn;
+        btnSubmit.textContent = 'Sign In';
         return;
       }
 
       if (userData.password !== password) {
-        showGateMsg('Incorrect password.', 'error');
+        showGateMsg('Incorrect password. Please try again.', 'error');
         btnSubmit.disabled = false;
-        btnSubmit.textContent = STRINGS[STATE.lang].authSignIn;
+        btnSubmit.textContent = 'Sign In';
         return;
       }
 
@@ -468,9 +315,7 @@ function bindAuthGate() {
       }
 
       showGateMsg('Welcome back, ' + username + '!', 'success');
-      setTimeout(() => {
-        unlockApp();
-      }, 400);
+      setTimeout(() => unlockApp(), 400);
     }
 
     btnSubmit.disabled = false;
@@ -498,7 +343,6 @@ function bindSidebar() {
   const btnOpen = document.getElementById('btn-sidebar-open');
   const btnLogout = document.getElementById('btn-sidebar-logout');
 
-  // Toggle Collapse on Desktop and Mobile
   btnCollapse.addEventListener('click', () => {
     if (window.innerWidth <= 860) {
       sidebar.classList.remove('mobile-open');
@@ -524,7 +368,6 @@ function bindSidebar() {
     });
   }
 
-  // Navigation Items
   document.querySelectorAll('.sidebar-nav-item').forEach(item => {
     item.addEventListener('click', () => {
       const tabId = item.getAttribute('data-tab');
@@ -536,7 +379,6 @@ function bindSidebar() {
     });
   });
 
-  // Accordion Toggle for Files inside Sidebar
   const fileAccordionBtn = document.getElementById('toggle-files-filter');
   if (fileAccordionBtn) {
     fileAccordionBtn.addEventListener('click', () => {
@@ -547,7 +389,6 @@ function bindSidebar() {
     });
   }
 
-  // Status Filter in Sidebar
   document.querySelectorAll('.sidebar-status-group .status-pill').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.sidebar-status-group .status-pill').forEach(b => b.classList.remove('active'));
@@ -558,7 +399,6 @@ function bindSidebar() {
     });
   });
 
-  // Search input in Sidebar
   const searchInput = document.getElementById('input-search');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -568,7 +408,6 @@ function bindSidebar() {
     });
   }
 
-  // Quick Action Buttons
   const btnRevealAll = document.getElementById('btn-reveal-all');
   if (btnRevealAll) {
     btnRevealAll.addEventListener('click', () => {
@@ -597,15 +436,6 @@ function bindSidebar() {
     });
   }
 
-  // Language & Theme Toggles in Sidebar Footer
-  const btnLang = document.getElementById('btn-lang');
-  if (btnLang) {
-    btnLang.addEventListener('click', () => {
-      const nextLang = STATE.lang === 'en' ? 'ar' : 'en';
-      applyLanguage(nextLang);
-    });
-  }
-
   const btnTheme = document.getElementById('btn-theme');
   if (btnTheme) {
     btnTheme.addEventListener('click', () => {
@@ -624,7 +454,6 @@ function bindSidebar() {
     });
   }
 
-  // Friends search & refresh
   const inputSearchFriends = document.getElementById('input-search-friends');
   if (inputSearchFriends) {
     inputSearchFriends.addEventListener('input', (e) => renderFriendsDirectory(e.target.value));
@@ -643,7 +472,6 @@ function bindSidebar() {
     });
   }
 
-  // User detail modal close
   const detailModal = document.getElementById('user-detail-modal');
   const detailBackdrop = document.getElementById('user-detail-backdrop');
   const btnDetailClose = document.getElementById('btn-user-detail-close');
@@ -673,11 +501,11 @@ function switchTab(tabId) {
   });
 
   const titleMap = {
-    explorer: STRINGS[STATE.lang].tabExplorer,
-    quiz: STRINGS[STATE.lang].tabQuiz,
-    exam: STRINGS[STATE.lang].tabExam,
-    saved: `${STRINGS[STATE.lang].tabSaved} (${STATE.bookmarks.size})`,
-    progress: STRINGS[STATE.lang].tabProgress
+    explorer: 'Questions',
+    quiz: 'Practice Quiz',
+    exam: 'Midterm Simulator',
+    saved: `Saved (${STATE.bookmarks.size})`,
+    progress: 'Classmates Progress'
   };
   setText('topbar-view-title', titleMap[tabId] || 'ISE 291');
 
@@ -699,11 +527,10 @@ function renderSidebarTopics() {
   if (!container) return;
   container.innerHTML = '';
 
-  // "All Topics" option
   const allBtn = document.createElement('button');
   allBtn.className = `sidebar-topic-item ${STATE.filterTopic === 'all' ? 'active' : ''}`;
   allBtn.innerHTML = `
-    <span>${STRINGS[STATE.lang].allTopics}</span>
+    <span>All Topics</span>
     <span class="sidebar-topic-count">253</span>
   `;
   allBtn.addEventListener('click', () => {
@@ -713,14 +540,11 @@ function renderSidebarTopics() {
   });
   container.appendChild(allBtn);
 
-  // Topics 1..5
   SYLLABUS_TOPICS.forEach(topic => {
     const btn = document.createElement('button');
     btn.className = `sidebar-topic-item ${STATE.filterTopic === topic.id ? 'active' : ''}`;
-    
-    const label = STATE.lang === 'ar' ? topic.nameAr : topic.nameEn;
     btn.innerHTML = `
-      <span>${label}</span>
+      <span>${topic.name}</span>
       <span class="sidebar-topic-count">${topic.count}</span>
     `;
 
@@ -741,7 +565,7 @@ function renderSidebarFiles() {
 
   const allBtn = document.createElement('button');
   allBtn.className = `sidebar-file-item ${STATE.filterFile === 'all' ? 'active' : ''}`;
-  allBtn.textContent = STRINGS[STATE.lang].allFiles;
+  allBtn.textContent = 'All Files';
   allBtn.addEventListener('click', () => {
     STATE.filterFile = 'all';
     renderSidebarFiles();
@@ -800,7 +624,7 @@ function renderQuestionsStream() {
   if (STATE.filteredQuestions.length === 0) {
     container.innerHTML = `
       <div class="q-card" style="padding: 40px; text-align: center;">
-        <p style="color: var(--text-muted);">${STRINGS[STATE.lang].noResults}</p>
+        <p style="color: var(--text-muted);">No questions match your current search or filters.</p>
       </div>
     `;
     if (footer) footer.classList.add('hidden');
@@ -843,7 +667,7 @@ function createQuestionCard(q, displayNum) {
     </div>
   `;
 
-  // Statement
+  // Title
   const title = document.createElement('div');
   title.className = 'q-title';
   title.textContent = q.questionText;
@@ -851,16 +675,16 @@ function createQuestionCard(q, displayNum) {
   card.appendChild(header);
   card.appendChild(title);
 
-  // Responsive Code Block
+  // Responsive Code Block with Wrap & Copy Controls
   if (q.code && q.code.trim()) {
     const codeContainer = document.createElement('div');
     codeContainer.className = 'q-code-container';
     codeContainer.innerHTML = `
       <div class="q-code-header">
-        <span class="q-code-lang">${STRINGS[STATE.lang].codeSnippet}</span>
+        <span class="q-code-lang">Python</span>
         <div class="q-code-actions">
-          <button class="q-code-btn btn-wrap-toggle">${STRINGS[STATE.lang].wrapCode}</button>
-          <button class="q-code-btn btn-copy" data-code="${escapeHtml(q.code)}">${STRINGS[STATE.lang].copyCode}</button>
+          <button class="q-code-btn btn-wrap-toggle">Wrap</button>
+          <button class="q-code-btn btn-copy" data-code="${escapeHtml(q.code)}">Copy</button>
         </div>
       </div>
       <pre class="q-code-block"><code>${escapeHtml(q.code)}</code></pre>
@@ -869,9 +693,7 @@ function createQuestionCard(q, displayNum) {
     const wrapBtn = codeContainer.querySelector('.btn-wrap-toggle');
     wrapBtn.addEventListener('click', () => {
       codeContainer.classList.toggle('wrap-active');
-      wrapBtn.textContent = codeContainer.classList.contains('wrap-active') 
-        ? STRINGS[STATE.lang].unwrapCode 
-        : STRINGS[STATE.lang].wrapCode;
+      wrapBtn.textContent = codeContainer.classList.contains('wrap-active') ? 'No Wrap' : 'Wrap';
     });
 
     card.appendChild(codeContainer);
@@ -931,9 +753,9 @@ function createQuestionCard(q, displayNum) {
   expBox.innerHTML = `
     <div class="exp-header">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      <span>${STRINGS[STATE.lang].solutionLabel}: (${q.correctAnswer})</span>
+      <span>Verified Solution: (${q.correctAnswer})</span>
     </div>
-    <div class="exp-text">${q.explanation || 'Verified with ISE 291 course materials.'}</div>
+    <div class="exp-text">${q.explanation || 'Verified directly with course materials.'}</div>
   `;
   card.appendChild(expBox);
 
@@ -942,7 +764,7 @@ function createQuestionCard(q, displayNum) {
   footer.className = 'q-footer';
   footer.innerHTML = `
     <button class="btn-ghost btn-sm btn-toggle-sol">
-      ${userAnswer ? STRINGS[STATE.lang].hideSolution : STRINGS[STATE.lang].revealSolution}
+      ${userAnswer ? 'Hide Solution' : 'Show Solution'}
     </button>
   `;
   footer.querySelector('.btn-toggle-sol').addEventListener('click', () => {
@@ -957,20 +779,18 @@ function createQuestionCard(q, displayNum) {
     toggleBookmark(q.id, btnBm);
   });
 
-  // Copy Buttons
+  // Copy Button
   const btnCopy = card.querySelector('.btn-copy');
   if (btnCopy) {
     btnCopy.addEventListener('click', () => {
       const codeToCopy = btnCopy.getAttribute('data-code');
       navigator.clipboard.writeText(codeToCopy).then(() => {
-        const orig = btnCopy.textContent;
-        btnCopy.textContent = STRINGS[STATE.lang].copied;
-        setTimeout(() => { btnCopy.textContent = orig; }, 1500);
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => { btnCopy.textContent = 'Copy'; }, 1500);
       });
     });
   }
 
-  // Zoom Images
   card.querySelectorAll('.q-img').forEach(img => {
     img.addEventListener('click', () => openLightbox(img.src));
   });
@@ -1034,7 +854,7 @@ function renderSavedStream() {
   if (savedIds.length === 0) {
     container.innerHTML = `
       <div class="q-card" style="padding: 40px; text-align: center;">
-        <p style="color: var(--text-muted);">${STRINGS[STATE.lang].noSaved}</p>
+        <p style="color: var(--text-muted);">No saved questions yet. Click the star icon on any question to bookmark it.</p>
       </div>
     `;
     return;
@@ -1074,9 +894,7 @@ function bindQuizMode() {
   }
 
   if (btnRetake) {
-    btnRetake.addEventListener('click', () => {
-      startOrResumeQuiz(true);
-    });
+    btnRetake.addEventListener('click', () => startOrResumeQuiz(true));
   }
 }
 
@@ -1125,14 +943,12 @@ function renderActiveQuizCard() {
 
   const scoreEl = document.getElementById('quiz-live-score');
   if (scoreEl) {
-    scoreEl.textContent = `${STRINGS[STATE.lang].quizScore}: ${correctCount} / ${answeredCount}`;
+    scoreEl.textContent = `Score: ${correctCount} / ${answeredCount}`;
   }
 
   const btnNext = document.getElementById('btn-quiz-next');
   if (btnNext) {
-    btnNext.textContent = STATE.quizIndex === STATE.quizList.length - 1 
-      ? STRINGS[STATE.lang].quizFinish 
-      : STRINGS[STATE.lang].nextBtn;
+    btnNext.textContent = STATE.quizIndex === STATE.quizList.length - 1 ? 'Finish Quiz' : 'Next Question';
   }
 }
 
@@ -1250,7 +1066,7 @@ function startExam() {
     STATE.examState.timerSeconds = timeMins * 60;
     startExamTimer();
   } else {
-    document.getElementById('exam-timer-display').textContent = STRINGS[STATE.lang].examUntimed;
+    document.getElementById('exam-timer-display').textContent = 'No Time Limit';
   }
 }
 
@@ -1467,7 +1283,7 @@ function updateMyProgressSection() {
       row.className = 'topic-bar-row';
       row.innerHTML = `
         <div class="topic-bar-label">
-          <span>${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</span>
+          <span>${topic.name}</span>
           <span>${solvedInTopic} / ${totalInTopic} (${accPct}% acc)</span>
         </div>
         <div class="topic-bar-track">
@@ -1483,7 +1299,7 @@ async function loadFriendsDirectory() {
   const container = document.getElementById('friends-list');
   if (!container) return;
 
-  container.innerHTML = '<div style="color:var(--text-muted); padding:20px; text-align:center;">Loading friends directory...</div>';
+  container.innerHTML = '<div style="color:var(--text-muted); padding:20px; text-align:center;">Loading classmates directory...</div>';
   
   let dir = await apiGet('ise_dir');
   if (!Array.isArray(dir)) dir = [];
@@ -1507,7 +1323,7 @@ function renderFriendsDirectory(filterText = '') {
   if (list.length === 0) {
     container.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 24px;">
-        No active users found.
+        No active classmates found.
       </div>
     `;
     return;
@@ -1525,7 +1341,7 @@ function renderFriendsDirectory(filterText = '') {
         <div class="user-avatar-sm">${initial}</div>
         <div>
           <div class="friend-card-name">${escapeHtml(user.username)}</div>
-          <div class="friend-card-active">${STRINGS[STATE.lang].lastActive}: ${timeAgo}</div>
+          <div class="friend-card-active">Active: ${timeAgo}</div>
         </div>
       </div>
       <div class="friend-card-stats">
@@ -1533,7 +1349,7 @@ function renderFriendsDirectory(filterText = '') {
         <span class="friend-stat-badge" style="color:var(--success);">${user.accuracy || 0}% Acc</span>
       </div>
       <button class="btn-secondary btn-sm btn-inspect-user" data-username="${escapeHtml(user.username)}">
-        ${STRINGS[STATE.lang].inspectProgress}
+        Inspect Details
       </button>
     `;
 
@@ -1564,15 +1380,15 @@ async function openUserDetailModal(username) {
 
   setText('detail-user-name', username);
   setText('detail-user-avatar', username.charAt(0).toUpperCase());
-  setText('detail-user-lastactive', 'Loading user progress...');
+  setText('detail-user-lastactive', 'Loading progress details...');
   
   const userData = await apiGet('u_' + username);
   if (!userData) {
-    setText('detail-user-lastactive', 'User details could not be loaded.');
+    setText('detail-user-lastactive', 'Could not load details.');
     return;
   }
 
-  setText('detail-user-lastactive', `${STRINGS[STATE.lang].lastActive} ${formatTimeAgo(userData.lastActive)}`);
+  setText('detail-user-lastactive', `Active ${formatTimeAgo(userData.lastActive)}`);
   setText('detail-kpi-solved', `${userData.totalAnswered || 0} / 253`);
   setText('detail-kpi-acc', `${userData.accuracy || 0}%`);
   setText('detail-kpi-exams', `${(userData.exams || []).length}`);
@@ -1602,7 +1418,7 @@ async function openUserDetailModal(username) {
       row.className = 'topic-bar-row';
       row.innerHTML = `
         <div class="topic-bar-label">
-          <span>${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</span>
+          <span>${topic.name}</span>
           <span>${answeredInTopic}/${totalInTopic} (${accPct}% acc)</span>
         </div>
         <div class="topic-bar-track">
@@ -1691,80 +1507,4 @@ function applyTheme(theme) {
       themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
     }
   }
-}
-
-function applyLanguage(lang) {
-  STATE.lang = lang;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  localStorage.setItem('ise291_lang', lang);
-
-  const langIndicator = document.getElementById('lang-indicator');
-  if (langIndicator) {
-    langIndicator.textContent = lang === 'ar' ? 'English' : 'العربية';
-  }
-
-  const s = STRINGS[lang];
-  setText('lbl-nav-explorer', s.tabExplorer);
-  setText('lbl-nav-quiz', s.tabQuiz);
-  setText('lbl-nav-exam', s.tabExam);
-  setText('lbl-nav-saved', `${s.tabSaved} (${STATE.bookmarks.size})`);
-  setText('lbl-nav-progress', s.tabProgress);
-  setText('lbl-sidebar-filters', s.sidebarFilters);
-
-  const searchInput = document.getElementById('input-search');
-  if (searchInput) searchInput.placeholder = s.searchPlaceholder;
-
-  setText('lbl-filter-file', s.filterFile);
-  setText('btn-status-all', s.allStatus);
-  setText('btn-status-unanswered', s.unanswered);
-  setText('btn-status-correct', s.correct);
-  setText('btn-status-incorrect', s.incorrect);
-  setText('lbl-reveal-all', s.revealAll);
-  setText('lbl-shuffle', s.shuffle);
-  setText('lbl-reset', s.reset);
-  setText('btn-load-more', s.loadMore);
-
-  // Gate labels
-  setText('lbl-auth-gate-sub', s.authSubtitle);
-  setText('btn-gate-tab-login', s.authSignIn);
-  setText('btn-gate-tab-signup', s.authSignUp);
-  setText('lbl-gate-warning', s.authWarning);
-  setText('lbl-gate-username', s.authUsername);
-  setText('lbl-gate-password', s.authPassword);
-
-  // Exam labels
-  setText('lbl-exam-title', s.examTitle);
-  setText('lbl-exam-desc', s.examDesc);
-  setText('lbl-exam-qcount', s.examQCount);
-  setText('lbl-exam-time', s.examTime);
-  setText('btn-start-exam', s.startExam);
-  setText('btn-finish-exam', s.submitExam);
-  setText('btn-exam-prev', s.prevBtn);
-  setText('btn-exam-next', s.nextBtn);
-  setText('btn-exam-flag', s.flagBtn);
-  setText('lbl-results-title', s.resultsTitle);
-  setText('btn-exam-review', s.reviewAnswers);
-  setText('btn-exam-retake', s.retakeExam);
-
-  // Saved labels
-  setText('lbl-saved-title', s.savedTitle);
-  setText('lbl-saved-desc', s.savedDesc);
-
-  // Quiz labels
-  setText('lbl-quiz-complete-title', s.quizCompleteTitle);
-  setText('btn-quiz-retake', s.takeNewQuiz);
-  setText('btn-quiz-prev', s.prevBtn);
-  setText('btn-quiz-next', s.nextBtn);
-
-  // Friends labels
-  setText('lbl-friends-dir-title', s.friendsTitle);
-  setText('lbl-friends-dir-desc', s.friendsDesc);
-  const inputSearchFriends = document.getElementById('input-search-friends');
-  if (inputSearchFriends) inputSearchFriends.placeholder = s.searchFriends;
-
-  updateSidebarUserInfo();
-  renderSidebarTopics();
-  renderSidebarFiles();
-  renderQuestionsStream();
 }
