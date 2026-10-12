@@ -8,9 +8,18 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   shutdown:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -20,11 +29,11 @@ jobs:
         run: |
           cat << 'EOF' > index.html
           <!DOCTYPE html>
-          <html lang="en">
+          <html lang="en" dir="ltr">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>ISE 291 Question Bank - Terminated</title>
+            <title>ISE 291 Question Bank - Service Concluded</title>
             <style>
               body {
                 background: #030712;
@@ -37,38 +46,70 @@ jobs:
                 margin: 0;
                 padding: 20px;
                 text-align: center;
+                box-sizing: border-box;
               }
               .box {
-                max-width: 480px;
+                max-width: 520px;
                 background: #111827;
                 border: 1px solid #374151;
                 border-radius: 16px;
                 padding: 40px;
                 box-shadow: 0 10px 25px rgba(0,0,0,0.5);
               }
-              h1 { color: #ef4444; font-size: 1.5rem; margin-bottom: 12px; }
+              .icon {
+                width: 48px;
+                height: 48px;
+                margin: 0 auto 20px;
+                color: #ef4444;
+              }
+              h1 { color: #f87171; font-size: 1.5rem; margin-bottom: 12px; }
               p { color: #9ca3af; line-height: 1.6; margin-bottom: 16px; font-size: 0.95rem; }
-              .stamp { border-top: 1px solid #1f2937; padding-top: 16px; font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; }
+              .stamp {
+                border-top: 1px solid #1f2937;
+                padding-top: 16px;
+                font-size: 0.75rem;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+              }
             </style>
           </head>
           <body>
             <div class="box">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
               <h1>Service Permanently Concluded</h1>
               <p>The ISE 291 Interactive Question Bank access period ended on <strong>Wednesday, October 14, 2026 at 9:00 PM AST</strong>.</p>
-              <p>This service is now permanently shut down.</p>
-              <div class="stamp">Archived • KFUPM ISE 291</div>
+              <p>In accordance with scheduled lifecycle policies, this service is now permanently shut down and all active questions have been decommissioned.</p>
+              <div class="stamp">Archived Service • KFUPM ISE 291</div>
             </div>
           </body>
           </html>
           EOF
           
-          # Remove question bank data files
-          rm -f questions_data.js questions.json
+          # Remove question bank data files and code
+          rm -f questions_data.js questions.json app.js style.css
           
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy Tombstone to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
       - name: Commit and Push Shutdown
         run: |
           git config user.name "0xZHRA"
           git config user.email "95636416+0xZHRA@users.noreply.github.com"
-          git add index.html questions_data.js questions.json
+          git add index.html
+          git rm -f questions_data.js questions.json app.js style.css || true
           git commit -m "chore(lifecycle): permanently shut down question bank after expiration" || exit 0
           git push origin main

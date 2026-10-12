@@ -98,7 +98,7 @@
       <!-- Stats & Quick Summary -->
       <div class="stats-ribbon">
         <div class="stat-card">
-          <div class="stat-num" id="stat-total">251</div>
+          <div class="stat-num" id="stat-total">253</div>
           <div class="stat-lbl" id="lbl-stat-total">Total Questions</div>
         </div>
         <div class="stat-card">
@@ -134,16 +134,16 @@
               <span id="lbl-filter-topic">Filter by Syllabus Topic</span>
             </span>
             <span class="chevron-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>
             </span>
           </button>
           <div class="accordion-panel open" id="panel-topics">
             <div class="pill-group" id="topic-pills">
-              <button class="filter-pill active" data-topic="all">All Topics (251)</button>
+              <button class="filter-pill active" data-topic="all">All Topics (253)</button>
               <button class="filter-pill" data-topic="Topic 1: Introduction to Data Science">Topic 1: Intro (2)</button>
               <button class="filter-pill" data-topic="Topic 2: Python Review">Topic 2: Python Review (54)</button>
-              <button class="filter-pill" data-topic="Topic 3: Basic Statistics">Topic 3: Statistics (58)</button>
-              <button class="filter-pill" data-topic="Topic 4: Structured Data and Visualization">Topic 4: Data & Viz (69)</button>
+              <button class="filter-pill" data-topic="Topic 3: Basic Statistics">Topic 3: Statistics (59)</button>
+              <button class="filter-pill" data-topic="Topic 4: Structured Data and Visualization">Topic 4: Data & Viz (70)</button>
               <button class="filter-pill" data-topic="Topic 5: Data Understanding and Preparation">Topic 5: Data Prep (68)</button>
             </div>
           </div>
@@ -157,14 +157,14 @@
               <span id="lbl-filter-file">Filter by Source File</span>
             </span>
             <span class="chevron-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>
             </span>
           </button>
           <div class="accordion-panel" id="panel-files">
             <div class="pill-group" id="file-pills">
               <button class="filter-pill active" data-file="all">All Files (8)</button>
               <button class="filter-pill" data-file="Mid exam v important questions.pdf">Mid exam v important.pdf (50)</button>
-              <button class="filter-pill" data-file="Sample Mid .pdf">Sample Mid.pdf (70)</button>
+              <button class="filter-pill" data-file="Sample Mid .pdf">Sample Mid.pdf (72)</button>
               <button class="filter-pill" data-file="Topic 4 and 5.pdf">Topic 4 and 5.pdf (34)</button>
               <button class="filter-pill" data-file="Quiz_2.docx">Quiz 2.docx (10)</button>
               <button class="filter-pill" data-file="Sol-Practice Questions Topic2.docx">Topic 2 Practice.docx (29)</button>
@@ -230,7 +230,16 @@
           <!-- Active quiz question card -->
         </div>
 
-        <div class="quiz-actions-bar">
+        <div id="quiz-completion-card" class="exam-card hidden" style="text-align: center; margin-top: 20px;">
+          <h2 id="lbl-quiz-complete-title">Practice Quiz Completed!</h2>
+          <div class="results-score-display" style="margin: 20px 0;">
+            <div class="score-large" id="quiz-final-score-pct">100%</div>
+            <div class="score-sub" id="quiz-final-score-fraction">20 / 20 Correct</div>
+          </div>
+          <button class="btn-primary" id="btn-quiz-retake">Take New Quiz</button>
+        </div>
+
+        <div class="quiz-actions-bar" id="quiz-actions-bar">
           <button class="btn-secondary" id="btn-quiz-prev">Previous</button>
           <button class="btn-primary" id="btn-quiz-next">Next Question</button>
         </div>

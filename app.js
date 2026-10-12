@@ -51,7 +51,12 @@ const STRINGS = {
     copyCode: "Copy Code",
     copied: "Copied!",
     countdownExpired: "Expired",
-    codeSnippet: "Code Snippet"
+    codeSnippet: "Code Snippet",
+    quizCompleteTitle: "Practice Quiz Completed!",
+    takeNewQuiz: "Take New Quiz",
+    quizScore: "Score",
+    quizFinish: "Finish Quiz",
+    examUntimed: "Untimed"
   },
   ar: {
     bannerText: "⏱️ نشط حتى الأربعاء 14 أكتوبر 2026، 9:00 مساءً بتوقيت مكة المكرمة",
@@ -99,7 +104,12 @@ const STRINGS = {
     copyCode: "نسخ الكود",
     copied: "تم النسخ!",
     countdownExpired: "منتهي",
-    codeSnippet: "مقطع برمجي"
+    codeSnippet: "مقطع برمجي",
+    quizCompleteTitle: "تم إكمال الاختبار التدريبي بنجاح!",
+    takeNewQuiz: "خوض اختبار تدريبي جديد",
+    quizScore: "الدرجة",
+    quizFinish: "إنهاء الاختبار",
+    examUntimed: "بدون توقيت"
   }
 };
 
@@ -142,21 +152,30 @@ const STATE = {
   expirationTime: new Date("2026-10-14T21:00:00+03:00").getTime()
 };
 
+let expirationInterval = null;
+
 // 3. Expiration Guard & Always-On Countdown
 function checkExpiration() {
   const now = Date.now();
   const diff = STATE.expirationTime - now;
 
   if (diff <= 0) {
-    // Lock down site permanently
+    if (expirationInterval) {
+      clearInterval(expirationInterval);
+      expirationInterval = null;
+    }
     const shutdownScreen = document.getElementById('shutdown-screen');
     if (shutdownScreen) {
       shutdownScreen.classList.remove('hidden');
     }
     document.body.innerHTML = '';
-    document.body.appendChild(shutdownScreen);
+    if (shutdownScreen) {
+      document.body.appendChild(shutdownScreen);
+    }
+    STATE.allQuestions = [];
+    STATE.filteredQuestions = [];
     window.QUESTION_BANK = null;
-    return;
+    return true;
   }
 
   // Format countdown
@@ -168,17 +187,18 @@ function checkExpiration() {
   if (timerEl) {
     timerEl.textContent = `${hours}h ${mins}m ${secs}s`;
   }
+  return false;
 }
 
 // 4. Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
+  // Check Expiration First
+  if (checkExpiration()) return;
+  expirationInterval = setInterval(checkExpiration, 1000);
+
   // Apply saved theme and language
   applyTheme(STATE.theme);
   applyLanguage(STATE.lang);
-
-  // Setup Expiration Timer
-  checkExpiration();
-  setInterval(checkExpiration, 1000);
 
   // Initialize Questions
   STATE.filteredQuestions = [...STATE.allQuestions];
@@ -237,6 +257,14 @@ function applyLanguage(lang) {
   setText('lbl-shuffle', dict.shuffle);
   setText('lbl-reset', dict.reset);
   setText('btn-load-more', dict.loadMore);
+
+  // Status pills
+  setText('btn-status-all', dict.allStatus);
+  setText('btn-status-unanswered', dict.unanswered);
+  setText('btn-status-correct', dict.correct);
+  setText('btn-status-incorrect', dict.incorrect);
+
+  // Exam simulator
   setText('lbl-exam-title', dict.examTitle);
   setText('lbl-exam-desc', dict.examDesc);
   setText('lbl-exam-qcount', dict.examQCount);
@@ -249,13 +277,33 @@ function applyLanguage(lang) {
   setText('lbl-results-title', dict.resultsTitle);
   setText('btn-exam-review', dict.reviewAnswers);
   setText('btn-exam-retake', dict.retakeExam);
+
+  // Saved tab
   setText('lbl-saved-title', dict.savedTitle);
   setText('lbl-saved-desc', dict.savedDesc);
+  const tabSavedEl = document.getElementById('lbl-tab-saved');
+  if (tabSavedEl) {
+    tabSavedEl.innerHTML = `${dict.tabSaved} (<span id="saved-count">${STATE.bookmarks.size}</span>)`;
+  }
+
+  // Quiz Mode
+  setText('btn-quiz-prev', dict.prevBtn);
+  setText('lbl-quiz-complete-title', dict.quizCompleteTitle);
+  setText('btn-quiz-retake', dict.takeNewQuiz);
 
   const inputSearch = document.getElementById('input-search');
   if (inputSearch) inputSearch.placeholder = dict.searchPlaceholder;
 
   updateStatsRibbon();
+
+  // Re-render current active view to refresh button strings
+  if (STATE.activeTab === 'explorer') {
+    renderQuestionsStream();
+  } else if (STATE.activeTab === 'saved') {
+    renderSavedView();
+  } else if (STATE.activeTab === 'quiz') {
+    renderCurrentQuizQuestion();
+  }
 }
 
 function setText(id, text) {
@@ -447,8 +495,10 @@ function updateStatsRibbon() {
   const answeredCount = Object.keys(STATE.userAnswers).length;
   let correctCount = 0;
 
+  // Optimized O(N) lookup Map
+  const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
   for (const [qid, ans] of Object.entries(STATE.userAnswers)) {
-    const q = STATE.allQuestions.find(item => item.id === qid);
+    const q = qMap.get(qid);
     if (q && q.correctAnswer === ans) {
       correctCount++;
     }
@@ -620,7 +670,7 @@ function createQuestionCard(q, displayNum) {
   if (copyBtn) {
     copyBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      navigator.clipboard.writeText(q.code);
+      navigator.clipboard.writeText(q.code).catch(() => {});
       copyBtn.textContent = STRINGS[STATE.lang].copied;
       setTimeout(() => copyBtn.textContent = STRINGS[STATE.lang].copyCode, 2000);
     });
@@ -649,10 +699,20 @@ function handleOptionSelect(q, selectedKey, card) {
     }
   });
 
+  // Reveal explanation automatically upon answering
   const expBox = card.querySelector('.q-explanation');
-  if (expBox) expBox.classList.add('visible');
+  if (expBox) {
+    expBox.classList.add('visible');
+    const revealBtnSpan = card.querySelector('.btn-reveal span');
+    if (revealBtnSpan) revealBtnSpan.textContent = STRINGS[STATE.lang].hideSolution;
+  }
 
   updateStatsRibbon();
+
+  // If in quiz mode, update live quiz score
+  if (STATE.activeTab === 'quiz') {
+    updateQuizLiveScore();
+  }
 }
 
 function toggleBookmark(qid, btn) {
@@ -696,6 +756,7 @@ function renderSavedView() {
 function bindPracticeQuiz() {
   const prevBtn = document.getElementById('btn-quiz-prev');
   const nextBtn = document.getElementById('btn-quiz-next');
+  const retakeBtn = document.getElementById('btn-quiz-retake');
 
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
@@ -711,17 +772,45 @@ function bindPracticeQuiz() {
       if (STATE.quizIndex < STATE.quizList.length - 1) {
         STATE.quizIndex++;
         renderCurrentQuizQuestion();
+      } else {
+        // Complete Quiz
+        showQuizCompletion();
       }
+    });
+  }
+
+  if (retakeBtn) {
+    retakeBtn.addEventListener('click', () => {
+      initNewQuiz();
     });
   }
 }
 
 function initQuizView() {
   if (STATE.quizList.length === 0) {
-    STATE.quizList = [...STATE.allQuestions].sort(() => Math.random() - 0.5).slice(0, 20);
-    STATE.quizIndex = 0;
+    initNewQuiz();
+  } else {
+    renderCurrentQuizQuestion();
   }
+}
+
+function initNewQuiz() {
+  const compCard = document.getElementById('quiz-completion-card');
+  const qContainer = document.getElementById('quiz-card-container');
+  const actionsBar = document.getElementById('quiz-actions-bar');
+  if (compCard) compCard.classList.add('hidden');
+  if (qContainer) qContainer.classList.remove('hidden');
+  if (actionsBar) actionsBar.classList.remove('hidden');
+
+  STATE.quizList = [...STATE.allQuestions].sort(() => Math.random() - 0.5).slice(0, 20);
+  STATE.quizIndex = 0;
   renderCurrentQuizQuestion();
+}
+
+function updateQuizLiveScore() {
+  const answeredInQuiz = STATE.quizList.filter(q => STATE.userAnswers[q.id]);
+  const correctInQuiz = answeredInQuiz.filter(q => STATE.userAnswers[q.id] === q.correctAnswer);
+  setText('quiz-live-score', `${STRINGS[STATE.lang].quizScore}: ${correctInQuiz.length} / ${answeredInQuiz.length}`);
 }
 
 function renderCurrentQuizQuestion() {
@@ -734,11 +823,49 @@ function renderCurrentQuizQuestion() {
 
   const progressText = document.getElementById('quiz-progress-text');
   const progressBar = document.getElementById('quiz-progress-bar');
-  if (progressText) progressText.textContent = `Question ${STATE.quizIndex + 1} of ${STATE.quizList.length}`;
+  const dict = STRINGS[STATE.lang];
+
+  if (progressText) {
+    progressText.textContent = `${dict.tabQuiz} ${STATE.quizIndex + 1} / ${STATE.quizList.length}`;
+  }
   if (progressBar) {
     const pct = ((STATE.quizIndex + 1) / STATE.quizList.length) * 100;
     progressBar.style.width = `${pct}%`;
   }
+
+  // Update live score
+  updateQuizLiveScore();
+
+  // Button labels and states
+  const prevBtn = document.getElementById('btn-quiz-prev');
+  const nextBtn = document.getElementById('btn-quiz-next');
+  if (prevBtn) {
+    prevBtn.disabled = STATE.quizIndex === 0;
+    prevBtn.style.opacity = STATE.quizIndex === 0 ? '0.5' : '1';
+  }
+  if (nextBtn) {
+    const isLast = STATE.quizIndex === STATE.quizList.length - 1;
+    nextBtn.textContent = isLast ? dict.quizFinish : dict.nextBtn;
+  }
+}
+
+function showQuizCompletion() {
+  const compCard = document.getElementById('quiz-completion-card');
+  const qContainer = document.getElementById('quiz-card-container');
+  const actionsBar = document.getElementById('quiz-actions-bar');
+  if (!compCard) return;
+
+  const answeredInQuiz = STATE.quizList.filter(q => STATE.userAnswers[q.id]);
+  const correctInQuiz = answeredInQuiz.filter(q => STATE.userAnswers[q.id] === q.correctAnswer);
+  const total = STATE.quizList.length;
+  const pct = Math.round((correctInQuiz.length / total) * 100);
+
+  setText('quiz-final-score-pct', `${pct}%`);
+  setText('quiz-final-score-fraction', `${correctInQuiz.length} / ${total} Correct`);
+
+  if (qContainer) qContainer.classList.add('hidden');
+  if (actionsBar) actionsBar.classList.add('hidden');
+  compCard.classList.remove('hidden');
 }
 
 // 12. Midterm Exam Simulator
@@ -795,9 +922,13 @@ function bindExamSimulator() {
 
   if (reviewBtn) {
     reviewBtn.addEventListener('click', () => {
-      // Switch to topic explorer with exam questions
+      // Switch to topic explorer with exam questions and render user answers
       STATE.filteredQuestions = [...STATE.examState.questions];
-      document.querySelector('.nav-tab[data-tab="explorer"]').click();
+      STATE.filterTopic = 'all';
+      STATE.filterFile = 'all';
+      STATE.filterStatus = 'all';
+      const explorerTab = document.querySelector('.nav-tab[data-tab="explorer"]');
+      if (explorerTab) explorerTab.click();
       renderQuestionsStream();
     });
   }
@@ -816,7 +947,6 @@ function startMidtermExam() {
   const count = parseInt(countSelect.value, 10) || 30;
   const minutes = parseInt(timeSelect.value, 10) || 45;
 
-  // Select questions proportionally across topics
   const pool = [...STATE.allQuestions].sort(() => Math.random() - 0.5);
   STATE.examState = {
     active: true,
@@ -840,7 +970,7 @@ function startMidtermExam() {
     startExamTimer();
   } else {
     const timerDisplay = document.getElementById('exam-timer-display');
-    if (timerDisplay) timerDisplay.textContent = 'Untimed';
+    if (timerDisplay) timerDisplay.textContent = STRINGS[STATE.lang].examUntimed;
   }
 }
 
@@ -989,6 +1119,11 @@ function submitMidtermExam() {
   else if (pct >= 70) grade = 'C';
   else if (pct >= 65) grade = 'D+';
   else if (pct >= 60) grade = 'D';
+
+  // Merge exam answers into userAnswers so Review Detailed Answers displays them properly
+  Object.assign(STATE.userAnswers, STATE.examState.answers);
+  localStorage.setItem('ise291_answers', JSON.stringify(STATE.userAnswers));
+  updateStatsRibbon();
 
   document.getElementById('exam-active-card').classList.add('hidden');
   document.getElementById('exam-results-card').classList.remove('hidden');
