@@ -1,30 +1,30 @@
 // ISE 291 Interactive Question Bank
-// Version 2.0 - Minimalist Redesign with Cloud Progress & Friends Tracker
+// Version 2.1 - Minimalist Collapsible Sidebar & Mandatory Account Gate
 
 // 1. Internationalization Dictionaries (100% Key Parity Required)
 const STRINGS = {
   en: {
     bannerText: "⏱️ Active until Wednesday Oct 14, 2026, 9:00 PM AST",
     subtitle: "Question Bank",
-    tabExplorer: "Topics",
-    tabQuiz: "Practice",
-    tabExam: "Midterm",
+    tabExplorer: "Topics & Questions",
+    tabQuiz: "Practice Quiz",
+    tabExam: "Midterm Simulator",
     tabSaved: "Saved",
-    tabProgress: "Progress",
+    tabProgress: "Friends & Progress",
     statTotal: "Total Questions",
     statAnswered: "Answered",
     statAccuracy: "Accuracy",
     statBookmarked: "Bookmarked",
     filterTopic: "Filter by Syllabus Topic",
-    filterFile: "Filter by Source File",
-    searchPlaceholder: "Search questions, code snippets, topics...",
+    filterFile: "Source Files",
+    searchPlaceholder: "Search questions...",
     allTopics: "All Topics",
     allFiles: "All Files",
     allStatus: "All",
     unanswered: "Unanswered",
     correct: "Correct",
     incorrect: "Incorrect",
-    revealAll: "Reveal All",
+    revealAll: "Reveal",
     shuffle: "Shuffle",
     reset: "Reset",
     loadMore: "Load More Questions",
@@ -58,15 +58,15 @@ const STRINGS = {
     examUntimed: "No Time Limit",
     wrapCode: "Wrap",
     unwrapCode: "No Wrap",
-    authTitle: "Account & Cloud Sync",
-    authSubtitle: "Easily sign in or create an account to save your progress and share with friends.",
+    authTitle: "Account Required",
+    authSubtitle: "Account required. Sign in or create an account to access the question bank.",
     authSignIn: "Sign In",
     authSignUp: "Create Account",
     authWarning: "Notice: Once you create your account, it cannot be deleted.",
     authUsername: "Username",
     authPassword: "Password",
-    authLogout: "Log Out of Current Session",
-    authGuest: "Guest",
+    authLogout: "Log Out",
+    authGuest: "User",
     friendsTitle: "Friends & Classmates Progress",
     friendsDesc: "Click on any friend to inspect their detailed topic breakdown and question history.",
     searchFriends: "Search friends by username...",
@@ -75,31 +75,33 @@ const STRINGS = {
     lastActive: "Last active",
     topicMastery: "Topic Mastery",
     recentHistory: "Recent Question History",
-    solvedOf: "Questions Solved"
+    solvedOf: "Questions Solved",
+    sidebarFilters: "Filters & Search",
+    authRequired: "Please sign in or create an account to view questions."
   },
   ar: {
     bannerText: "⏱️ نشط حتى الأربعاء 14 أكتوبر 2026، 9:00 مساءً بتوقيت مكة المكرمة",
     subtitle: "بنك الأسئلة",
-    tabExplorer: "المواضيع",
-    tabQuiz: "تدريب",
-    tabExam: "ميدتيرم",
+    tabExplorer: "المواضيع والأسئلة",
+    tabQuiz: "اختبار تدريبي",
+    tabExam: "محاكي الميدتيرم",
     tabSaved: "المحفوظات",
-    tabProgress: "التقدم",
+    tabProgress: "تقدم الزملاء",
     statTotal: "إجمالي الأسئلة",
     statAnswered: "تم حلها",
     statAccuracy: "الدقة",
     statBookmarked: "المفضلة",
     filterTopic: "تصفية حسب مواضيع المنهج",
-    filterFile: "تصفية حسب الملف المصدري",
-    searchPlaceholder: "ابحث في نصوص الأسئلة، الأكواد البرمجية، والمواضيع...",
+    filterFile: "الملفات المصدرية",
+    searchPlaceholder: "البحث في الأسئلة...",
     allTopics: "جميع المواضيع",
     allFiles: "جميع الملفات",
     allStatus: "الكل",
     unanswered: "غير محلول",
     correct: "صحيح",
     incorrect: "غير صحيح",
-    revealAll: "إظهار الإجابات",
-    shuffle: "خلط الأسئلة",
+    revealAll: "إظهار",
+    shuffle: "خلط",
     reset: "إعادة ضبط",
     loadMore: "تحميل المزيد من الأسئلة",
     revealSolution: "عرض الحل والشرح",
@@ -132,15 +134,15 @@ const STRINGS = {
     examUntimed: "بدون توقيت",
     wrapCode: "التفاف",
     unwrapCode: "بدون التفاف",
-    authTitle: "الحساب والمزامنة السحابية",
-    authSubtitle: "سجل الدخول أو أنشئ حساباً لحفظ تقدمك ومشاركته مع زملائك.",
+    authTitle: "تسجيل الدخول مطلوب",
+    authSubtitle: "إنشاء حساب مطلوب للوصول إلى بنك الأسئلة والتدريبات.",
     authSignIn: "تسجيل الدخول",
     authSignUp: "إنشاء حساب جديد",
     authWarning: "تنبيه: بمجرد إنشاء الحساب، لا يمكن حذفه.",
     authUsername: "اسم المستخدم",
     authPassword: "كلمة المرور",
-    authLogout: "تسجيل الخروج من الجلسة",
-    authGuest: "زائر",
+    authLogout: "تسجيل الخروج",
+    authGuest: "مستخدم",
     friendsTitle: "تقدم الزملاء والأصدقاء",
     friendsDesc: "انقر على أي زميل لعرض تفاصيل إتقانه للمواضيع وتاريخ حله للأسئلة.",
     searchFriends: "البحث عن صديق باسم المستخدم...",
@@ -149,18 +151,31 @@ const STRINGS = {
     lastActive: "آخر نشاط",
     topicMastery: "إتقان المواضيع",
     recentHistory: "سجل الأسئلة الأخيرة",
-    solvedOf: "الأسئلة المحلولة"
+    solvedOf: "الأسئلة المحلولة",
+    sidebarFilters: "البحث والتصفية",
+    authRequired: "يرجى تسجيل الدخول أو إنشاء حساب للوصول إلى بنك الأسئلة."
   }
 };
 
 // 2. Constants & Endpoints
 const KV_BASE = 'https://kvdb.io/Vc3nLuNA8mMdWRX5VSH33j/';
 const SYLLABUS_TOPICS = [
-  { id: "Topic 1: Introduction to Data Science", nameEn: "Topic 1: Intro to Data Science", nameAr: "الموضوع 1: مقدمة علم البيانات", count: 2 },
-  { id: "Topic 2: Python Review", nameEn: "Topic 2: Python Review", nameAr: "الموضوع 2: مراجعة بايثون", count: 54 },
-  { id: "Topic 3: Basic Statistics", nameEn: "Topic 3: Basic Statistics", nameAr: "الموضوع 3: الإحصاء الأساسي", count: 59 },
-  { id: "Topic 4: Structured Data and Visualization", nameEn: "Topic 4: Structured Data & Viz", nameAr: "الموضوع 4: البيانات والتمثيل البياني", count: 70 },
-  { id: "Topic 5: Data Understanding and Preparation", nameEn: "Topic 5: Data Understanding & Prep", nameAr: "الموضوع 5: فهم وتجهيز البيانات", count: 68 }
+  { id: "Topic 1: Introduction to Data Science", nameEn: "T1: Intro to Data Science", nameAr: "م1: مقدمة علم البيانات", count: 2 },
+  { id: "Topic 2: Python Review", nameEn: "T2: Python Review", nameAr: "م2: مراجعة بايثون", count: 54 },
+  { id: "Topic 3: Basic Statistics", nameEn: "T3: Basic Statistics", nameAr: "م3: الإحصاء الأساسي", count: 59 },
+  { id: "Topic 4: Structured Data and Visualization", nameEn: "T4: Structured Data & Viz", nameAr: "م4: البيانات والتمثيل البياني", count: 70 },
+  { id: "Topic 5: Data Understanding and Preparation", nameEn: "T5: Data Understanding & Prep", nameAr: "م5: فهم وتجهيز البيانات", count: 68 }
+];
+
+const SOURCE_FILES = [
+  "Mid exam v important questions.pdf",
+  "Sample Mid .pdf",
+  "Topic 4 and 5.pdf",
+  "Quiz_2.docx",
+  "Sol-Practice Questions Topic2.docx",
+  "Sol-Practice Questions Topic3.docx",
+  "Topic 4 practice questions.pdf",
+  "Sol-Practice Questions Topic5.docx"
 ];
 
 // 3. Application State
@@ -180,7 +195,7 @@ const STATE = {
   filterStatus: 'all',
   searchQuery: '',
   
-  // User Session & Progress Store
+  // User Session & Progress Store (Mandatory Auth)
   currentUser: JSON.parse(localStorage.getItem('ise291_user') || 'null'),
   userAnswers: JSON.parse(localStorage.getItem('ise291_answers') || '{}'),
   bookmarks: new Set(JSON.parse(localStorage.getItem('ise291_bookmarks') || '[]')),
@@ -209,7 +224,7 @@ const STATE = {
 let expirationInterval = null;
 let cloudSyncTimeout = null;
 
-// 4. Expiration Guard & Always-On Countdown
+// 4. Expiration Guard & Countdown
 function checkExpiration() {
   const now = Date.now();
   const diff = STATE.expirationTime - now;
@@ -233,14 +248,13 @@ function checkExpiration() {
     return true;
   }
 
-  // Format countdown
   const hours = Math.floor(diff / (1000 * 60 * 60));
   const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
   const secs = Math.floor((diff % (1000 * 60)) / 1000);
 
   const timerEl = document.getElementById('countdown-timer');
   if (timerEl) {
-    timerEl.textContent = `${hours}h ${mins}m ${secs}s`;
+    timerEl.textContent = `⏱️ ${hours}h ${mins}m ${secs}s`;
   }
   return false;
 }
@@ -298,10 +312,8 @@ async function syncUserProgressToCloud() {
     lastActive: Date.now()
   };
 
-  // Save specific user data
   await apiPost('u_' + username, userData);
 
-  // Update directory
   let dir = await apiGet('ise_dir');
   if (!Array.isArray(dir)) dir = [];
   const idx = dir.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
@@ -320,293 +332,57 @@ async function syncUserProgressToCloud() {
   await apiPost('ise_dir', dir);
 }
 
-async function loadFriendsDirectory() {
-  const container = document.getElementById('friends-list');
-  if (!container) return;
-
-  container.innerHTML = '<div style="color:var(--text-muted); padding:20px; text-align:center;">Loading friends directory...</div>';
-  
-  let dir = await apiGet('ise_dir');
-  if (!Array.isArray(dir)) dir = [];
-  STATE.friendsDirectory = dir;
-  renderFriendsDirectory();
-}
-
-function renderFriendsDirectory(filterText = '') {
-  const container = document.getElementById('friends-list');
-  if (!container) return;
-  container.innerHTML = '';
-
-  let list = STATE.friendsDirectory.slice();
-  if (filterText.trim()) {
-    const q = filterText.toLowerCase();
-    list = list.filter(u => u.username.toLowerCase().includes(q));
-  }
-
-  // Sort by last active descending
-  list.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0));
-
-  if (list.length === 0) {
-    container.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px;">
-        No active users found yet. Create an account to be the first!
-      </div>
-    `;
-    return;
-  }
-
-  list.forEach(user => {
-    const card = document.createElement('div');
-    card.className = 'friend-card';
-    
-    const initial = user.username.charAt(0).toUpperCase();
-    const timeAgo = formatTimeAgo(user.lastActive);
-
-    card.innerHTML = `
-      <div class="friend-card-top">
-        <div class="user-avatar-sm">${initial}</div>
-        <div>
-          <div class="friend-card-name">${escapeHtml(user.username)}</div>
-          <div class="friend-card-active">${STRINGS[STATE.lang].lastActive}: ${timeAgo}</div>
-        </div>
-      </div>
-      <div class="friend-card-stats">
-        <span class="friend-stat-badge">${user.totalAnswered || 0} / 253 Solved</span>
-        <span class="friend-stat-badge" style="color:var(--success);">${user.accuracy || 0}% Acc</span>
-      </div>
-      <button class="btn-secondary btn-sm btn-inspect-user" data-username="${escapeHtml(user.username)}">
-        ${STRINGS[STATE.lang].inspectProgress}
-      </button>
-    `;
-
-    card.querySelector('.btn-inspect-user').addEventListener('click', () => {
-      openUserDetailModal(user.username);
-    });
-
-    container.appendChild(card);
-  });
-}
-
-function formatTimeAgo(timestamp) {
-  if (!timestamp) return 'recently';
-  const diff = Date.now() - timestamp;
-  const mins = Math.floor(diff / (1000 * 60));
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
-
-async function openUserDetailModal(username) {
-  const modal = document.getElementById('user-detail-modal');
-  if (!modal) return;
-  modal.classList.remove('hidden');
-
-  setText('detail-user-name', username);
-  setText('detail-user-avatar', username.charAt(0).toUpperCase());
-  setText('detail-user-lastactive', 'Fetching user data...');
-  
-  const userData = await apiGet('u_' + username);
-  if (!userData) {
-    setText('detail-user-lastactive', 'User details could not be retrieved.');
-    return;
-  }
-
-  setText('detail-user-lastactive', `${STRINGS[STATE.lang].lastActive} ${formatTimeAgo(userData.lastActive)}`);
-  setText('detail-kpi-solved', `${userData.totalAnswered || 0} / 253`);
-  setText('detail-kpi-acc', `${userData.accuracy || 0}%`);
-  setText('detail-kpi-exams', `${(userData.exams || []).length}`);
-
-  // Topic mastery calculation
-  const topicBars = document.getElementById('detail-topic-bars');
-  if (topicBars) {
-    topicBars.innerHTML = '';
-    const userAnswers = userData.answers || {};
-    const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
-
-    SYLLABUS_TOPICS.forEach(topic => {
-      const topicQuestions = STATE.allQuestions.filter(q => q.topic === topic.id);
-      const totalInTopic = topicQuestions.length;
-      let answeredInTopic = 0;
-      let correctInTopic = 0;
-
-      topicQuestions.forEach(q => {
-        if (userAnswers[q.id]) {
-          answeredInTopic++;
-          if (userAnswers[q.id] === q.correctAnswer) correctInTopic++;
-        }
-      });
-
-      const accPct = answeredInTopic > 0 ? Math.round((correctInTopic / answeredInTopic) * 100) : 0;
-      const progressPct = totalInTopic > 0 ? Math.round((answeredInTopic / totalInTopic) * 100) : 0;
-
-      const row = document.createElement('div');
-      row.className = 'topic-bar-row';
-      row.innerHTML = `
-        <div class="topic-bar-label">
-          <span>${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</span>
-          <span>${answeredInTopic}/${totalInTopic} (${accPct}% acc)</span>
-        </div>
-        <div class="topic-bar-track">
-          <div class="topic-bar-fill" style="width: ${progressPct}%;"></div>
-        </div>
-      `;
-      topicBars.appendChild(row);
-    });
-  }
-
-  // Recent answers history list
-  const recentList = document.getElementById('detail-recent-answers');
-  if (recentList) {
-    recentList.innerHTML = '';
-    const entries = Object.entries(userData.answers || {}).slice(-15).reverse();
-    if (entries.length === 0) {
-      recentList.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">No questions answered yet.</div>';
-    } else {
-      const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
-      entries.forEach(([qid, ans]) => {
-        const q = qMap.get(qid);
-        const isCorrect = q && q.correctAnswer === ans;
-        const row = document.createElement('div');
-        row.className = 'recent-ans-row';
-        row.innerHTML = `
-          <span>#${qid} ${q ? q.topic.split(':')[0] : ''}</span>
-          <span style="font-weight:700; color:${isCorrect ? 'var(--success)' : 'var(--danger)'};">
-            ${ans} ${isCorrect ? '✓' : '✗'}
-          </span>
-        `;
-        recentList.appendChild(row);
-      });
-    }
-  }
-}
-
-// 6. Application Initialization
+// 6. Application Initialization & Auth Gatekeeper
 document.addEventListener('DOMContentLoaded', () => {
-  // Check Expiration First
   if (checkExpiration()) return;
   expirationInterval = setInterval(checkExpiration, 1000);
 
-  // Apply saved theme and language
   applyTheme(STATE.theme);
   applyLanguage(STATE.lang);
 
-  // Update User Header Info
-  updateUserHeaderDisplay();
-
-  // Bind Listeners
-  bindNavigation();
-  bindFilters();
+  bindAuthGate();
+  bindSidebar();
   bindQuizMode();
   bindExamSimulator();
-  bindAuthModal();
   bindLightbox();
 
-  // Render Initial View
-  renderTopicOverviewGrid();
-  applyFiltersAndSearch();
-  updateMyProgressSection();
+  // Check if user is logged in
+  if (STATE.currentUser) {
+    unlockApp();
+  } else {
+    showAuthGate();
+  }
 });
 
-// 7. Navigation & Tabs
-function bindNavigation() {
-  const tabs = document.querySelectorAll('.nav-tab, .mobile-nav-item');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const target = tab.getAttribute('data-tab');
-      switchTab(target);
-    });
-  });
-
-  // Profile Action Buttons
-  const btnAuthOpen = document.getElementById('btn-auth-open');
-  if (btnAuthOpen) {
-    btnAuthOpen.addEventListener('click', openAuthModal);
-  }
-
-  const btnProgressAuth = document.getElementById('btn-progress-auth-action');
-  if (btnProgressAuth) {
-    btnProgressAuth.addEventListener('click', openAuthModal);
-  }
-
-  const btnRefreshProgress = document.getElementById('btn-refresh-progress');
-  if (btnRefreshProgress) {
-    btnRefreshProgress.addEventListener('click', () => {
-      loadFriendsDirectory();
-    });
-  }
-
-  // Friends search input
-  const inputSearchFriends = document.getElementById('input-search-friends');
-  if (inputSearchFriends) {
-    inputSearchFriends.addEventListener('input', (e) => {
-      renderFriendsDirectory(e.target.value);
-    });
-  }
-
-  // Language & Theme Toggles
-  const btnLang = document.getElementById('btn-lang');
-  if (btnLang) {
-    btnLang.addEventListener('click', () => {
-      const nextLang = STATE.lang === 'en' ? 'ar' : 'en';
-      applyLanguage(nextLang);
-    });
-  }
-
-  const btnTheme = document.getElementById('btn-theme');
-  if (btnTheme) {
-    btnTheme.addEventListener('click', () => {
-      const nextTheme = STATE.theme === 'dark' ? 'light' : 'dark';
-      applyTheme(nextTheme);
-    });
-  }
+function showAuthGate() {
+  const gate = document.getElementById('auth-gate');
+  const app = document.getElementById('app-wrapper');
+  if (gate) gate.classList.remove('hidden');
+  if (app) app.classList.add('hidden');
 }
 
-function switchTab(tabId) {
-  STATE.activeTab = tabId;
+function unlockApp() {
+  const gate = document.getElementById('auth-gate');
+  const app = document.getElementById('app-wrapper');
+  if (gate) gate.classList.add('hidden');
+  if (app) app.classList.remove('hidden');
 
-  // Update desktop tabs
-  document.querySelectorAll('.nav-tab').forEach(t => {
-    t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
-  });
-
-  // Update mobile bottom nav
-  document.querySelectorAll('.mobile-nav-item').forEach(t => {
-    t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
-  });
-
-  // Update views
-  document.querySelectorAll('.view-section').forEach(view => {
-    view.classList.toggle('active', view.id === `view-${tabId}`);
-  });
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  if (tabId === 'saved') {
-    renderSavedStream();
-  } else if (tabId === 'quiz') {
-    startOrResumeQuiz();
-  } else if (tabId === 'progress') {
-    updateMyProgressSection();
-    loadFriendsDirectory();
-  }
+  updateSidebarUserInfo();
+  renderSidebarTopics();
+  renderSidebarFiles();
+  applyFiltersAndSearch();
+  updateMyProgressSection();
 }
 
-// 8. Auth Modal & Session
-function bindAuthModal() {
-  const modal = document.getElementById('auth-modal');
-  const backdrop = document.getElementById('auth-backdrop');
-  const btnClose = document.getElementById('btn-auth-close');
-  const tabLogin = document.getElementById('tab-auth-login');
-  const tabSignup = document.getElementById('tab-auth-signup');
-  const warningBanner = document.getElementById('auth-create-warning');
-  const btnSubmit = document.getElementById('btn-auth-submit');
-  const form = document.getElementById('auth-form');
-  const btnLogout = document.getElementById('btn-auth-logout');
+function bindAuthGate() {
+  const tabLogin = document.getElementById('btn-gate-tab-login');
+  const tabSignup = document.getElementById('btn-gate-tab-signup');
+  const warningBanner = document.getElementById('gate-signup-warning');
+  const btnSubmit = document.getElementById('btn-gate-submit');
+  const form = document.getElementById('gate-auth-form');
+  const btnLang = document.getElementById('btn-gate-lang');
 
-  let mode = 'login'; // 'login' or 'signup'
+  let mode = 'login';
 
   function setMode(newMode) {
     mode = newMode;
@@ -614,29 +390,28 @@ function bindAuthModal() {
     tabSignup.classList.toggle('active', mode === 'signup');
     warningBanner.style.display = mode === 'signup' ? 'flex' : 'none';
     btnSubmit.textContent = mode === 'login' ? STRINGS[STATE.lang].authSignIn : STRINGS[STATE.lang].authSignUp;
-    hideAuthMsg();
+    hideGateMsg();
   }
 
   tabLogin.addEventListener('click', () => setMode('login'));
   tabSignup.addEventListener('click', () => setMode('signup'));
 
-  btnClose.addEventListener('click', closeAuthModal);
-  backdrop.addEventListener('click', closeAuthModal);
-
-  // User detail modal close
-  const detailModal = document.getElementById('user-detail-modal');
-  const detailBackdrop = document.getElementById('user-detail-backdrop');
-  const btnDetailClose = document.getElementById('btn-user-detail-close');
-  if (btnDetailClose) btnDetailClose.addEventListener('click', () => detailModal.classList.add('hidden'));
-  if (detailBackdrop) detailBackdrop.addEventListener('click', () => detailModal.classList.add('hidden'));
+  if (btnLang) {
+    btnLang.addEventListener('click', () => {
+      const nextLang = STATE.lang === 'en' ? 'ar' : 'en';
+      applyLanguage(nextLang);
+      btnLang.textContent = nextLang === 'en' ? 'العربية' : 'English';
+      btnSubmit.textContent = mode === 'login' ? STRINGS[nextLang].authSignIn : STRINGS[nextLang].authSignUp;
+    });
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = document.getElementById('auth-input-username').value.trim();
-    const password = document.getElementById('auth-input-password').value;
+    const username = document.getElementById('gate-input-username').value.trim();
+    const password = document.getElementById('gate-input-password').value;
 
     if (!username || !password) {
-      showAuthMsg('Please enter both username and password.', 'error');
+      showGateMsg('Please enter both username and password.', 'error');
       return;
     }
 
@@ -644,45 +419,38 @@ function bindAuthModal() {
     btnSubmit.textContent = 'Processing...';
 
     if (mode === 'signup') {
-      // Check existing
       const existing = await apiGet('u_' + username);
       if (existing) {
-        showAuthMsg('Username already taken. Please choose another.', 'error');
+        showGateMsg('Username already taken. Please choose another.', 'error');
         btnSubmit.disabled = false;
         btnSubmit.textContent = STRINGS[STATE.lang].authSignUp;
         return;
       }
 
-      // Create new user
       STATE.currentUser = { username, password };
       localStorage.setItem('ise291_user', JSON.stringify(STATE.currentUser));
       await syncUserProgressToCloud();
-      showAuthMsg('Account successfully created!', 'success');
+      showGateMsg('Account created successfully! Entering...', 'success');
       setTimeout(() => {
-        closeAuthModal();
-        updateUserHeaderDisplay();
-        updateMyProgressSection();
-        loadFriendsDirectory();
-      }, 700);
+        unlockApp();
+      }, 500);
 
     } else {
-      // Login
       const userData = await apiGet('u_' + username);
       if (!userData) {
-        showAuthMsg('Account not found. Please create an account.', 'error');
+        showGateMsg('Account not found. Please click "Create Account".', 'error');
         btnSubmit.disabled = false;
         btnSubmit.textContent = STRINGS[STATE.lang].authSignIn;
         return;
       }
 
       if (userData.password !== password) {
-        showAuthMsg('Incorrect password.', 'error');
+        showGateMsg('Incorrect password.', 'error');
         btnSubmit.disabled = false;
         btnSubmit.textContent = STRINGS[STATE.lang].authSignIn;
         return;
       }
 
-      // Merge cloud progress with local progress
       STATE.currentUser = { username, password };
       localStorage.setItem('ise291_user', JSON.stringify(STATE.currentUser));
 
@@ -699,230 +467,90 @@ function bindAuthModal() {
         localStorage.setItem('ise291_exams', JSON.stringify(STATE.examsTaken));
       }
 
-      showAuthMsg('Welcome back, ' + username + '!', 'success');
+      showGateMsg('Welcome back, ' + username + '!', 'success');
       setTimeout(() => {
-        closeAuthModal();
-        updateUserHeaderDisplay();
-        updateMyProgressSection();
-        applyFiltersAndSearch();
-        renderTopicOverviewGrid();
-      }, 600);
+        unlockApp();
+      }, 400);
     }
 
     btnSubmit.disabled = false;
   });
-
-  btnLogout.addEventListener('click', () => {
-    STATE.currentUser = null;
-    localStorage.removeItem('ise291_user');
-    updateUserHeaderDisplay();
-    updateMyProgressSection();
-    closeAuthModal();
-  });
 }
 
-function openAuthModal() {
-  const modal = document.getElementById('auth-modal');
-  if (modal) modal.classList.remove('hidden');
-  const logoutBox = document.getElementById('auth-current-session-box');
-  if (logoutBox) logoutBox.style.display = STATE.currentUser ? 'block' : 'none';
-}
-
-function closeAuthModal() {
-  const modal = document.getElementById('auth-modal');
-  if (modal) modal.classList.add('hidden');
-  hideAuthMsg();
-}
-
-function showAuthMsg(msg, type) {
-  const el = document.getElementById('auth-msg');
+function showGateMsg(msg, type) {
+  const el = document.getElementById('gate-msg');
   if (!el) return;
   el.textContent = msg;
   el.className = `auth-msg ${type}`;
   el.classList.remove('hidden');
 }
 
-function hideAuthMsg() {
-  const el = document.getElementById('auth-msg');
+function hideGateMsg() {
+  const el = document.getElementById('gate-msg');
   if (el) el.classList.add('hidden');
 }
 
-function updateUserHeaderDisplay() {
-  const nameEl = document.getElementById('header-user-name');
-  const avatarEl = document.getElementById('header-user-avatar');
-  if (STATE.currentUser) {
-    if (nameEl) nameEl.textContent = STATE.currentUser.username;
-    if (avatarEl) avatarEl.textContent = STATE.currentUser.username.charAt(0).toUpperCase();
-  } else {
-    if (nameEl) nameEl.textContent = STRINGS[STATE.lang].authGuest;
-    if (avatarEl) avatarEl.textContent = '?';
-  }
-}
+// 7. Collapsible Sidebar & Navigation
+function bindSidebar() {
+  const sidebar = document.getElementById('app-sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const btnCollapse = document.getElementById('btn-sidebar-collapse');
+  const btnOpen = document.getElementById('btn-sidebar-open');
+  const btnLogout = document.getElementById('btn-sidebar-logout');
 
-function updateMyProgressSection() {
-  const nameEl = document.getElementById('my-profile-username');
-  const avatarEl = document.getElementById('my-profile-avatar');
-  const subEl = document.getElementById('my-profile-status-text');
-
-  if (STATE.currentUser) {
-    if (nameEl) nameEl.textContent = STATE.currentUser.username;
-    if (avatarEl) avatarEl.textContent = STATE.currentUser.username.charAt(0).toUpperCase();
-    if (subEl) subEl.textContent = 'Account active and cloud synced across devices.';
-  } else {
-    if (nameEl) nameEl.textContent = STRINGS[STATE.lang].authGuest;
-    if (avatarEl) avatarEl.textContent = '?';
-    if (subEl) subEl.textContent = 'Log in to sync and share your progress with friends.';
-  }
-
-  const answeredCount = Object.keys(STATE.userAnswers).length;
-  let correctCount = 0;
-  const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
-  for (const [qid, ans] of Object.entries(STATE.userAnswers)) {
-    const q = qMap.get(qid);
-    if (q && q.correctAnswer === ans) correctCount++;
-  }
-  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
-
-  setText('my-kpi-answered', `${answeredCount} / 253`);
-  setText('my-kpi-accuracy', `${accuracy}%`);
-  setText('my-kpi-exams', `${STATE.examsTaken.length}`);
-  setText('my-kpi-bookmarks', `${STATE.bookmarks.size}`);
-
-  // Topic Breakdown
-  const breakdownContainer = document.getElementById('my-topic-breakdown');
-  if (breakdownContainer) {
-    breakdownContainer.innerHTML = '';
-    SYLLABUS_TOPICS.forEach(topic => {
-      const topicQuestions = STATE.allQuestions.filter(q => q.topic === topic.id);
-      const totalInTopic = topicQuestions.length;
-      let solvedInTopic = 0;
-      let correctInTopic = 0;
-
-      topicQuestions.forEach(q => {
-        if (STATE.userAnswers[q.id]) {
-          solvedInTopic++;
-          if (STATE.userAnswers[q.id] === q.correctAnswer) correctInTopic++;
-        }
-      });
-
-      const accPct = solvedInTopic > 0 ? Math.round((correctInTopic / solvedInTopic) * 100) : 0;
-      const progressPct = totalInTopic > 0 ? Math.round((solvedInTopic / totalInTopic) * 100) : 0;
-
-      const row = document.createElement('div');
-      row.className = 'topic-bar-row';
-      row.innerHTML = `
-        <div class="topic-bar-label">
-          <span>${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</span>
-          <span>${solvedInTopic} / ${totalInTopic} (${accPct}% acc)</span>
-        </div>
-        <div class="topic-bar-track">
-          <div class="topic-bar-fill" style="width: ${progressPct}%;"></div>
-        </div>
-      `;
-      breakdownContainer.appendChild(row);
-    });
-  }
-}
-
-// 9. Topic Overview Grid (Top of Explorer)
-function renderTopicOverviewGrid() {
-  const grid = document.getElementById('topics-overview-grid');
-  if (!grid) return;
-  grid.innerHTML = '';
-
-  SYLLABUS_TOPICS.forEach((topic, idx) => {
-    const card = document.createElement('div');
-    card.className = `topic-card ${STATE.filterTopic === topic.id ? 'active' : ''}`;
-    
-    // Calculate solved in topic
-    const topicQuestions = STATE.allQuestions.filter(q => q.topic === topic.id);
-    let solvedInTopic = 0;
-    topicQuestions.forEach(q => {
-      if (STATE.userAnswers[q.id]) solvedInTopic++;
-    });
-    const pct = topicQuestions.length > 0 ? Math.round((solvedInTopic / topicQuestions.length) * 100) : 0;
-
-    card.innerHTML = `
-      <div class="topic-card-top">
-        <span class="topic-card-badge">T${idx + 1}</span>
-        <span class="topic-card-count">${solvedInTopic}/${topic.count}</span>
-      </div>
-      <div class="topic-card-title">${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</div>
-      <div class="topic-card-progress">
-        <div class="topic-card-progress-fill" style="width: ${pct}%;"></div>
-      </div>
-    `;
-
-    card.addEventListener('click', () => {
-      if (STATE.filterTopic === topic.id) {
-        STATE.filterTopic = 'all';
-      } else {
-        STATE.filterTopic = topic.id;
-      }
-      
-      // Update pills
-      document.querySelectorAll('#topic-pills .filter-pill').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-topic') === STATE.filterTopic);
-      });
-
-      renderTopicOverviewGrid();
-      applyFiltersAndSearch();
-
-      // Scroll smoothly to question stream
-      const stream = document.getElementById('questions-stream');
-      if (stream) stream.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    grid.appendChild(card);
+  // Toggle Collapse on Desktop and Mobile
+  btnCollapse.addEventListener('click', () => {
+    if (window.innerWidth <= 860) {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+    } else {
+      sidebar.classList.toggle('collapsed');
+    }
   });
-}
 
-// 10. Filters & Search Engine
-function bindFilters() {
-  // Accordion toggles
-  document.querySelectorAll('.accordion-toggle').forEach(btn => {
-    const panel = btn.nextElementSibling;
-    btn.addEventListener('click', () => {
-      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-      if (isExpanded) {
-        btn.setAttribute('aria-expanded', 'false');
-        btn.classList.add('collapsed');
-        panel.classList.remove('open');
-      } else {
-        btn.setAttribute('aria-expanded', 'true');
-        btn.classList.remove('collapsed');
-        panel.classList.add('open');
+  btnOpen.addEventListener('click', () => {
+    if (window.innerWidth <= 860) {
+      sidebar.classList.add('mobile-open');
+      backdrop.classList.add('active');
+    } else {
+      sidebar.classList.remove('collapsed');
+    }
+  });
+
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('active');
+    });
+  }
+
+  // Navigation Items
+  document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const tabId = item.getAttribute('data-tab');
+      switchTab(tabId);
+      if (window.innerWidth <= 860) {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('active');
       }
     });
   });
 
-  // Topic Pills
-  document.querySelectorAll('#topic-pills .filter-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#topic-pills .filter-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      STATE.filterTopic = btn.getAttribute('data-topic');
-      STATE.renderedCount = STATE.pageSize;
-      renderTopicOverviewGrid();
-      applyFiltersAndSearch();
+  // Accordion Toggle for Files inside Sidebar
+  const fileAccordionBtn = document.getElementById('toggle-files-filter');
+  if (fileAccordionBtn) {
+    fileAccordionBtn.addEventListener('click', () => {
+      const isExp = fileAccordionBtn.getAttribute('aria-expanded') === 'true';
+      fileAccordionBtn.setAttribute('aria-expanded', !isExp);
+      fileAccordionBtn.classList.toggle('collapsed', isExp);
+      document.getElementById('panel-files').classList.toggle('open', !isExp);
     });
-  });
+  }
 
-  // Source File Pills
-  document.querySelectorAll('#file-pills .filter-pill').forEach(btn => {
+  // Status Filter in Sidebar
+  document.querySelectorAll('.sidebar-status-group .status-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#file-pills .filter-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      STATE.filterFile = btn.getAttribute('data-file');
-      STATE.renderedCount = STATE.pageSize;
-      applyFiltersAndSearch();
-    });
-  });
-
-  // Status Filter Pills
-  document.querySelectorAll('.status-pills .status-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.status-pills .status-pill').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.sidebar-status-group .status-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       STATE.filterStatus = btn.getAttribute('data-status');
       STATE.renderedCount = STATE.pageSize;
@@ -930,37 +558,17 @@ function bindFilters() {
     });
   });
 
-  // Search input
-  const inputSearch = document.getElementById('input-search');
-  const btnClearSearch = document.getElementById('btn-clear-search');
-  if (inputSearch) {
-    inputSearch.addEventListener('input', (e) => {
+  // Search input in Sidebar
+  const searchInput = document.getElementById('input-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
       STATE.searchQuery = e.target.value.trim().toLowerCase();
-      if (btnClearSearch) btnClearSearch.classList.toggle('hidden', !STATE.searchQuery);
       STATE.renderedCount = STATE.pageSize;
       applyFiltersAndSearch();
     });
   }
 
-  if (btnClearSearch) {
-    btnClearSearch.addEventListener('click', () => {
-      if (inputSearch) inputSearch.value = '';
-      STATE.searchQuery = '';
-      btnClearSearch.classList.add('hidden');
-      STATE.renderedCount = STATE.pageSize;
-      applyFiltersAndSearch();
-    });
-  }
-
-  // Action Buttons
-  const btnLoadMore = document.getElementById('btn-load-more');
-  if (btnLoadMore) {
-    btnLoadMore.addEventListener('click', () => {
-      STATE.renderedCount += STATE.pageSize;
-      renderQuestionsStream();
-    });
-  }
-
+  // Quick Action Buttons
   const btnRevealAll = document.getElementById('btn-reveal-all');
   if (btnRevealAll) {
     btnRevealAll.addEventListener('click', () => {
@@ -983,29 +591,189 @@ function bindFilters() {
         STATE.userAnswers = {};
         localStorage.removeItem('ise291_answers');
         scheduleCloudSync();
-        renderTopicOverviewGrid();
-        updateMyProgressSection();
+        updateSidebarUserInfo();
         applyFiltersAndSearch();
       }
     });
   }
+
+  // Language & Theme Toggles in Sidebar Footer
+  const btnLang = document.getElementById('btn-lang');
+  if (btnLang) {
+    btnLang.addEventListener('click', () => {
+      const nextLang = STATE.lang === 'en' ? 'ar' : 'en';
+      applyLanguage(nextLang);
+    });
+  }
+
+  const btnTheme = document.getElementById('btn-theme');
+  if (btnTheme) {
+    btnTheme.addEventListener('click', () => {
+      const nextTheme = STATE.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+    });
+  }
+
+  if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+      if (confirm('Log out of this session?')) {
+        STATE.currentUser = null;
+        localStorage.removeItem('ise291_user');
+        showAuthGate();
+      }
+    });
+  }
+
+  // Friends search & refresh
+  const inputSearchFriends = document.getElementById('input-search-friends');
+  if (inputSearchFriends) {
+    inputSearchFriends.addEventListener('input', (e) => renderFriendsDirectory(e.target.value));
+  }
+
+  const btnRefreshProgress = document.getElementById('btn-refresh-progress');
+  if (btnRefreshProgress) {
+    btnRefreshProgress.addEventListener('click', loadFriendsDirectory);
+  }
+
+  const btnLoadMore = document.getElementById('btn-load-more');
+  if (btnLoadMore) {
+    btnLoadMore.addEventListener('click', () => {
+      STATE.renderedCount += STATE.pageSize;
+      renderQuestionsStream();
+    });
+  }
+
+  // User detail modal close
+  const detailModal = document.getElementById('user-detail-modal');
+  const detailBackdrop = document.getElementById('user-detail-backdrop');
+  const btnDetailClose = document.getElementById('btn-user-detail-close');
+  if (btnDetailClose) btnDetailClose.addEventListener('click', () => detailModal.classList.add('hidden'));
+  if (detailBackdrop) detailBackdrop.addEventListener('click', () => detailModal.classList.add('hidden'));
 }
 
+function updateSidebarUserInfo() {
+  if (!STATE.currentUser) return;
+  setText('sidebar-user-name', STATE.currentUser.username);
+  setText('sidebar-user-avatar', STATE.currentUser.username.charAt(0).toUpperCase());
+
+  const answered = Object.keys(STATE.userAnswers).length;
+  setText('sidebar-user-stats', `${answered} / 253 Solved`);
+  setText('saved-count', STATE.bookmarks.size);
+}
+
+function switchTab(tabId) {
+  STATE.activeTab = tabId;
+
+  document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-tab') === tabId);
+  });
+
+  document.querySelectorAll('.view-section').forEach(view => {
+    view.classList.toggle('active', view.id === `view-${tabId}`);
+  });
+
+  const titleMap = {
+    explorer: STRINGS[STATE.lang].tabExplorer,
+    quiz: STRINGS[STATE.lang].tabQuiz,
+    exam: STRINGS[STATE.lang].tabExam,
+    saved: `${STRINGS[STATE.lang].tabSaved} (${STATE.bookmarks.size})`,
+    progress: STRINGS[STATE.lang].tabProgress
+  };
+  setText('topbar-view-title', titleMap[tabId] || 'ISE 291');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (tabId === 'saved') {
+    renderSavedStream();
+  } else if (tabId === 'quiz') {
+    startOrResumeQuiz();
+  } else if (tabId === 'progress') {
+    updateMyProgressSection();
+    loadFriendsDirectory();
+  }
+}
+
+// 8. Render Sidebar Topic & File Selectors
+function renderSidebarTopics() {
+  const container = document.getElementById('sidebar-topic-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  // "All Topics" option
+  const allBtn = document.createElement('button');
+  allBtn.className = `sidebar-topic-item ${STATE.filterTopic === 'all' ? 'active' : ''}`;
+  allBtn.innerHTML = `
+    <span>${STRINGS[STATE.lang].allTopics}</span>
+    <span class="sidebar-topic-count">253</span>
+  `;
+  allBtn.addEventListener('click', () => {
+    STATE.filterTopic = 'all';
+    renderSidebarTopics();
+    applyFiltersAndSearch();
+  });
+  container.appendChild(allBtn);
+
+  // Topics 1..5
+  SYLLABUS_TOPICS.forEach(topic => {
+    const btn = document.createElement('button');
+    btn.className = `sidebar-topic-item ${STATE.filterTopic === topic.id ? 'active' : ''}`;
+    
+    const label = STATE.lang === 'ar' ? topic.nameAr : topic.nameEn;
+    btn.innerHTML = `
+      <span>${label}</span>
+      <span class="sidebar-topic-count">${topic.count}</span>
+    `;
+
+    btn.addEventListener('click', () => {
+      STATE.filterTopic = topic.id;
+      renderSidebarTopics();
+      applyFiltersAndSearch();
+    });
+
+    container.appendChild(btn);
+  });
+}
+
+function renderSidebarFiles() {
+  const container = document.getElementById('file-pills');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = `sidebar-file-item ${STATE.filterFile === 'all' ? 'active' : ''}`;
+  allBtn.textContent = STRINGS[STATE.lang].allFiles;
+  allBtn.addEventListener('click', () => {
+    STATE.filterFile = 'all';
+    renderSidebarFiles();
+    applyFiltersAndSearch();
+  });
+  container.appendChild(allBtn);
+
+  SOURCE_FILES.forEach(filename => {
+    const btn = document.createElement('button');
+    btn.className = `sidebar-file-item ${STATE.filterFile === filename ? 'active' : ''}`;
+    btn.textContent = filename.replace('.docx', '').replace('.pdf', '');
+    btn.title = filename;
+    btn.addEventListener('click', () => {
+      STATE.filterFile = filename;
+      renderSidebarFiles();
+      applyFiltersAndSearch();
+    });
+    container.appendChild(btn);
+  });
+}
+
+// 9. Filters & Question Rendering
 function applyFiltersAndSearch() {
   STATE.filteredQuestions = STATE.allQuestions.filter(q => {
-    // Topic filter
     if (STATE.filterTopic !== 'all' && q.topic !== STATE.filterTopic) return false;
-
-    // File filter
     if (STATE.filterFile !== 'all' && q.sourceFile !== STATE.filterFile) return false;
 
-    // Status filter
     const userAnswer = STATE.userAnswers[q.id];
     if (STATE.filterStatus === 'unanswered' && userAnswer) return false;
     if (STATE.filterStatus === 'correct' && (!userAnswer || userAnswer !== q.correctAnswer)) return false;
     if (STATE.filterStatus === 'incorrect' && (!userAnswer || userAnswer === q.correctAnswer)) return false;
 
-    // Search query
     if (STATE.searchQuery) {
       const qText = (q.questionText || '').toLowerCase();
       const code = (q.code || '').toLowerCase();
@@ -1019,31 +787,9 @@ function applyFiltersAndSearch() {
     return true;
   });
 
-  updateStatsRibbon();
   renderQuestionsStream();
 }
 
-function updateStatsRibbon() {
-  const total = STATE.allQuestions.length;
-  const answeredCount = Object.keys(STATE.userAnswers).length;
-  let correctCount = 0;
-
-  const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
-  for (const [qid, ans] of Object.entries(STATE.userAnswers)) {
-    const q = qMap.get(qid);
-    if (q && q.correctAnswer === ans) correctCount++;
-  }
-
-  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
-
-  setText('stat-total', total);
-  setText('stat-answered', answeredCount);
-  setText('stat-accuracy', `${accuracy}%`);
-  setText('stat-bookmarked', STATE.bookmarks.size);
-  setText('saved-count', STATE.bookmarks.size);
-}
-
-// 11. Question Cards Rendering & Code Block Enhancements
 function renderQuestionsStream() {
   const container = document.getElementById('questions-stream');
   const footer = document.getElementById('pagination-footer');
@@ -1053,7 +799,7 @@ function renderQuestionsStream() {
 
   if (STATE.filteredQuestions.length === 0) {
     container.innerHTML = `
-      <div class="stat-card" style="padding: 40px; text-align: center;">
+      <div class="q-card" style="padding: 40px; text-align: center;">
         <p style="color: var(--text-muted);">${STRINGS[STATE.lang].noResults}</p>
       </div>
     `;
@@ -1105,7 +851,7 @@ function createQuestionCard(q, displayNum) {
   card.appendChild(header);
   card.appendChild(title);
 
-  // Responsive, Clean Code Block
+  // Responsive Code Block
   if (q.code && q.code.trim()) {
     const codeContainer = document.createElement('div');
     codeContainer.className = 'q-code-container';
@@ -1120,7 +866,6 @@ function createQuestionCard(q, displayNum) {
       <pre class="q-code-block"><code>${escapeHtml(q.code)}</code></pre>
     `;
 
-    // Code Wrap toggle
     const wrapBtn = codeContainer.querySelector('.btn-wrap-toggle');
     wrapBtn.addEventListener('click', () => {
       codeContainer.classList.toggle('wrap-active');
@@ -1137,7 +882,7 @@ function createQuestionCard(q, displayNum) {
     q.images.forEach(imgSrc => {
       const imgContainer = document.createElement('div');
       imgContainer.className = 'q-image-container';
-      imgContainer.innerHTML = `<img src="${imgSrc}" class="q-img" alt="Question Diagram" />`;
+      imgContainer.innerHTML = `<img src="${imgSrc}" class="q-img" alt="Diagram" />`;
       card.appendChild(imgContainer);
     });
   }
@@ -1165,7 +910,6 @@ function createQuestionCard(q, displayNum) {
       }
     }
 
-    // Format inline code if option text looks like code
     let formattedText = escapeHtml(opt.text);
     if (formattedText.includes('`')) {
       formattedText = formattedText.replace(/`([^`]+)`/g, '<code>$1</code>');
@@ -1206,14 +950,14 @@ function createQuestionCard(q, displayNum) {
   });
   card.appendChild(footer);
 
-  // Bind Bookmark Button
+  // Bookmark Button
   const btnBm = card.querySelector('.btn-bookmark');
   btnBm.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleBookmark(q.id, btnBm);
   });
 
-  // Bind Copy Buttons
+  // Copy Buttons
   const btnCopy = card.querySelector('.btn-copy');
   if (btnCopy) {
     btnCopy.addEventListener('click', () => {
@@ -1226,7 +970,7 @@ function createQuestionCard(q, displayNum) {
     });
   }
 
-  // Bind image zoom
+  // Zoom Images
   card.querySelectorAll('.q-img').forEach(img => {
     img.addEventListener('click', () => openLightbox(img.src));
   });
@@ -1260,8 +1004,7 @@ function handleOptionSelect(q, selectedKey, card) {
   const exp = card.querySelector('.q-explanation');
   if (exp) exp.classList.add('visible');
 
-  updateStatsRibbon();
-  renderTopicOverviewGrid();
+  updateSidebarUserInfo();
   updateMyProgressSection();
 }
 
@@ -1277,11 +1020,11 @@ function toggleBookmark(qid, btn) {
   }
   localStorage.setItem('ise291_bookmarks', JSON.stringify(Array.from(STATE.bookmarks)));
   scheduleCloudSync();
-  updateStatsRibbon();
+  updateSidebarUserInfo();
   updateMyProgressSection();
 }
 
-// 12. Saved & Bookmarks Stream
+// 10. Saved Stream
 function renderSavedStream() {
   const container = document.getElementById('saved-stream');
   if (!container) return;
@@ -1290,7 +1033,7 @@ function renderSavedStream() {
   const savedIds = Array.from(STATE.bookmarks);
   if (savedIds.length === 0) {
     container.innerHTML = `
-      <div class="stat-card" style="padding: 40px; text-align: center;">
+      <div class="q-card" style="padding: 40px; text-align: center;">
         <p style="color: var(--text-muted);">${STRINGS[STATE.lang].noSaved}</p>
       </div>
     `;
@@ -1304,7 +1047,7 @@ function renderSavedStream() {
   });
 }
 
-// 13. Practice Quiz Mode
+// 11. Practice Quiz Mode
 function bindQuizMode() {
   const btnPrev = document.getElementById('btn-quiz-prev');
   const btnNext = document.getElementById('btn-quiz-next');
@@ -1362,7 +1105,6 @@ function renderActiveQuizCard() {
   const q = STATE.quizList[STATE.quizIndex];
   container.appendChild(createQuestionCard(q, STATE.quizIndex + 1));
 
-  // Progress update
   const pct = Math.round(((STATE.quizIndex + 1) / STATE.quizList.length) * 100);
   const progressBar = document.getElementById('quiz-progress-bar');
   if (progressBar) progressBar.style.width = `${pct}%`;
@@ -1372,7 +1114,6 @@ function renderActiveQuizCard() {
     progressText.textContent = `Question ${STATE.quizIndex + 1} of ${STATE.quizList.length}`;
   }
 
-  // Live Score update
   let answeredCount = 0;
   let correctCount = 0;
   STATE.quizList.forEach(item => {
@@ -1414,7 +1155,7 @@ function showQuizCompletion() {
   setText('quiz-final-score-fraction', `${correctCount} / ${total} Correct`);
 }
 
-// 14. Midterm Simulator Mode
+// 12. Midterm Simulator Mode
 function bindExamSimulator() {
   const btnStart = document.getElementById('btn-start-exam');
   const btnFinish = document.getElementById('btn-finish-exam');
@@ -1424,15 +1165,11 @@ function bindExamSimulator() {
   const btnReview = document.getElementById('btn-exam-review');
   const btnRetake = document.getElementById('btn-exam-retake');
 
-  if (btnStart) {
-    btnStart.addEventListener('click', startExam);
-  }
+  if (btnStart) btnStart.addEventListener('click', startExam);
 
   if (btnFinish) {
     btnFinish.addEventListener('click', () => {
-      if (confirm('Are you ready to submit your exam for grading?')) {
-        finishExam();
-      }
+      if (confirm('Are you ready to submit your exam for grading?')) finishExam();
     });
   }
 
@@ -1468,7 +1205,6 @@ function bindExamSimulator() {
 
   if (btnReview) {
     btnReview.addEventListener('click', () => {
-      // Merge exam answers into userAnswers so questions show properly
       Object.assign(STATE.userAnswers, STATE.examState.answers);
       localStorage.setItem('ise291_answers', JSON.stringify(STATE.userAnswers));
       scheduleCloudSync();
@@ -1510,7 +1246,6 @@ function startExam() {
   renderExamNavGrid();
   renderExamQuestion();
 
-  // Timer
   if (timeMins > 0) {
     STATE.examState.timerSeconds = timeMins * 60;
     startExamTimer();
@@ -1574,7 +1309,6 @@ function renderExamQuestion() {
   const q = STATE.examState.questions[STATE.examState.currentIndex];
   setText('exam-q-current', `Question ${STATE.examState.currentIndex + 1} of ${STATE.examState.questions.length}`);
 
-  // Create card with hidden answers
   const card = document.createElement('div');
   card.className = 'q-card';
 
@@ -1588,7 +1322,6 @@ function renderExamQuestion() {
     <div class="q-title">${escapeHtml(q.questionText)}</div>
   `;
 
-  // Code
   if (q.code && q.code.trim()) {
     const codeDiv = document.createElement('div');
     codeDiv.className = 'q-code-container';
@@ -1596,7 +1329,6 @@ function renderExamQuestion() {
     card.appendChild(codeDiv);
   }
 
-  // Diagram
   if (q.images && q.images.length > 0) {
     q.images.forEach(imgSrc => {
       const imgContainer = document.createElement('div');
@@ -1606,7 +1338,6 @@ function renderExamQuestion() {
     });
   }
 
-  // Options
   const optsContainer = document.createElement('div');
   optsContainer.className = 'q-options';
 
@@ -1657,7 +1388,6 @@ function finishExam() {
   const total = STATE.examState.questions.length;
   const pct = Math.round((correctCount / total) * 100);
 
-  // Grade badge
   let grade = 'F';
   if (pct >= 95) grade = 'A+';
   else if (pct >= 90) grade = 'A';
@@ -1671,14 +1401,13 @@ function finishExam() {
   setText('results-score-pct', `${pct}%`);
   setText('results-score-fraction', `${correctCount} / ${total} Correct`);
 
-  // Record to examsTaken
   const record = { score: correctCount, total: total, pct: pct, date: Date.now() };
   STATE.examsTaken.push(record);
   localStorage.setItem('ise291_exams', JSON.stringify(STATE.examsTaken));
   scheduleCloudSync();
+  updateSidebarUserInfo();
   updateMyProgressSection();
 
-  // Topic breakdown list
   const topicsContainer = document.getElementById('results-topics-list');
   if (topicsContainer) {
     topicsContainer.innerHTML = '';
@@ -1695,7 +1424,221 @@ function finishExam() {
   }
 }
 
-// 15. Lightbox Modal
+// 13. Friends & Progress Section
+function updateMyProgressSection() {
+  if (!STATE.currentUser) return;
+  setText('my-profile-username', STATE.currentUser.username);
+  setText('my-profile-avatar', STATE.currentUser.username.charAt(0).toUpperCase());
+
+  const answeredCount = Object.keys(STATE.userAnswers).length;
+  let correctCount = 0;
+  const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
+  for (const [qid, ans] of Object.entries(STATE.userAnswers)) {
+    const q = qMap.get(qid);
+    if (q && q.correctAnswer === ans) correctCount++;
+  }
+  const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+
+  setText('my-kpi-answered', `${answeredCount} / 253`);
+  setText('my-kpi-accuracy', `${accuracy}%`);
+  setText('my-kpi-exams', `${STATE.examsTaken.length}`);
+  setText('my-kpi-bookmarks', `${STATE.bookmarks.size}`);
+
+  const breakdownContainer = document.getElementById('my-topic-breakdown');
+  if (breakdownContainer) {
+    breakdownContainer.innerHTML = '';
+    SYLLABUS_TOPICS.forEach(topic => {
+      const topicQuestions = STATE.allQuestions.filter(q => q.topic === topic.id);
+      const totalInTopic = topicQuestions.length;
+      let solvedInTopic = 0;
+      let correctInTopic = 0;
+
+      topicQuestions.forEach(q => {
+        if (STATE.userAnswers[q.id]) {
+          solvedInTopic++;
+          if (STATE.userAnswers[q.id] === q.correctAnswer) correctInTopic++;
+        }
+      });
+
+      const accPct = solvedInTopic > 0 ? Math.round((correctInTopic / solvedInTopic) * 100) : 0;
+      const progressPct = totalInTopic > 0 ? Math.round((solvedInTopic / totalInTopic) * 100) : 0;
+
+      const row = document.createElement('div');
+      row.className = 'topic-bar-row';
+      row.innerHTML = `
+        <div class="topic-bar-label">
+          <span>${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</span>
+          <span>${solvedInTopic} / ${totalInTopic} (${accPct}% acc)</span>
+        </div>
+        <div class="topic-bar-track">
+          <div class="topic-bar-fill" style="width: ${progressPct}%;"></div>
+        </div>
+      `;
+      breakdownContainer.appendChild(row);
+    });
+  }
+}
+
+async function loadFriendsDirectory() {
+  const container = document.getElementById('friends-list');
+  if (!container) return;
+
+  container.innerHTML = '<div style="color:var(--text-muted); padding:20px; text-align:center;">Loading friends directory...</div>';
+  
+  let dir = await apiGet('ise_dir');
+  if (!Array.isArray(dir)) dir = [];
+  STATE.friendsDirectory = dir;
+  renderFriendsDirectory();
+}
+
+function renderFriendsDirectory(filterText = '') {
+  const container = document.getElementById('friends-list');
+  if (!container) return;
+  container.innerHTML = '';
+
+  let list = STATE.friendsDirectory.slice();
+  if (filterText.trim()) {
+    const q = filterText.toLowerCase();
+    list = list.filter(u => u.username.toLowerCase().includes(q));
+  }
+
+  list.sort((a, b) => (b.lastActive || 0) - (a.lastActive || 0));
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 24px;">
+        No active users found.
+      </div>
+    `;
+    return;
+  }
+
+  list.forEach(user => {
+    const card = document.createElement('div');
+    card.className = 'friend-card';
+    
+    const initial = user.username.charAt(0).toUpperCase();
+    const timeAgo = formatTimeAgo(user.lastActive);
+
+    card.innerHTML = `
+      <div class="friend-card-top">
+        <div class="user-avatar-sm">${initial}</div>
+        <div>
+          <div class="friend-card-name">${escapeHtml(user.username)}</div>
+          <div class="friend-card-active">${STRINGS[STATE.lang].lastActive}: ${timeAgo}</div>
+        </div>
+      </div>
+      <div class="friend-card-stats">
+        <span class="friend-stat-badge">${user.totalAnswered || 0} / 253</span>
+        <span class="friend-stat-badge" style="color:var(--success);">${user.accuracy || 0}% Acc</span>
+      </div>
+      <button class="btn-secondary btn-sm btn-inspect-user" data-username="${escapeHtml(user.username)}">
+        ${STRINGS[STATE.lang].inspectProgress}
+      </button>
+    `;
+
+    card.querySelector('.btn-inspect-user').addEventListener('click', () => {
+      openUserDetailModal(user.username);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+function formatTimeAgo(timestamp) {
+  if (!timestamp) return 'recently';
+  const diff = Date.now() - timestamp;
+  const mins = Math.floor(diff / (1000 * 60));
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+async function openUserDetailModal(username) {
+  const modal = document.getElementById('user-detail-modal');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+
+  setText('detail-user-name', username);
+  setText('detail-user-avatar', username.charAt(0).toUpperCase());
+  setText('detail-user-lastactive', 'Loading user progress...');
+  
+  const userData = await apiGet('u_' + username);
+  if (!userData) {
+    setText('detail-user-lastactive', 'User details could not be loaded.');
+    return;
+  }
+
+  setText('detail-user-lastactive', `${STRINGS[STATE.lang].lastActive} ${formatTimeAgo(userData.lastActive)}`);
+  setText('detail-kpi-solved', `${userData.totalAnswered || 0} / 253`);
+  setText('detail-kpi-acc', `${userData.accuracy || 0}%`);
+  setText('detail-kpi-exams', `${(userData.exams || []).length}`);
+
+  const topicBars = document.getElementById('detail-topic-bars');
+  if (topicBars) {
+    topicBars.innerHTML = '';
+    const userAnswers = userData.answers || {};
+
+    SYLLABUS_TOPICS.forEach(topic => {
+      const topicQuestions = STATE.allQuestions.filter(q => q.topic === topic.id);
+      const totalInTopic = topicQuestions.length;
+      let answeredInTopic = 0;
+      let correctInTopic = 0;
+
+      topicQuestions.forEach(q => {
+        if (userAnswers[q.id]) {
+          answeredInTopic++;
+          if (userAnswers[q.id] === q.correctAnswer) correctInTopic++;
+        }
+      });
+
+      const accPct = answeredInTopic > 0 ? Math.round((correctInTopic / answeredInTopic) * 100) : 0;
+      const progressPct = totalInTopic > 0 ? Math.round((answeredInTopic / totalInTopic) * 100) : 0;
+
+      const row = document.createElement('div');
+      row.className = 'topic-bar-row';
+      row.innerHTML = `
+        <div class="topic-bar-label">
+          <span>${STATE.lang === 'ar' ? topic.nameAr : topic.nameEn}</span>
+          <span>${answeredInTopic}/${totalInTopic} (${accPct}% acc)</span>
+        </div>
+        <div class="topic-bar-track">
+          <div class="topic-bar-fill" style="width: ${progressPct}%;"></div>
+        </div>
+      `;
+      topicBars.appendChild(row);
+    });
+  }
+
+  const recentList = document.getElementById('detail-recent-answers');
+  if (recentList) {
+    recentList.innerHTML = '';
+    const entries = Object.entries(userData.answers || {}).slice(-15).reverse();
+    if (entries.length === 0) {
+      recentList.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">No questions answered yet.</div>';
+    } else {
+      const qMap = new Map(STATE.allQuestions.map(q => [q.id, q]));
+      entries.forEach(([qid, ans]) => {
+        const q = qMap.get(qid);
+        const isCorrect = q && q.correctAnswer === ans;
+        const row = document.createElement('div');
+        row.className = 'recent-ans-row';
+        row.innerHTML = `
+          <span>#${qid} ${q ? q.topic.split(':')[0] : ''}</span>
+          <span style="font-weight:700; color:${isCorrect ? 'var(--success)' : 'var(--danger)'};">
+            ${ans} ${isCorrect ? '✓' : '✗'}
+          </span>
+        `;
+        recentList.appendChild(row);
+      });
+    }
+  }
+}
+
+// 14. Lightbox Modal
 function bindLightbox() {
   const modal = document.getElementById('lightbox-modal');
   const closeBtn = document.getElementById('lightbox-close');
@@ -1719,7 +1662,7 @@ function closeLightbox() {
   if (modal) modal.classList.add('hidden');
 }
 
-// 16. Utility Helpers
+// 15. Utility Helpers
 function setText(id, text) {
   const el = document.getElementById(id);
   if (el) el.textContent = text;
@@ -1762,34 +1705,33 @@ function applyLanguage(lang) {
   }
 
   const s = STRINGS[lang];
-  setText('banner-text', s.bannerText);
-  setText('lbl-subtitle', s.subtitle);
-  setText('lbl-tab-explorer', s.tabExplorer);
-  setText('lbl-tab-quiz', s.tabQuiz);
-  setText('lbl-tab-exam', s.tabExam);
-  setText('lbl-tab-saved', `${s.tabSaved} (${STATE.bookmarks.size})`);
-  setText('lbl-tab-progress', s.tabProgress);
+  setText('lbl-nav-explorer', s.tabExplorer);
+  setText('lbl-nav-quiz', s.tabQuiz);
+  setText('lbl-nav-exam', s.tabExam);
+  setText('lbl-nav-saved', `${s.tabSaved} (${STATE.bookmarks.size})`);
+  setText('lbl-nav-progress', s.tabProgress);
+  setText('lbl-sidebar-filters', s.sidebarFilters);
 
-  setText('lbl-stat-total', s.statTotal);
-  setText('lbl-stat-answered', s.statAnswered);
-  setText('lbl-stat-accuracy', s.statAccuracy);
-  setText('lbl-stat-bookmarked', s.statBookmarked);
+  const searchInput = document.getElementById('input-search');
+  if (searchInput) searchInput.placeholder = s.searchPlaceholder;
 
-  setText('lbl-filter-topic', s.filterTopic);
   setText('lbl-filter-file', s.filterFile);
+  setText('btn-status-all', s.allStatus);
+  setText('btn-status-unanswered', s.unanswered);
+  setText('btn-status-correct', s.correct);
+  setText('btn-status-incorrect', s.incorrect);
   setText('lbl-reveal-all', s.revealAll);
   setText('lbl-shuffle', s.shuffle);
   setText('lbl-reset', s.reset);
   setText('btn-load-more', s.loadMore);
 
-  const inputSearch = document.getElementById('input-search');
-  if (inputSearch) inputSearch.placeholder = s.searchPlaceholder;
-
-  // Status buttons
-  setText('btn-status-all', s.allStatus);
-  setText('btn-status-unanswered', s.unanswered);
-  setText('btn-status-correct', s.correct);
-  setText('btn-status-incorrect', s.incorrect);
+  // Gate labels
+  setText('lbl-auth-gate-sub', s.authSubtitle);
+  setText('btn-gate-tab-login', s.authSignIn);
+  setText('btn-gate-tab-signup', s.authSignUp);
+  setText('lbl-gate-warning', s.authWarning);
+  setText('lbl-gate-username', s.authUsername);
+  setText('lbl-gate-password', s.authPassword);
 
   // Exam labels
   setText('lbl-exam-title', s.examTitle);
@@ -1815,22 +1757,14 @@ function applyLanguage(lang) {
   setText('btn-quiz-prev', s.prevBtn);
   setText('btn-quiz-next', s.nextBtn);
 
-  // Auth labels
-  setText('lbl-auth-title', s.authTitle);
-  setText('lbl-auth-subtitle', s.authSubtitle);
-  setText('tab-auth-login', s.authSignIn);
-  setText('tab-auth-signup', s.authSignUp);
-  setText('lbl-username', s.authUsername);
-  setText('lbl-password', s.authPassword);
-  setText('btn-auth-logout', s.authLogout);
-
   // Friends labels
   setText('lbl-friends-dir-title', s.friendsTitle);
   setText('lbl-friends-dir-desc', s.friendsDesc);
   const inputSearchFriends = document.getElementById('input-search-friends');
   if (inputSearchFriends) inputSearchFriends.placeholder = s.searchFriends;
 
-  updateUserHeaderDisplay();
-  renderTopicOverviewGrid();
+  updateSidebarUserInfo();
+  renderSidebarTopics();
+  renderSidebarFiles();
   renderQuestionsStream();
 }
