@@ -1177,6 +1177,11 @@ function renderExamQuestion() {
   });
 
   card.appendChild(optsContainer);
+
+  card.querySelectorAll('.q-img').forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src));
+  });
+
   container.appendChild(card);
   renderExamNavGrid();
 }
