@@ -1646,7 +1646,7 @@ code {
 .modal-close-btn {
   position: absolute;
   top: 14px;
-  right: 14px;
+  inset-inline-end: 14px;
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -1707,7 +1707,7 @@ code {
 .lightbox-close {
   position: absolute;
   top: -38px;
-  right: 0;
+  inset-inline-end: 0;
   background: none;
   border: none;
   color: #fff;
@@ -1730,7 +1730,7 @@ code {
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
+    inset-inline-start: 0;
     z-index: 100;
     box-shadow: var(--shadow-lg);
     transform: translateX(-100%);
