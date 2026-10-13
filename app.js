@@ -755,7 +755,7 @@ function createQuestionCard(q, displayNum) {
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
       <span>Verified Solution: (${q.correctAnswer})</span>
     </div>
-    <div class="exp-text">${q.explanation || 'Verified directly with course materials.'}</div>
+    <div class="exp-text">${formatExplanation(q.explanation || 'Verified directly with course materials.')}</div>
   `;
   card.appendChild(expBox);
 
@@ -1497,6 +1497,15 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+function formatExplanation(str) {
+  if (!str) return '';
+  let html = escapeHtml(str);
+  html = html.replace(/`([^`]+)`/g, '<code class="exp-inline-code">$1</code>');
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\r?\n/g, '<br>');
+  return html;
 }
 
 function applyTheme(theme) {
