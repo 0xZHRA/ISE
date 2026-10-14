@@ -1,526 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ISE 291 Interactive Question Bank - Introduction to Data Science" />
-  <title>ISE 291 | Question Bank</title>
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  
-  <!-- Cache-busted Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.4" />
-
-  <!-- Critical Inlined Layout & Auth Gate CSS (Ensures zero styling glitches even on cold cache) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISE 291 Question Bank - Service Concluded</title>
   <style>
-    :root {
-      --font-scale: 1;
-      --bg-primary: #090c12;
-      --bg-card: #131926;
-      --border-color: #1e283d;
-      --text-primary: #f1f5f9;
-      --text-muted: #64748b;
-      --accent-primary: #3b82f6;
-    }
-    html {
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-    }
     body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-    }
-    .auth-gate {
-      min-height: 100vh;
+      background: #030712;
+      color: #f9fafb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
-      box-sizing: border-box;
-      background: radial-gradient(circle at top, #141d30 0%, #090c12 100%);
-    }
-    .auth-gate-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 36px 32px;
-      max-width: 420px;
-      width: 100%;
-      box-sizing: border-box;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
       text-align: center;
+      box-sizing: border-box;
+    }
+    .box {
+      max-width: 520px;
+      background: #111827;
+      border: 1px solid #374151;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 20px;
+      color: #ef4444;
+    }
+    h1 { color: #f87171; font-size: 1.5rem; margin-bottom: 12px; }
+    p { color: #9ca3af; line-height: 1.6; margin-bottom: 16px; font-size: 0.95rem; }
+    .stamp {
+      border-top: 1px solid #1f2937;
+      padding-top: 16px;
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
   </style>
 </head>
-<body data-theme="dark">
-
-  <!-- MANDATORY AUTH GATE -->
-  <div id="auth-gate" class="auth-gate">
-    <div class="auth-gate-card">
-      <div class="auth-gate-logo">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          <line x1="9" y1="7" x2="15" y2="7"></line>
-          <line x1="9" y1="11" x2="13" y2="11"></line>
-        </svg>
-      </div>
-      <h2 class="auth-gate-title">ISE 291 Question Bank</h2>
-      <p class="auth-gate-subtitle">Account required. Sign in or create an account to start practicing.</p>
-
-      <!-- Auth Mode Switcher -->
-      <div class="auth-switch">
-        <button class="auth-switch-btn active" id="btn-gate-tab-login">Sign In</button>
-        <button class="auth-switch-btn" id="btn-gate-tab-signup">Create Account</button>
-      </div>
-
-      <!-- Warning Banner for Account Creation -->
-      <div class="auth-warning-banner" id="gate-signup-warning">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <span>Notice: Once you create your account, it cannot be deleted.</span>
-      </div>
-
-      <!-- Form -->
-      <form id="gate-auth-form" class="auth-form" onsubmit="return false;">
-        <div class="form-field">
-          <label>Username</label>
-          <input type="text" id="gate-input-username" placeholder="Enter username..." required autocomplete="username" />
-        </div>
-        <div class="form-field">
-          <label>Password</label>
-          <input type="password" id="gate-input-password" placeholder="Enter password..." required autocomplete="current-password" />
-        </div>
-
-        <div id="gate-msg" class="auth-msg hidden"></div>
-
-        <button type="submit" class="btn-primary btn-large btn-block" id="btn-gate-submit">Sign In</button>
-      </form>
-    </div>
+<body>
+  <div class="box">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <h1>Service Permanently Concluded</h1>
+    <p>The ISE 291 Interactive Question Bank access period ended on <strong>Wednesday, October 14, 2026 at 9:00 PM AST</strong>.</p>
+    <p>In accordance with scheduled lifecycle policies, this service is now permanently shut down and all active questions have been decommissioned.</p>
+    <div class="stamp">Archived Service • KFUPM ISE 291</div>
   </div>
-
-  <!-- MAIN APP WRAPPER -->
-  <div id="app-wrapper" class="app-wrapper hidden">
-
-    <!-- COLLAPSIBLE SIDEBAR -->
-    <aside id="app-sidebar" class="app-sidebar">
-      
-      <!-- Sidebar Header -->
-      <div class="sidebar-header">
-        <div class="sidebar-brand">
-          <div class="brand-logo-sm">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-          </div>
-          <span class="sidebar-brand-name">ISE 291</span>
-        </div>
-        <button class="sidebar-close-btn" id="btn-sidebar-collapse" title="Collapse Sidebar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <!-- User Info Box -->
-      <div class="sidebar-user-box">
-        <div class="user-avatar-sm" id="sidebar-user-avatar">?</div>
-        <div class="sidebar-user-details">
-          <div class="sidebar-user-name" id="sidebar-user-name">User</div>
-          <div class="sidebar-user-stats" id="sidebar-user-stats">0 / 253 Solved</div>
-        </div>
-      </div>
-
-      <!-- Navigation Links -->
-      <nav class="sidebar-nav">
-        <button class="sidebar-nav-item active" data-tab="explorer" id="nav-explorer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          <span>Questions</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="quiz" id="nav-quiz">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          <span>Practice Quiz</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="exam" id="nav-exam">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span>Midterm Simulator</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="saved" id="nav-saved">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          <span>Saved (<span id="saved-count">0</span>)</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="progress" id="nav-progress">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span>Classmates Progress</span>
-        </button>
-      </nav>
-
-      <!-- Sidebar Filters Section -->
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">Filter Questions</div>
-        
-        <!-- Search -->
-        <div class="sidebar-search">
-          <input type="text" id="input-search" placeholder="Search keywords, code..." />
-        </div>
-
-        <!-- Topics List -->
-        <div class="sidebar-topic-list" id="sidebar-topic-list">
-          <!-- Rendered via JS -->
-        </div>
-
-        <!-- Source Files Accordion -->
-        <div class="accordion-group" style="margin-top: 10px;">
-          <button class="accordion-toggle collapsed" id="toggle-files-filter" aria-expanded="false">
-            <span class="accordion-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
-              <span>Source Files</span>
-            </span>
-            <span class="chevron-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>
-            </span>
-          </button>
-          <div class="accordion-panel" id="panel-files">
-            <div class="sidebar-file-list" id="file-pills">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Status Filter -->
-        <div class="sidebar-status-group">
-          <button class="status-pill active" data-status="all" id="btn-status-all">All</button>
-          <button class="status-pill" data-status="unanswered" id="btn-status-unanswered">Unanswered</button>
-          <button class="status-pill" data-status="correct" id="btn-status-correct">Correct</button>
-          <button class="status-pill" data-status="incorrect" id="btn-status-incorrect">Incorrect</button>
-        </div>
-
-        <!-- Quick Question Actions -->
-        <div class="sidebar-actions-grid">
-          <button class="btn-sm" id="btn-reveal-all" title="Show all answers">Reveal</button>
-          <button class="btn-sm" id="btn-shuffle" title="Shuffle questions">Shuffle</button>
-          <button class="btn-sm btn-ghost" id="btn-reset" title="Reset answers">Reset</button>
-        </div>
-
-      </div>
-
-      <!-- Sidebar Footer -->
-      <div class="sidebar-footer">
-        <a href="https://drive.google.com/drive/folders/1Z7uAb6wNBfmhYtPq1-tvd-rxsDqa-TZv?usp=drive_link" target="_blank" rel="noopener noreferrer" class="sidebar-source-link" id="link-source-materials" title="View Source Files & Materials">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          <span>Source Materials</span>
-        </a>
-
-        <div class="sidebar-footer-icons">
-          <button class="icon-btn-sm" id="btn-theme" title="Toggle Theme">
-            <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          </button>
-          <button class="icon-btn-sm btn-logout" id="btn-sidebar-logout" title="Log Out">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-    </aside>
-
-    <!-- Mobile Backdrop -->
-    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
-
-    <!-- MAIN CANVAS -->
-    <div class="main-canvas">
-      
-      <!-- Minimal Top Bar with Font Size Scaler & Source Link -->
-      <header class="canvas-topbar">
-        <div class="canvas-topbar-left">
-          <button class="btn-sidebar-open" id="btn-sidebar-open" title="Toggle Sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
-          <span class="topbar-view-title" id="topbar-view-title">Questions</span>
-        </div>
-
-        <div class="canvas-topbar-right">
-          <!-- Font Size Scaler (Makes UI Bigger or Smaller) -->
-          <div class="font-scaler" title="Adjust Text & UI Size">
-            <button class="font-btn" id="btn-font-dec" title="Decrease font size">A−</button>
-            <button class="font-btn font-btn-reset" id="btn-font-reset" title="Reset font size">A</button>
-            <button class="font-btn" id="btn-font-inc" title="Increase font size">A+</button>
-          </div>
-
-          <!-- Direct Source Link -->
-          <a href="https://drive.google.com/drive/folders/1Z7uAb6wNBfmhYtPq1-tvd-rxsDqa-TZv?usp=drive_link" target="_blank" rel="noopener noreferrer" class="topbar-source-link" id="topbar-link-source" title="View Source Course Materials">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            <span>Source Drive</span>
-          </a>
-        </div>
-      </header>
-
-      <!-- Views Container -->
-      <main class="canvas-body">
-
-        <!-- VIEW 1: QUESTIONS STREAM -->
-        <section id="view-explorer" class="view-section active">
-          <div id="questions-stream" class="questions-stream">
-            <!-- Rendered via JS -->
-          </div>
-
-          <div class="pagination-footer" id="pagination-footer">
-            <button id="btn-load-more" class="btn-primary">Load More Questions</button>
-          </div>
-        </section>
-
-        <!-- VIEW 2: PRACTICE QUIZ MODE -->
-        <section id="view-quiz" class="view-section">
-          <div class="quiz-container">
-            <div class="quiz-header-card">
-              <div class="quiz-meta">
-                <span class="quiz-step" id="quiz-progress-text">Question 1 of 20</span>
-                <span class="quiz-score" id="quiz-live-score">Score: 0 / 0</span>
-              </div>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="quiz-progress-bar" style="width: 5%;"></div>
-              </div>
-            </div>
-
-            <div id="quiz-card-container">
-              <!-- Active quiz question card -->
-            </div>
-
-            <div id="quiz-completion-card" class="exam-card hidden" style="text-align: center; margin-top: 20px;">
-              <h2>Practice Quiz Completed!</h2>
-              <div class="results-score-display" style="margin: 20px 0;">
-                <div class="score-large" id="quiz-final-score-pct">100%</div>
-                <div class="score-sub" id="quiz-final-score-fraction">20 / 20 Correct</div>
-              </div>
-              <button class="btn-primary" id="btn-quiz-retake">Take New Quiz</button>
-            </div>
-
-            <div class="quiz-actions-bar" id="quiz-actions-bar">
-              <button class="btn-secondary" id="btn-quiz-prev">Previous</button>
-              <button class="btn-primary" id="btn-quiz-next">Next Question</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- VIEW 3: MIDTERM EXAM SIMULATOR -->
-        <section id="view-exam" class="view-section">
-          <div class="exam-wrapper">
-            
-            <div id="exam-setup-card" class="exam-card">
-              <div class="exam-badge">KFUPM ISE 291</div>
-              <h2 class="exam-title">Midterm Exam Simulator</h2>
-              <p class="exam-desc">
-                Simulate a realistic midterm exam environment with randomized questions selected across all topics. Immediate feedback is hidden until submission.
-              </p>
-
-              <div class="exam-options-grid">
-                <div class="option-field">
-                  <label>Number of Questions</label>
-                  <select id="exam-select-count">
-                    <option value="20">20 Questions (Standard Quiz)</option>
-                    <option value="30" selected>30 Questions (Midterm Simulation)</option>
-                    <option value="40">40 Questions (Comprehensive Practice)</option>
-                    <option value="50">50 Questions (Full Midterm Exam)</option>
-                  </select>
-                </div>
-                <div class="option-field">
-                  <label>Time Limit</label>
-                  <select id="exam-select-time">
-                    <option value="30">30 Minutes</option>
-                    <option value="45" selected>45 Minutes</option>
-                    <option value="60">60 Minutes</option>
-                    <option value="0">No Time Limit</option>
-                  </select>
-                </div>
-              </div>
-
-              <button id="btn-start-exam" class="btn-primary btn-large">Start Midterm Exam</button>
-            </div>
-
-            <div id="exam-active-card" class="exam-card hidden">
-              <div class="exam-live-header">
-                <div class="exam-info">
-                  <span class="exam-badge" id="exam-q-current">Question 1 of 30</span>
-                  <span class="exam-timer" id="exam-timer-display">45:00</span>
-                </div>
-                <button class="btn-danger btn-sm" id="btn-finish-exam">Submit Exam</button>
-              </div>
-
-              <div class="exam-nav-grid" id="exam-nav-grid"></div>
-
-              <div id="exam-active-question"></div>
-
-              <div class="exam-footer-nav">
-                <button class="btn-secondary" id="btn-exam-prev">Previous</button>
-                <button class="btn-secondary" id="btn-exam-flag">Flag for Review</button>
-                <button class="btn-primary" id="btn-exam-next">Next</button>
-              </div>
-            </div>
-
-            <div id="exam-results-card" class="exam-card hidden">
-              <div class="results-badge" id="results-grade-badge">A+</div>
-              <h2 class="results-title">Exam Summary & Score</h2>
-              <div class="results-score-display">
-                <div class="score-large" id="results-score-pct">92%</div>
-                <div class="score-sub" id="results-score-fraction">28 / 30 Correct</div>
-              </div>
-
-              <div class="results-topic-breakdown" id="results-topics-list"></div>
-
-              <div class="results-actions">
-                <button class="btn-primary" id="btn-exam-review">Review Detailed Answers</button>
-                <button class="btn-secondary" id="btn-exam-retake">Take Another Exam</button>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- VIEW 4: SAVED QUESTIONS -->
-        <section id="view-saved" class="view-section">
-          <div class="saved-header">
-            <h2>Bookmarked Questions</h2>
-            <p>Review and practice the questions you have saved for focused revision.</p>
-          </div>
-          <div id="saved-stream" class="questions-stream"></div>
-        </section>
-
-        <!-- VIEW 5: FRIENDS & CLASSMATES PROGRESS -->
-        <section id="view-progress" class="view-section">
-          <div class="progress-section-container">
-            
-            <div class="user-my-progress-card">
-              <div class="my-progress-header">
-                <div class="my-progress-user-info">
-                  <div class="user-avatar-lg" id="my-profile-avatar">?</div>
-                  <div>
-                    <h2 class="my-profile-name" id="my-profile-username">User</h2>
-                    <p class="my-profile-sub">Account active and cloud synced across devices.</p>
-                  </div>
-                </div>
-                <div class="my-progress-actions">
-                  <button class="btn-secondary btn-sm" id="btn-refresh-progress" title="Refresh friends list">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                    <span>Refresh</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="kpi-grid">
-                <div class="kpi-card">
-                  <div class="kpi-num" id="my-kpi-answered">0 / 253</div>
-                  <div class="kpi-lbl">Questions Solved</div>
-                </div>
-                <div class="kpi-card">
-                  <div class="kpi-num stat-green" id="my-kpi-accuracy">0%</div>
-                  <div class="kpi-lbl">Overall Accuracy</div>
-                </div>
-                <div class="kpi-card">
-                  <div class="kpi-num stat-purple" id="my-kpi-exams">0</div>
-                  <div class="kpi-lbl">Midterms Taken</div>
-                </div>
-                <div class="kpi-card">
-                  <div class="kpi-num stat-amber" id="my-kpi-bookmarks">0</div>
-                  <div class="kpi-lbl">Saved Questions</div>
-                </div>
-              </div>
-
-              <div class="my-topic-breakdown" id="my-topic-breakdown"></div>
-            </div>
-
-            <div class="friends-directory-card">
-              <div class="directory-header">
-                <div>
-                  <h3>Classmates Progress</h3>
-                  <p>Click on any friend to inspect their detailed topic breakdown and question history.</p>
-                </div>
-                <div class="directory-search">
-                  <input type="text" id="input-search-friends" placeholder="Search friends by username..." />
-                </div>
-              </div>
-
-              <div class="friends-list" id="friends-list"></div>
-            </div>
-
-          </div>
-        </section>
-
-      </main>
-
-    </div>
-
-  </div>
-
-  <!-- USER DETAIL INSPECTOR MODAL -->
-  <div id="user-detail-modal" class="user-detail-modal hidden">
-    <div class="user-detail-backdrop" id="user-detail-backdrop"></div>
-    <div class="user-detail-card">
-      <button class="modal-close-btn" id="btn-user-detail-close">&times;</button>
-      
-      <div class="user-detail-header">
-        <div class="user-avatar-xl" id="detail-user-avatar">?</div>
-        <div>
-          <h2 id="detail-user-name">Username</h2>
-          <p class="user-detail-lastactive" id="detail-user-lastactive">Last active recently</p>
-        </div>
-      </div>
-
-      <div class="kpi-grid" style="margin: 20px 0;">
-        <div class="kpi-card">
-          <div class="kpi-num" id="detail-kpi-solved">0 / 253</div>
-          <div class="kpi-lbl">Questions Solved</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-num stat-green" id="detail-kpi-acc">0%</div>
-          <div class="kpi-lbl">Accuracy</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-num stat-purple" id="detail-kpi-exams">0</div>
-          <div class="kpi-lbl">Midterms Taken</div>
-        </div>
-      </div>
-
-      <h4 style="margin-bottom: 12px;">Topic Mastery</h4>
-      <div class="detail-topic-bars" id="detail-topic-bars"></div>
-
-      <h4 style="margin: 20px 0 12px 0;">Recent Question History</h4>
-      <div class="detail-recent-answers" id="detail-recent-answers"></div>
-    </div>
-  </div>
-
-  <!-- Image Lightbox Modal -->
-  <div id="lightbox-modal" class="lightbox-modal hidden">
-    <div class="lightbox-backdrop"></div>
-    <div class="lightbox-content">
-      <button class="lightbox-close" id="lightbox-close">&times;</button>
-      <img id="lightbox-img" src="" alt="Enlarged Diagram / Figure" />
-    </div>
-  </div>
-
-  <!-- Load bundled question bank data first -->
-  <script src="questions_data.js?v=2.4"></script>
-  <!-- Main application script -->
-  <script src="app.js?v=2.4"></script>
 </body>
 </html>
