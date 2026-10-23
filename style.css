@@ -1827,3 +1827,167 @@ code {
     transform: translateX(0) !important;
   }
 }
+
+
+/* ==========================================================================
+   CONCEPT REINFORCEMENT DRILL CARD (Engraining Practice)
+   ========================================================================== */
+.concept-drill-card {
+  display: none;
+  margin-top: 18px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  animation: fadeInDrill 0.3s ease;
+}
+
+.concept-drill-card.visible {
+  display: block;
+}
+
+@keyframes fadeInDrill {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.drill-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.drill-tag {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.15);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.drill-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.drill-question-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.drill-code {
+  background: #090d16;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: #38bdf8;
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.drill-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.drill-opt-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  text-align: start;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.drill-opt-btn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(96, 165, 250, 0.4);
+  transform: translateX(3px);
+}
+
+.opt-key-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  color: #93c5fd;
+}
+
+.drill-correct {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+}
+
+.drill-correct .opt-key-circle {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.drill-incorrect {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  color: #f87171 !important;
+}
+
+.drill-incorrect .opt-key-circle {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.drill-feedback {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  animation: fadeInDrill 0.2s ease;
+}
+
+.feedback-success {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.feedback-retry {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.q-badge-source {
+  background: rgba(168, 85, 247, 0.15) !important;
+  color: #c084fc !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  border-radius: 6px !important;
+  font-size: 0.78rem !important;
+}

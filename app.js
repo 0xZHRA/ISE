@@ -5,14 +5,18 @@
 const KV_BASE = 'https://kvdb.io/Vc3nLuNA8mMdWRX5VSH33j/';
 
 const SYLLABUS_TOPICS = [
-  { id: "Topic 1: Introduction to Data Science", name: "Topic 1: Intro to Data Science", count: 2 },
-  { id: "Topic 2: Python Review", name: "Topic 2: Python Review", count: 54 },
-  { id: "Topic 3: Basic Statistics", name: "Topic 3: Basic Statistics", count: 59 },
-  { id: "Topic 4: Structured Data and Visualization", name: "Topic 4: Structured Data & Viz", count: 70 },
-  { id: "Topic 5: Data Understanding and Preparation", name: "Topic 5: Data Understanding & Prep", count: 68 }
+  { id: "Topic 1: Introduction to Data Science", name: "Topic 1: Intro to Data Science", count: 3 },
+  { id: "Topic 2: Python Review", name: "Topic 2: Python Review", count: 56 },
+  { id: "Topic 3: Basic Statistics", name: "Topic 3: Basic Statistics", count: 62 },
+  { id: "Topic 4: Structured Data and Visualization", name: "Topic 4: Structured Data & Viz", count: 71 },
+  { id: "Topic 5: Data Understanding and Preparation", name: "Topic 5: Data Understanding & Prep", count: 71 }
 ];
 
 const SOURCE_FILES = [
+  "Quiz1_Key_251.pdf",
+  "Sol_Quiz1_ISE291_S04_251.pdf",
+  "Quiz2_Key_251.pdf",
+  "223_Midterm_Exam.pdf",
   "Mid exam v important questions.pdf",
   "Sample Mid .pdf",
   "Topic 4 and 5.pdf",
@@ -62,8 +66,8 @@ const STATE = {
     timerInterval: null
   },
 
-  // Service Expiration (Wednesday, October 14, 2026, 9:00 PM AST = 21:00:00 GMT+0300)
-  expirationTime: new Date("2026-10-14T21:00:00+03:00").getTime()
+  // Service Active (No Expiration)
+  expirationTime: null
 };
 
 let cloudSyncTimeout = null;
@@ -141,21 +145,8 @@ async function syncUserProgressToCloud() {
   await apiPost('ise_dir', dir);
 }
 
-// 4. Initialization & Auth Gatekeeper
+// 4. Initialization & Permanent Access
 document.addEventListener('DOMContentLoaded', () => {
-  // Silent expiration guard
-  if (Date.now() >= STATE.expirationTime) {
-    document.body.innerHTML = `
-      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#030712;color:#f9fafb;text-align:center;padding:20px;font-family:sans-serif;">
-        <div style="max-width:480px;background:#111827;border:1px solid #374151;border-radius:16px;padding:36px;">
-          <h2 style="color:#f87171;margin-bottom:12px;">Service Concluded</h2>
-          <p style="color:#9ca3af;line-height:1.6;">The ISE 291 Interactive Question Bank operating window concluded on Wednesday, October 14, 2026 at 9:00 PM AST.</p>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
   applyTheme(STATE.theme);
   applyFontScale(STATE.fontScale);
 
@@ -166,11 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
   bindExamSimulator();
   bindLightbox();
 
-  if (STATE.currentUser) {
-    unlockApp();
-  } else {
-    showAuthGate();
+  if (!STATE.currentUser) {
+    STATE.currentUser = { username: "Student", createdAt: Date.now() };
+    localStorage.setItem('ise291_user', JSON.stringify(STATE.currentUser));
   }
+  unlockApp();
 });
 
 function showAuthGate() {
@@ -709,25 +700,40 @@ function createQuestionCard(q, displayNum) {
     });
   }
 
-  // Options
+  // Options (Randomized / Shuffled for active recall)
   const optionsContainer = document.createElement('div');
   optionsContainer.className = 'q-options';
 
-  q.options.forEach(opt => {
+  if (!q._shuffledOptions) {
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const shuffled = [...q.options];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    q._shuffledOptions = shuffled.map((opt, idx) => ({
+      origKey: opt.key,
+      displayKey: letters[idx] || opt.key,
+      text: opt.text,
+      isCorrect: opt.key === q.correctAnswer
+    }));
+  }
+
+  q._shuffledOptions.forEach(opt => {
     const optEl = document.createElement('div');
     optEl.className = 'opt-item';
     optEl.setAttribute('data-qid', q.id);
-    optEl.setAttribute('data-key', opt.key);
+    optEl.setAttribute('data-key', opt.origKey);
 
     if (userAnswer) {
-      if (opt.key === userAnswer) {
+      if (opt.origKey === userAnswer) {
         optEl.classList.add('selected');
-        if (opt.key === q.correctAnswer) {
+        if (opt.isCorrect) {
           optEl.classList.add('is-correct');
         } else {
           optEl.classList.add('is-incorrect');
         }
-      } else if (opt.key === q.correctAnswer) {
+      } else if (opt.isCorrect) {
         optEl.classList.add('is-correct');
       }
     }
@@ -738,14 +744,16 @@ function createQuestionCard(q, displayNum) {
     }
 
     optEl.innerHTML = `
-      <div class="opt-key">${opt.key}</div>
+      <div class="opt-key">${opt.displayKey}</div>
       <div class="opt-text">${formattedText}</div>
     `;
 
-    optEl.addEventListener('click', () => handleOptionSelect(q, opt.key, card));
+    optEl.addEventListener('click', () => handleOptionSelect(q, opt.origKey, card));
     optionsContainer.appendChild(optEl);
   });
   card.appendChild(optionsContainer);
+
+  const correctDisplay = q._shuffledOptions.find(o => o.isCorrect)?.displayKey || q.correctAnswer;
 
   // Solution Box
   const expBox = document.createElement('div');
@@ -753,11 +761,60 @@ function createQuestionCard(q, displayNum) {
   expBox.innerHTML = `
     <div class="exp-header">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-      <span>Verified Solution: (${q.correctAnswer})</span>
+      <span>Verified Solution: (${correctDisplay})</span>
     </div>
     <div class="exp-text">${formatExplanation(q.explanation || 'Verified directly with course materials.')}</div>
   `;
   card.appendChild(expBox);
+
+  // Concept Reinforcement Drill Card (Immediate follow-up practice)
+  if (q.reinforcementQuestion) {
+    const rq = q.reinforcementQuestion;
+    const drillCard = document.createElement('div');
+    drillCard.className = `concept-drill-card ${userAnswer ? 'visible' : ''}`;
+    drillCard.innerHTML = `
+      <div class="drill-header">
+        <span class="drill-tag">🎯 Practice Concept Drill</span>
+        <span class="drill-sub">Mastery check for this concept</span>
+      </div>
+      <div class="drill-question-text">${escapeHtml(rq.questionText)}</div>
+      ${rq.code ? `<pre class="drill-code"><code>${escapeHtml(rq.code)}</code></pre>` : ''}
+      <div class="drill-options">
+        ${rq.options.map(o => `
+          <button class="drill-opt-btn" data-key="${o.key}">
+            <span class="opt-key-circle">${o.key}</span>
+            <span class="opt-label">${escapeHtml(o.text)}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="drill-feedback hidden"></div>
+    `;
+
+    const drillFeedback = drillCard.querySelector('.drill-feedback');
+    drillCard.querySelectorAll('.drill-opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedKey = btn.getAttribute('data-key');
+        drillCard.querySelectorAll('.drill-opt-btn').forEach(b => {
+          b.disabled = true;
+          if (b.getAttribute('data-key') === rq.correctAnswer) {
+            b.classList.add('drill-correct');
+          } else if (b.getAttribute('data-key') === selectedKey) {
+            b.classList.add('drill-incorrect');
+          }
+        });
+        drillFeedback.classList.remove('hidden');
+        if (selectedKey === rq.correctAnswer) {
+          drillFeedback.innerHTML = `<span>✅</span> <strong>Correct!</strong> ${escapeHtml(rq.explanation || '')}`;
+          drillFeedback.className = 'drill-feedback feedback-success';
+        } else {
+          drillFeedback.innerHTML = `<span>❌</span> <strong>Concept check:</strong> The correct choice is <strong>(${rq.correctAnswer})</strong>. ${escapeHtml(rq.explanation || '')}`;
+          drillFeedback.className = 'drill-feedback feedback-retry';
+        }
+      });
+    });
+
+    card.appendChild(drillCard);
+  }
 
   // Card Footer
   const footer = document.createElement('div');
@@ -769,6 +826,8 @@ function createQuestionCard(q, displayNum) {
   `;
   footer.querySelector('.btn-toggle-sol').addEventListener('click', () => {
     expBox.classList.toggle('visible');
+    const drill = card.querySelector('.concept-drill-card');
+    if (drill) drill.classList.toggle('visible');
   });
   card.appendChild(footer);
 
@@ -823,6 +882,8 @@ function handleOptionSelect(q, selectedKey, card) {
 
   const exp = card.querySelector('.q-explanation');
   if (exp) exp.classList.add('visible');
+  const drill = card.querySelector('.concept-drill-card');
+  if (drill) drill.classList.add('visible');
 
   updateSidebarUserInfo();
   updateMyProgressSection();
