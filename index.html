@@ -840,13 +840,10 @@ print(res)</code></pre>
 <div class="drill-solution-container" id="sol-wrap-t4-q2" style="display: none;">
   <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [14, 4, 6]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
 <ol>
-  <li><strong>Filter Step (<code>if x > 5</code>)</strong>: Evaluates each candidate in <code>[3, 4, 7, 8, 12]</code>. 3 and 4 fail the check ($3 
-gtr 5, 4 
-gtr 5$). Surviving items: <code>[7, 8, 12]</code>.</li>
+  <li><strong>Filter Step (<code>if x > 5</code>)</strong>: Evaluates each candidate in <code>[3, 4, 7, 8, 12]</code>. 3 and 4 fail the check ($3 \le 5, 4 \le 5$). Surviving items: <code>[7, 8, 12]</code>.</li>
   <li><strong>Transformation Step</strong>:
     <ul>
-      <li>For $x = 7$: $7 \pmod 2 
-eq 0$ (odd) &rarr; executes <code>x * 2</code> &rarr; $7 	imes 2 = 14$.</li>
+      <li>For $x = 7$: $7 \pmod 2 \neq 0$ (odd) &rarr; executes <code>x * 2</code> &rarr; $7 \times 2 = 14$.</li>
       <li>For $x = 8$: $8 \pmod 2 == 0$ (even) &rarr; executes <code>x // 2</code> &rarr; $8 // 2 = 4$.</li>
       <li>For $x = 12$: $12 \pmod 2 == 0$ (even) &rarr; executes <code>x // 2</code> &rarr; $12 // 2 = 6$.</li>
     </ul>
@@ -974,7 +971,7 @@ DataFrame from Random Array:
       <tr>
         <td><strong>Dimensionality</strong></td>
         <td><strong>N-dimensional</strong> ($1D, 2D, 3D, \dots$ arbitrary tensor ranks).</td>
-        <td><strong>2D</strong> (Strictly 2-dimensional tabular grid: rows $	imes$ columns).</td>
+        <td><strong>2D</strong> (Strictly 2-dimensional tabular grid: rows $\times$ columns).</td>
       </tr>
       <tr>
         <td><strong>Labels / Indexing</strong></td>
@@ -1567,7 +1564,7 @@ Feature comparison: 5-number summary via boxplot, distribution via hist</code></
 <div class="drill-solution-container" id="sol-wrap-t4-q8" style="display: none;">
   <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) Boxplot (and Violinplot)</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
 <ol>
-  <li>A <strong>Boxplot</strong> explicitly computes the interquartile range ($	ext{IQR} = Q_3 - Q_1$). Any point exceeding $1.5 	imes 	ext{IQR}$ beyond the quartiles is rendered as an isolated outlier dot, making it the premier tool for outlier detection.</li>
+  <li>A <strong>Boxplot</strong> explicitly computes the interquartile range ($\text{IQR} = Q_3 - Q_1$). Any point exceeding $1.5 \times \text{IQR}$ beyond the quartiles is rendered as an isolated outlier dot, making it the premier tool for outlier detection.</li>
   <li>A <strong>Violinplot</strong> embeds a miniature boxplot inside a kernel density estimation curve, also revealing outliers.</li>
   <li>Countplots only count category frequencies, while histograms show frequency bin heights without explicitly isolating individual outlier observations.</li>
 </ol></div></div>
