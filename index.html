@@ -886,6 +886,60 @@ df.loc['A':'C', 'Age':'Salary']</code></pre></div></div>
         
 </main>
 
+<!-- Floating Anchors Quick Jump Navigation -->
+<nav id="floatingAnchorsNav" class="floating-anchors-nav" aria-label="On-page anchors navigation">
+    <!-- Floating Anchors Menu Panel -->
+    <div id="floatingAnchorsPanel" class="floating-anchors-panel" aria-hidden="true" role="dialog" aria-labelledby="floatingAnchorsTopicTitle">
+        <div class="floating-anchors-header">
+            <div class="floating-anchors-title">
+                <svg class="anchor-svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                <span id="floatingAnchorsTopicTitle">Topic Outline</span>
+            </div>
+            <button id="btnCloseAnchors" class="btn-close-anchors" aria-label="Close outline menu" onclick="toggleFloatingAnchors(false)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="floating-anchors-subheading">
+            <span id="floatingAnchorsCount" class="anchors-count-badge">0 sections</span>
+            <button class="anchors-top-btn" onclick="scrollToTop()" title="Scroll to top of topic">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                <span>Top</span>
+            </button>
+        </div>
+        <div id="floatingAnchorsList" class="floating-anchors-list" role="list"></div>
+    </div>
+
+    <!-- Floating Controls (Back to Top & Toggle Outline FAB) -->
+    <div class="floating-anchors-controls">
+        <button id="btnScrollToTop" class="floating-fab btn-back-to-top" aria-label="Scroll to top of page" onclick="scrollToTop()" title="Back to top">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </button>
+        <button id="btnToggleAnchors" class="floating-fab btn-anchors-toggle" aria-label="Toggle on-page anchors outline" aria-expanded="false" onclick="toggleFloatingAnchors()" title="Table of Contents Quick Jump">
+            <svg class="icon-outline" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="14" y2="12"></line>
+                <line x1="4" y1="18" x2="18" y2="18"></line>
+            </svg>
+            <span class="fab-text">Outline</span>
+            <span id="floatingAnchorsCurrentBadge" class="fab-active-chip">§1</span>
+        </button>
+    </div>
+</nav>
+
 <script src="portal.js"></script>
 </body>
 </html>

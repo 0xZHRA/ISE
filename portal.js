@@ -213,6 +213,9 @@ function showTab(tab) {
         applyScroll(targetY);
     }
 
+    // Refresh on-page floating anchors
+    updateFloatingAnchors();
+
     scheduleSaveState();
 }
 
@@ -250,6 +253,7 @@ window.addEventListener('scroll', () => {
                 portalState.videosScroll = Math.round(currentY);
             }
             updateProgressBar();
+            updateBackToTopButton(currentY);
             scheduleSaveState();
             isScrollTicking = false;
         });
@@ -1034,14 +1038,17 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     recalculateDocHeight();
 
-    // 4. Background pre-fetch of exam bank after idle
+    // 4. Initialize floating anchors menu & scroll spy
+    initFloatingAnchors();
+
+    // 5. Background pre-fetch of exam bank after idle
     if ('requestIdleCallback' in window) {
         window.requestIdleCallback(() => { loadExamDataAsync(); }, { timeout: 3500 });
     } else {
         setTimeout(() => { loadExamDataAsync(); }, 2500);
     }
 
-    // 5. Background server sync
+    // 6. Background server sync
     fetch('/api/state')
         .then(r => r.json())
         .then(srvState => {
@@ -1064,3 +1071,279 @@ window.addEventListener('DOMContentLoaded', () => {
         })
         .catch(() => {});
 });
+
+/**
+ * ==========================================================================
+ * Floating Anchors Menu & Accessibility Quick Jump
+ * ==========================================================================
+ */
+let sectionObserver = null;
+let currentActiveAnchorId = null;
+
+function toggleFloatingAnchors(forceState) {
+    const panel = document.getElementById('floatingAnchorsPanel');
+    const btn = document.getElementById('btnToggleAnchors');
+    if (!panel) return;
+
+    const isOpen = (typeof forceState === 'boolean') ? forceState : !panel.classList.contains('open');
+    if (isOpen) {
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden', 'false');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+        // Scroll active item into view if exists
+        const activeItem = panel.querySelector('.anchor-nav-item.active');
+        if (activeItem) {
+            setTimeout(() => activeItem.scrollIntoView({ block: 'nearest' }), 60);
+        }
+    } else {
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden', 'true');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+    toggleFloatingAnchors(false);
+}
+
+function updateBackToTopButton(currentY) {
+    const btnTop = document.getElementById('btnScrollToTop');
+    if (btnTop) {
+        if (currentY > 300) {
+            btnTop.classList.add('visible');
+        } else {
+            btnTop.classList.remove('visible');
+        }
+    }
+}
+
+function setActiveAnchor(cardId) {
+    if (!cardId || cardId === currentActiveAnchorId) return;
+    currentActiveAnchorId = cardId;
+
+    const list = document.getElementById('floatingAnchorsList');
+    if (list) {
+        list.querySelectorAll('.anchor-nav-item').forEach(item => {
+            if (item.getAttribute('data-anchor-id') === cardId) {
+                item.classList.add('active');
+                const panel = document.getElementById('floatingAnchorsPanel');
+                if (panel && panel.classList.contains('open')) {
+                    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    const badge = document.getElementById('floatingAnchorsCurrentBadge');
+    if (badge) {
+        const activeItem = document.querySelector(`#floatingAnchorsList .anchor-nav-item[data-anchor-id="${cardId}"]`);
+        if (activeItem) {
+            const shortBadge = activeItem.querySelector('.anchor-badge');
+            if (shortBadge) {
+                badge.textContent = shortBadge.textContent.trim();
+            }
+        }
+    }
+}
+
+function setupAnchorScrollSpy(activeContainer) {
+    if (sectionObserver) {
+        sectionObserver.disconnect();
+        sectionObserver = null;
+    }
+    if (!activeContainer || !('IntersectionObserver' in window)) return;
+
+    const cards = activeContainer.querySelectorAll('.section-card');
+    if (!cards || cards.length === 0) return;
+
+    const nav = document.querySelector('.top-nav-bar');
+    const navHeight = nav ? nav.offsetHeight : 62;
+
+    sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                setActiveAnchor(entry.target.id);
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: `-${navHeight + 20}px 0px -60% 0px`,
+        threshold: 0
+    });
+
+    cards.forEach(card => sectionObserver.observe(card));
+}
+
+function updateFloatingAnchors() {
+    const list = document.getElementById('floatingAnchorsList');
+    const titleEl = document.getElementById('floatingAnchorsTopicTitle');
+    const countEl = document.getElementById('floatingAnchorsCount');
+    const badgeEl = document.getElementById('floatingAnchorsCurrentBadge');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (portalState.activeTab === 'notes') {
+        const activePage = document.getElementById('page-' + portalState.activeTopic);
+        if (!activePage) return;
+
+        const topicName = topicLabels[portalState.activeTopic] || 'Topic Outline';
+        if (titleEl) titleEl.textContent = topicName;
+
+        const cards = activePage.querySelectorAll('.section-card');
+        if (countEl) countEl.textContent = `${cards.length} sections`;
+
+        let conceptIdx = 0;
+        let drillIdx = 0;
+
+        cards.forEach((card, idx) => {
+            const isDrill = card.classList.contains('drill-card') || card.querySelector('.tag-q') !== null;
+            let badgeText = '';
+            let badgeClass = '';
+
+            if (isDrill) {
+                drillIdx++;
+                badgeText = `D${drillIdx}`;
+                badgeClass = 'badge-drill';
+            } else {
+                conceptIdx++;
+                badgeText = `§${conceptIdx}`;
+                badgeClass = 'badge-concept';
+            }
+
+            const cardTitleEl = card.querySelector('.card-title');
+            let rawTitle = cardTitleEl ? cardTitleEl.textContent.trim() : (isDrill ? `Practice Drill ${drillIdx}` : `Concept ${conceptIdx}`);
+            let cleanTitle = rawTitle.replace(/^\d+\.\s*/, '').replace(/^Practice Drill\s*\d+:\s*/i, '');
+
+            const btn = document.createElement('button');
+            btn.className = 'anchor-nav-item' + (idx === 0 ? ' active' : '');
+            btn.id = 'anchor-item-' + card.id;
+            btn.setAttribute('data-anchor-id', card.id);
+            btn.setAttribute('aria-label', `Jump to ${rawTitle}`);
+            btn.innerHTML = `<span class="anchor-badge ${badgeClass}">${badgeText}</span><span class="anchor-label">${escapeHtml(cleanTitle)}</span>`;
+            btn.onclick = () => {
+                teleportTo(card.id);
+                toggleFloatingAnchors(false);
+            };
+            list.appendChild(btn);
+
+            if (idx === 0) {
+                if (badgeEl) badgeEl.textContent = badgeText;
+                currentActiveAnchorId = card.id;
+            }
+        });
+
+        setupAnchorScrollSpy(activePage);
+    } else {
+        // Past Exam Bank
+        if (titleEl) titleEl.textContent = 'Past Exam Bank';
+        if (countEl) countEl.textContent = 'Quick Navigation';
+        if (badgeEl) badgeEl.textContent = 'Exam';
+
+        const examSections = [
+            { id: 'videosContainer', label: 'Search & Topic Filters', badge: '🔍', class: 'badge-concept' },
+            { id: 'examQuestionsStream', label: 'Questions Stream', badge: '📝', class: 'badge-drill' },
+            { id: 'examLoadMoreContainer', label: 'Load More Questions', badge: '📥', class: 'badge-concept' }
+        ];
+
+        examSections.forEach((sec, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'anchor-nav-item' + (idx === 0 ? ' active' : '');
+            btn.id = 'anchor-item-' + sec.id;
+            btn.setAttribute('data-anchor-id', sec.id);
+            btn.setAttribute('aria-label', `Jump to ${sec.label}`);
+            btn.innerHTML = `<span class="anchor-badge ${sec.class}">${sec.badge}</span><span class="anchor-label">${escapeHtml(sec.label)}</span>`;
+            btn.onclick = () => {
+                teleportTo(sec.id);
+                toggleFloatingAnchors(false);
+            };
+            list.appendChild(btn);
+        });
+
+        const examContainer = document.getElementById('videosContainer');
+        if (examContainer) setupAnchorScrollSpy(examContainer);
+    }
+}
+
+function initFloatingAnchors() {
+    let nav = document.getElementById('floatingAnchorsNav');
+    if (!nav) {
+        nav = document.createElement('nav');
+        nav.id = 'floatingAnchorsNav';
+        nav.className = 'floating-anchors-nav';
+        nav.setAttribute('aria-label', 'On-page anchors navigation');
+        nav.innerHTML = `
+            <div id="floatingAnchorsPanel" class="floating-anchors-panel" aria-hidden="true" role="dialog" aria-labelledby="floatingAnchorsTopicTitle">
+                <div class="floating-anchors-header">
+                    <div class="floating-anchors-title">
+                        <svg class="anchor-svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                        </svg>
+                        <span id="floatingAnchorsTopicTitle">Topic Outline</span>
+                    </div>
+                    <button id="btnCloseAnchors" class="btn-close-anchors" aria-label="Close outline menu" onclick="toggleFloatingAnchors(false)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="floating-anchors-subheading">
+                    <span id="floatingAnchorsCount" class="anchors-count-badge">0 sections</span>
+                    <button class="anchors-top-btn" onclick="scrollToTop()" title="Scroll to top of topic">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <span>Top</span>
+                    </button>
+                </div>
+                <div id="floatingAnchorsList" class="floating-anchors-list" role="list"></div>
+            </div>
+            <div class="floating-anchors-controls">
+                <button id="btnScrollToTop" class="floating-fab btn-back-to-top" aria-label="Scroll to top of page" onclick="scrollToTop()" title="Back to top">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                </button>
+                <button id="btnToggleAnchors" class="floating-fab btn-anchors-toggle" aria-label="Toggle on-page anchors outline" aria-expanded="false" onclick="toggleFloatingAnchors()" title="Table of Contents Quick Jump">
+                    <svg class="icon-outline" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="14" y2="12"></line>
+                        <line x1="4" y1="18" x2="18" y2="18"></line>
+                    </svg>
+                    <span class="fab-text">Outline</span>
+                    <span id="floatingAnchorsCurrentBadge" class="fab-active-chip">§1</span>
+                </button>
+            </div>
+        `;
+        document.body.appendChild(nav);
+    }
+
+    // Keyboard & Click-Outside listeners
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            toggleFloatingAnchors(false);
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        const panel = document.getElementById('floatingAnchorsPanel');
+        const navEl = document.getElementById('floatingAnchorsNav');
+        if (panel && panel.classList.contains('open') && navEl && !navEl.contains(e.target)) {
+            toggleFloatingAnchors(false);
+        }
+    });
+
+    updateFloatingAnchors();
+}
