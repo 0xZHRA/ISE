@@ -90,7 +90,7 @@
             <span class="topic-sheet-num">04</span>
             <div class="topic-sheet-meta">
                 <div class="topic-sheet-title">Topic 4: Basic Programming Concepts</div>
-                <div class="topic-sheet-sub">Iterators, List Comprehensions with Conditions, Lambda Functions, and High-Order Functions (map/filter)</div>
+                <div class="topic-sheet-sub">Iterators, List Comprehensions, Pandas Series vs. DataFrame, Data Inspection, Slicing & Advanced Seaborn Visualizations</div>
             </div>
         </button>
         
@@ -665,133 +665,1172 @@ print(arr[(arr % 2 == 0) & (arr > 6)])</code></pre></div><div class="interactive
             <header class="page-header">
                 <div class="page-meta-badge">ISE 291 &bull; TOPIC 04 OF 05</div>
                 <h1 class="page-title">Topic 4: Basic Programming Concepts</h1>
-                <p class="page-desc">Iterators, List Comprehensions with Conditions, Lambda Functions, and High-Order Functions (map/filter)</p>
+                <p class="page-desc">Iterators, List Comprehensions, Pandas Series vs. DataFrame, Data Inspection, Slicing & Advanced Seaborn Visualizations</p>
                 
             <div class="teleport-strip">
                 <span class="teleport-label">Jump to subsection:</span>
                 <div class="teleport-chips">
-                    <button class="teleport-chip" onclick="teleportTo('t4-c1')">&sect;1 zip</button><button class="teleport-chip" onclick="teleportTo('t4-q1')">&sect;2 Practice Drill 1: Code Traci…</button><button class="teleport-chip" onclick="teleportTo('t4-c2')">&sect;3 Conditional List Comprehensi…</button><button class="teleport-chip" onclick="teleportTo('t4-q2')">&sect;4 Practice Drill 2: Double-Con…</button><button class="teleport-chip" onclick="teleportTo('t4-c3')">&sect;5 Nested List Comprehensions &…</button><button class="teleport-chip" onclick="teleportTo('t4-q3')">&sect;6 Practice Drill 3: Flattening…</button><button class="teleport-chip" onclick="teleportTo('t4-c4')">&sect;7 Functions & Variable Argumen…</button><button class="teleport-chip" onclick="teleportTo('t4-q4')">&sect;8 Practice Drill 4: Tracing *a…</button><button class="teleport-chip" onclick="teleportTo('t4-c5')">&sect;9 Anonymous Functions  & map /…</button><button class="teleport-chip" onclick="teleportTo('t4-q5')">&sect;10 Practice Drill 5: Combining …</button><button class="teleport-chip" onclick="teleportTo('t4-c6')">&sect;11 Functional Pipelines & Custo…</button><button class="teleport-chip" onclick="teleportTo('t4-q6')">&sect;12 Practice Drill 6: Custom Key…</button>
+                    <button class="teleport-chip" onclick="teleportTo('t4-c1')">&sect;1 Advanced Python Iteration: z…</button><button class="teleport-chip" onclick="teleportTo('t4-q1')">&sect;2 Practice Drill 1: Code Traci…</button><button class="teleport-chip" onclick="teleportTo('t4-c2')">&sect;3 Ternary Transformation</button><button class="teleport-chip" onclick="teleportTo('t4-q2')">&sect;4 Practice Drill 2: Double-Con…</button><button class="teleport-chip" onclick="teleportTo('t4-c3')">&sect;5 DataFrame & Creation Methods</button><button class="teleport-chip" onclick="teleportTo('t4-q3')">&sect;6 Practice Drill 3: Series Non…</button><button class="teleport-chip" onclick="teleportTo('t4-c4')">&sect;7 Pandas DataFrame</button><button class="teleport-chip" onclick="teleportTo('t4-q4')">&sect;8 Practice Drill 4: Structural…</button><button class="teleport-chip" onclick="teleportTo('t4-c5')">&sect;9 DataFrame Inspection, Dimens…</button><button class="teleport-chip" onclick="teleportTo('t4-q5')">&sect;10 Practice Drill 5: Row Counti…</button><button class="teleport-chip" onclick="teleportTo('t4-c6')">&sect;11 Accessing Elements, Slicing …</button><button class="teleport-chip" onclick="teleportTo('t4-q6')">&sect;12 Practice Drill 6: Positional…</button><button class="teleport-chip" onclick="teleportTo('t4-c7')">&sect;13 Functional Transformations: …</button><button class="teleport-chip" onclick="teleportTo('t4-q7')">&sect;14 Practice Drill 7: DataFrame …</button><button class="teleport-chip" onclick="teleportTo('t4-c8')">&sect;15 Data Visualization Fundament…</button><button class="teleport-chip" onclick="teleportTo('t4-q8')">&sect;16 Practice Drill 8: Purpose of…</button><button class="teleport-chip" onclick="teleportTo('t4-c9')">&sect;17 Figure-Level Functions</button><button class="teleport-chip" onclick="teleportTo('t4-q9')">&sect;18 Practice Drill 9: Categorica…</button><button class="teleport-chip" onclick="teleportTo('t4-c10')">&sect;19 Seaborn Aesthetic Encodings …</button><button class="teleport-chip" onclick="teleportTo('t4-q10')">&sect;20 Practice Drill 10: High-Dime…</button>
                 </div>
             </div>
             
             </header>
             <div class="page-stream">
                 <div class="section-card concept-card" id="t4-c1">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Iteration Controls: enumerate() vs. zip()</h2></div>
-<div class="body-text"><p>Idiomatic looping constructs in Python:</p><ul><li><code>enumerate(iterable, start=0)</code>: Returns pairs of <code>(index, element)</code>.</li><li><code>zip(*iterables)</code>: Aggregates elements from multiple iterables element-by-element into tuples, terminating at the shortest iterable.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">names = ['Ali', 'Omar', 'Saad']
-scores = [90, 85, 95]
-for idx, (name, sc) in enumerate(zip(names, scores)):
-    print(f"Rank {idx+1}: {name} -&gt; {sc}")</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Rank 1: Ali -&gt; 90
-Rank 2: Omar -&gt; 85
-Rank 3: Saad -&gt; 95</code></pre></div></div>
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Advanced Python Iteration: zip() & enumerate()</h2></div>
+<div class="body-text"><p>In data engineering and scientific pipelines, iterating across multiple related sequences simultaneously is a routine operation. Idiomatic Python provides specialized generator functions to avoid manual indexing and out-of-bounds index errors:</p>
+<ul>
+  <li><code>zip(*iterables)</code>: Traverses two or more iterables in lockstep, aggregating corresponding elements into tuples. The iteration terminates at the length of the <strong>shortest</strong> iterable, preventing index overflow errors.</li>
+  <li><code>enumerate(iterable, start=0)</code>: Produces indexed tuples of the form <code>(index, element)</code>, completely eliminating the need for an external counter variable.</li>
+  <li><strong>Combined Parallel Unpacking</strong>: Combining both constructs allows clean simultaneous unpacking: <code>for idx, (var1, var2) in enumerate(zip(list1, list2)):</code>.</li>
+</ul>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">names = ['Ali', 'Omar', 'Saad']
+scores = [92, 88, 95]
+departments = ['ISE', 'COE', 'ISE']
+
+# Parallel iteration using zip() and enumerate()
+for rank, (name, sc, dept) in enumerate(zip(names, scores, departments), start=1):
+    print(f"Rank {rank}: {name:<5} | Score: {sc} | Dept: {dept}")</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Rank 1: Ali   | Score: 92 | Dept: ISE
+Rank 2: Omar  | Score: 88 | Dept: COE
+Rank 3: Saad  | Score: 95 | Dept: ISE</code></pre>
+</div></div>
 </div><div class="section-card question-card" id="t4-q1">
-<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Code Tracing with zip & enumerate</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
-<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the printed output of the following Python loop?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">a = [10, 20]
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Code Tracing with Parallel Iteration</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the exact printed output when the following Python script is executed?</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div>
+  <pre class="line-numbers"><code class="language-python">a = [10, 20]
 b = [100, 200, 300]
 out = [i + x for i, (x, y) in enumerate(zip(a, b))]
-print(out)</code></pre></div><div class="interactive-q" data-correct="A" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[10, 21]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[10, 21, 302]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[100, 201]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[11, 22]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+print(out)</code></pre>
+</div>
+<div class="interactive-q" data-correct="A" data-source="Topic 4 practice questions.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[10, 21]</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[10, 21, 302]</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[100, 201]</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[11, 22]</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
 <button class="drill-solution-toggle" id="btn-toggle-t4-q1" onclick="toggleDrillSolution('t4-q1')">
   <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
 </button>
 <div class="drill-solution-container" id="sol-wrap-t4-q1" style="display: none;">
-  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) [10, 21]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>zip(a, b)</code> pairs <code>(10, 100)</code> and <code>(20, 200)</code> (stops after 2 items because <code>a</code> has length 2).</li><li>Iteration 0: <code>i = 0, x = 10, y = 100</code> &rarr; <code>0 + 10 = 10</code>.</li><li>Iteration 1: <code>i = 1, x = 20, y = 200</code> &rarr; <code>1 + 20 = 21</code>.</li><li>Result list: <code>[10, 21]</code>.</li></ol></div></div>
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) [10, 21]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li><code>zip(a, b)</code> pairs elements from <code>a</code> and <code>b</code>. Because <code>len(a) = 2</code> and <code>len(b) = 3</code>, <code>zip</code> terminates after 2 elements: producing <code>(10, 100)</code> and <code>(20, 200)</code>. 300 is truncated.</li>
+  <li><code>enumerate(zip(a, b))</code> yields index-tuple pairs:
+    <ul>
+      <li>Iteration 0: <code>i = 0, (x, y) = (10, 100)</code> &rarr; <code>i + x = 0 + 10 = 10</code>.</li>
+      <li>Iteration 1: <code>i = 1, (x, y) = (20, 200)</code> &rarr; <code>i + x = 1 + 20 = 21</code>.</li>
+    </ul>
+  </li>
+  <li>The resulting evaluated list is <code>[10, 21]</code>.</li>
+</ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t4-c2">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Conditional List Comprehensions</h2></div>
-<div class="body-text"><p>List comprehensions support both filtering (trailing <code>if</code>) and ternary transformations (leading <code>if-else</code>):</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python"># 1. Filtering condition (trailing if):
-evens = [x for x in range(10) if x % 2 == 0]
-print("evens:", evens)
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Comprehensions & Conditional Logic: Filtering vs. Ternary Transformation</h2></div>
+<div class="body-text"><p>List comprehensions offer a concise, optimized syntax for constructing new lists from existing iterables. In Python syntax, the positioning of the <code>if</code> keyword dictates whether it acts as a <strong>filter</strong> or a <strong>ternary conditional value transformation</strong>:</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>Pattern Type</th><th>Syntax Structure</th><th>Behavioral Mechanics</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Trailing Filter</strong></td>
+        <td><code>[expr for item in iterable if condition]</code></td>
+        <td>Filters elements. Only items evaluating <code>condition == True</code> are included in the new list.</td>
+      </tr>
+      <tr>
+        <td><strong>Leading Ternary</strong></td>
+        <td><code>[val_if_true if cond else val_if_false for item in iterable]</code></td>
+        <td>Transforms every element. <code>else</code> is mandatory because every position must resolve to a value.</td>
+      </tr>
+      <tr>
+        <td><strong>Combined Filter + Ternary</strong></td>
+        <td><code>[val1 if cond1 else val2 for item in iterable if filter_cond]</code></td>
+        <td>First excludes non-matching items via <code>filter_cond</code>, then transforms surviving items.</td>
+      </tr>
+      <tr>
+        <td><strong>2D Flattening</strong></td>
+        <td><code>[elem for row in matrix for elem in row]</code></td>
+        <td>Nested loops execute in outer-to-inner left-to-right order.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">raw_scores = [45, 82, -5, 91, 60, 38, 74]
 
-# 2. Ternary conditional transformation (leading if-else):
-labels = ["Even" if x % 2 == 0 else "Odd" for x in range(6)]
-print("labels:", labels)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>evens: [0, 2, 4, 6, 8]
-labels: ['Even', 'Odd', 'Even', 'Odd', 'Even', 'Odd']</code></pre></div></div>
+# 1. Trailing if (Filtering): keep valid scores >= 50
+passing = [s for s in raw_scores if s >= 50]
+print("Passing scores:", passing)
+
+# 2. Leading if-else (Ternary transformation): grade classification
+status = ["Pass" if s >= 60 else "Fail" for s in passing]
+print("Classifications:", status)
+
+# 3. 2D Matrix Flattening (Outer loop first, then inner loop)
+matrix = [[10, 20], [30, 40], [50, 60]]
+flat = [val for row in matrix for val in row]
+print("Flattened matrix:", flat)</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Passing scores: [82, 91, 60, 74]
+Classifications: ['Pass', 'Pass', 'Pass', 'Pass']
+Flattened matrix: [10, 20, 30, 40, 50, 60]</code></pre>
+</div></div>
 </div><div class="section-card question-card" id="t4-q2">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Double-Condition List Comprehension</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
-<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of executing the following list comprehension?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">data = [3, 4, 7, 8, 12]
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the evaluated output of the following list comprehension in Python?</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div>
+  <pre class="line-numbers"><code class="language-python">data = [3, 4, 7, 8, 12]
 res = [x // 2 if x % 2 == 0 else x * 2 for x in data if x > 5]
-print(res)</code></pre></div><div class="interactive-q" data-correct="B" data-source="Quiz1_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[6, 2, 14, 4, 6]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[14, 4, 6]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[14, 8, 12]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[7, 4, 6]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+print(res)</code></pre>
+</div>
+<div class="interactive-q" data-correct="B" data-source="Quiz1_Key_251.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[6, 2, 14, 4, 6]</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[14, 4, 6]</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[14, 8, 12]</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[7, 4, 6]</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
 <button class="drill-solution-toggle" id="btn-toggle-t4-q2" onclick="toggleDrillSolution('t4-q2')">
   <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
 </button>
 <div class="drill-solution-container" id="sol-wrap-t4-q2" style="display: none;">
-  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [14, 4, 6]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li>The filter <code>if x > 5</code> retains only elements: <code>[7, 8, 12]</code> (3 and 4 are discarded).</li><li>For 7 (odd): <code>7 * 2 = 14</code>.</li><li>For 8 (even): <code>8 // 2 = 4</code>.</li><li>For 12 (even): <code>12 // 2 = 6</code>.</li><li>Final list: <code>[14, 4, 6]</code>.</li></ol></div></div>
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [14, 4, 6]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li><strong>Filter Step (<code>if x > 5</code>)</strong>: Evaluates each candidate in <code>[3, 4, 7, 8, 12]</code>. 3 and 4 fail the check ($3 
+gtr 5, 4 
+gtr 5$). Surviving items: <code>[7, 8, 12]</code>.</li>
+  <li><strong>Transformation Step</strong>:
+    <ul>
+      <li>For $x = 7$: $7 \pmod 2 
+eq 0$ (odd) &rarr; executes <code>x * 2</code> &rarr; $7 	imes 2 = 14$.</li>
+      <li>For $x = 8$: $8 \pmod 2 == 0$ (even) &rarr; executes <code>x // 2</code> &rarr; $8 // 2 = 4$.</li>
+      <li>For $x = 12$: $12 \pmod 2 == 0$ (even) &rarr; executes <code>x // 2</code> &rarr; $12 // 2 = 6$.</li>
+    </ul>
+  </li>
+  <li>Final list: <code>[14, 4, 6]</code>.</li>
+</ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t4-c3">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Nested List Comprehensions & 2D Matrix Flattening</h2></div>
-<div class="body-text"><p>Nested comprehensions mirror the order of nested for-loops from outer to inner:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Pandas Data Structures: Series vs. DataFrame & Creation Methods</h2></div>
+<div class="body-text"><p>Pandas is the core library for tabular data manipulation in Python data science. It introduces two fundamental data structures:</p>
+<ul>
+  <li><strong>Pandas Series</strong>: A 1-dimensional labeled array holding elements of homogeneous or heterogeneous data types (integers, floats, strings, Python objects).
+    <br><strong>Critical KFUPM Syllabus Rule (Slide 4)</strong>: <em>The index of a Pandas Series does NOT have to be unique</em>! Multiple rows can share the exact same index label.
+    <br>Example: <code>s = pd.Series(["apple", "banana", "cherry"], index=[101, 102, 102])</code>.</li>
+  <li><strong>Pandas DataFrame</strong>: A 2-dimensional tabular data structure with labeled axes (rows and columns). Conceptually, a DataFrame is a dictionary/collection of Series aligned on a shared row index.</li>
+</ul>
+<p>In accordance with the official KFUPM curriculum (Slides 5, 7, 8, 9), DataFrames can be constructed via several standard mechanisms:</p>
+<ol>
+  <li><strong>From a 2D List</strong>: <code>pd.DataFrame([['a11', 'a12'], ['a21', 'a22']], index=['row 1', 'row 2'], columns=['col 1', 'col 2'])</code></li>
+  <li><strong>From a Dictionary of Lists/Series</strong>: <code>pd.DataFrame({'col 1': [10, 20], 'col 2': [30, 40]})</code></li>
+  <li><strong>From an N-dimensional Random NumPy Array</strong>: <code>pd.DataFrame(np.random.rand(1000, 3), columns=['c1', 'c2', 'c3'])</code></li>
+  <li><strong>From Disk Files</strong>: <code>pd.read_csv('data/Basic-1.csv', delimiter=',')</code> or <code>pd.read_excel('data/Basic-2.xlsx')</code></li>
+</ol>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
 
-# Flatten 2D into 1D (outer loop first, then inner loop):
-flat = [num for row in matrix for num in row]
-print("flat:", flat)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>flat: [1, 2, 3, 4, 5, 6, 7, 8, 9]</code></pre></div></div>
+# 1. Series with non-unique index (Slide 4)
+s = pd.Series(["apple", "banana", "cherry"], index=[101, 102, 102])
+print("Pandas Series with Non-Unique Index:
+", s)
+
+# 2. DataFrame from 2D List with custom row and column labels (Slide 7)
+df_list = pd.DataFrame(
+    [['a11', 'a12'], ['a21', 'a22']],
+    index=['row 1', 'row 2'],
+    columns=['col 1', 'col 2']
+)
+print("
+DataFrame from 2D List:
+", df_list)
+
+# 3. DataFrame from NumPy random array (Slide 8)
+np.random.seed(42)
+df_rand = pd.DataFrame(np.random.rand(3, 3).round(2), columns=['col 1', 'col 2', 'col 3'])
+print("
+DataFrame from Random Array:
+", df_rand)</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Pandas Series with Non-Unique Index:
+ 101     apple
+102    banana
+102    cherry
+dtype: object
+
+DataFrame from 2D List:
+       col 1 col 2
+row 1   a11   a12
+row 2   a21   a22
+
+DataFrame from Random Array:
+    col 1  col 2  col 3
+0   0.37   0.95   0.73
+1   0.60   0.16   0.16
+2   0.06   0.87   0.60</code></pre>
+</div></div>
 </div><div class="section-card question-card" id="t4-q3">
-<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Flattening 2D Matrices with List Comprehension</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
-<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given <code>grid = [[10, 20], [30, 40]]</code>, which expression produces <code>[10, 30]</code>?</p><div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[row[1] for row in grid]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[row[0] for row in grid]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[grid[0][col] for col in range(2)]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[grid[row][row] for row in range(2)]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Series Non-Unique Indexing & DataFrame Construction</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which of the following is/are <strong>CORRECT</strong> feature(s) of a Pandas DataFrame and Series as taught in the KFUPM curriculum?</p>
+<div class="interactive-q" data-correct="D" data-source="Topic 4 practice questions.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Columns within a DataFrame can hold different data types (heterogeneous).</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">A DataFrame possesses labeled axes (rows and columns) and default indices start at 0.</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">A Pandas Series index does not have to be unique (duplicate index labels are valid).</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">All of the above statements are correct features.</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
 <button class="drill-solution-toggle" id="btn-toggle-t4-q3" onclick="toggleDrillSolution('t4-q3')">
   <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
 </button>
 <div class="drill-solution-container" id="sol-wrap-t4-q3" style="display: none;">
-  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [row[0] for row in grid]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>Iterating <code>for row in grid</code> yields <code>[10, 20]</code> then <code>[30, 40]</code>. Indexing <code>row[0]</code> selects the first column of each row: <code>10</code> and <code>30</code>, resulting in <code>[10, 30]</code>.</p></div></div>
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(D) All of the above statements are correct features.</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li><strong>Statement A</strong>: True. Unlike NumPy arrays where all elements must share a single dtype, each column in a DataFrame can be a different type (e.g. integer, float, string, datetime).</li>
+  <li><strong>Statement B</strong>: True. DataFrames feature two labeled dimensions: row index and column headers. By default, numeric index labels start at <code>0</code>.</li>
+  <li><strong>Statement C</strong>: True. As highlighted in Slide 4, <code>pd.Series(["apple", "banana", "cherry"], index=[101, 102, 102])</code> demonstrates that indices need not be distinct or unique.</li>
+  <li>Therefore, <strong>(D) All of the above</strong> is the comprehensive correct answer.</li>
+</ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t4-c4">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Functions & Variable Arguments: *args and **kwargs</h2></div>
-<div class="body-text"><p>Python allows dynamic numbers of positional and keyword arguments:</p><ul><li><code>*args</code>: Collects extra positional arguments into a <strong>tuple</strong>.</li><li><code>**kwargs</code>: Collects extra keyword arguments into a <strong>dictionary</strong>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">def summarize(metric, *args, **kwargs):
-    total = round(sum(args), 2)
-    return f"Metric: {metric}, Sum: {total}, Options: {kwargs}"
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Architectural Comparison: NumPy Array vs. Pandas DataFrame</h2></div>
+<div class="body-text"><p>Understanding the exact structural differences between NumPy ndarrays and Pandas DataFrames is a frequent KFUPM exam question. The official comparison matrix from <strong>Slide 6</strong> outlines the exact technical divergence:</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Feature Dimension</th>
+        <th>NumPy Array (<code>np.ndarray</code>)</th>
+        <th>Pandas DataFrame (<code>pd.DataFrame</code>)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Data Type</strong></td>
+        <td><strong>Homogeneous</strong> (Every element must share the exact same data type; mixed inputs are coerced/upcast).</td>
+        <td><strong>Heterogeneous</strong> (Different columns maintain distinct data types, e.g. int, float, object).</td>
+      </tr>
+      <tr>
+        <td><strong>Dimensionality</strong></td>
+        <td><strong>N-dimensional</strong> ($1D, 2D, 3D, \dots$ arbitrary tensor ranks).</td>
+        <td><strong>2D</strong> (Strictly 2-dimensional tabular grid: rows $	imes$ columns).</td>
+      </tr>
+      <tr>
+        <td><strong>Labels / Indexing</strong></td>
+        <td><strong>None</strong> (Zero-based positional numeric indexing only).</td>
+        <td><strong>Row & Column labels</strong> (Explicit custom index labels and column names).</td>
+      </tr>
+      <tr>
+        <td><strong>Optimal Use Case</strong></td>
+        <td><strong>Math / Machine Learning / Numerical Operations</strong> (Fast vectorized linear algebra, matrix multiplications).</td>
+        <td><strong>Data Analysis / Tabular Data</strong> (Data wrangling, missing data imputation, SQL-like merging, EDA).</td>
+      </tr>
+      <tr>
+        <td><strong>Origin Library</strong></td>
+        <td><code>numpy</code></td>
+        <td><code>pandas</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import numpy as np
+import pandas as pd
 
-print(summarize("Loss", 2.1, 1.8, 0.9, optimizer="Adam", lr=0.001))</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Metric: Loss, Sum: 4.8, Options: {'optimizer': 'Adam', 'lr': 0.001}</code></pre></div></div>
+# NumPy: Homogeneous - numbers are coerced to string if mixed
+np_arr = np.array([10, 20.5, 'KFUPM'])
+print("NumPy array dtype (forced homogeneous):", np_arr.dtype)
+print("NumPy array values:", np_arr)
+
+# Pandas: Heterogeneous - preserves distinct column dtypes
+df_het = pd.DataFrame({
+    'StudentID': [202101, 202102],
+    'GPA': [3.75, 3.90],
+    'Major': ['ISE', 'COE']
+})
+print("
+Pandas DataFrame column dtypes:")
+print(df_het.dtypes)</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>NumPy array dtype (forced homogeneous): <U32
+NumPy array values: ['10' '20.5' 'KFUPM']
+
+Pandas DataFrame column dtypes:
+StudentID      int64
+GPA          float64
+Major         object
+dtype: object</code></pre>
+</div></div>
 </div><div class="section-card question-card" id="t4-q4">
-<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Tracing *args and **kwargs</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
-<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">def compute(x, *args):
-    return x * sum(args)
-
-print(compute(2, 3, 4, 5))</code></pre></div><div class="interactive-q" data-correct="C" data-source="Sample Mid .pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">24</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">28</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">24</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">120</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Structural Duality Between NumPy and Pandas</h3> <span class="tag-source">Source: MCQ_Practice_Topics_4_and_5.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>According to the official comparison matrix in Topic 4, which statement is <strong>TRUE</strong> regarding the fundamental difference between a NumPy Array and a Pandas DataFrame?</p>
+<div class="interactive-q" data-correct="B" data-source="MCQ_Practice_Topics_4_and_5.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">A NumPy array is heterogeneous across columns, whereas a DataFrame is strictly homogeneous.</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">NumPy arrays are N-dimensional homogeneous structures with no labels, whereas DataFrames are 2D heterogeneous tabular structures with labeled rows and columns.</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">A Pandas DataFrame can only handle 3-dimensional data or higher.</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">NumPy arrays support custom alphanumeric column headers, while DataFrames only support integer offsets.</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
 <button class="drill-solution-toggle" id="btn-toggle-t4-q4" onclick="toggleDrillSolution('t4-q4')">
   <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
 </button>
 <div class="drill-solution-container" id="sol-wrap-t4-q4" style="display: none;">
-  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) 24</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>x = 2</code> binds the first positional argument.</li><li><code>*args = (3, 4, 5)</code> packs the remaining values into a tuple.</li><li><code>sum(args) = 3 + 4 + 5 = 12</code>.</li><li><code>x * 12 = 2 * 12 = 24</code>.</li></ol></div></div>
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) NumPy arrays are N-dimensional homogeneous structures with no labels, whereas DataFrames are 2D heterogeneous tabular structures with labeled rows and columns.</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li><strong>NumPy Arrays</strong>: Built for raw vectorized mathematical computations. They hold $N$-dimensions ($1D, 2D, \dots$), enforce strict data homogeneity (all elements must be identical type), and do not maintain row/column string labels.</li>
+  <li><strong>Pandas DataFrames</strong>: Built for tabular business and statistical data analysis. They are strictly $2D$ grids, allow heterogeneous types across different columns (e.g. numeric ID, float GPA, text Major), and maintain explicit row indices and column headers.</li>
+</ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t4-c5">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Anonymous Functions (lambda) & map / filter</h2></div>
-<div class="body-text"><p>Modern functional tools in Python:</p><ul><li><code>lambda arguments: expression</code>: Anonymous inline function.</li><li><code>map(func, iterable)</code>: Applies <code>func</code> to every element.</li><li><code>filter(func, iterable)</code>: Retains elements where <code>func(x)</code> is <code>True</code>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">nums = [-2, -1, 0, 1, 2, 3]
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. DataFrame Inspection, Dimensionality & Summary Statistics</h2></div>
+<div class="body-text"><p>Before modeling or filtering data, data scientists must inspect the schema, size, and health of a DataFrame. Topic 4 (Slides 10, 11, 15) covers essential inspection and summary functions:</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>Operation Category</th><th>Method / Attribute</th><th>Description & Output Format</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="3"><strong>Data Inspection</strong></td>
+        <td><code>df.head(n=5)</code></td>
+        <td>Displays the first $n$ rows (default is 5).</td>
+      </tr>
+      <tr>
+        <td><code>df.tail(n=5)</code></td>
+        <td>Displays the last $n$ rows (default is 5).</td>
+      </tr>
+      <tr>
+        <td><code>df.sample(n=5)</code></td>
+        <td>Selects a pseudo-random sample of $n$ rows from the DataFrame.</td>
+      </tr>
+      <tr>
+        <td rowspan="3"><strong>Dimensionality</strong></td>
+        <td><code>df.shape</code></td>
+        <td>Returns a tuple <code>(n_rows, n_cols)</code> containing grid dimensions.</td>
+      </tr>
+      <tr>
+        <td><code>len(df.index)</code></td>
+        <td>Returns total row count (length of the row index).</td>
+      </tr>
+      <tr>
+        <td><code>len(df.columns)</code></td>
+        <td>Returns total column count.</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><strong>Data Health & Nulls</strong></td>
+        <td><code>df.count()</code></td>
+        <td>Returns the count of <strong>non-null</strong> (non-NaN) values per column.</td>
+      </tr>
+      <tr>
+        <td><code>df.isna().sum()</code></td>
+        <td>Returns the total count of <strong>missing / NaN</strong> entries per column.</td>
+      </tr>
+      <tr>
+        <td><strong>Summary Statistics</strong></td>
+        <td><code>df.describe(include='all')</code></td>
+        <td>Computes statistical metrics. For numeric: mean, std, min, IQR percentiles, max. For categorical/object: unique count, top (mode), and frequency.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
 
-# 1. Filter positive numbers:
-pos = list(filter(lambda x: x &gt; 0, nums))
-print("pos:", pos)
+df = pd.DataFrame({
+    'EmpID': [101, 102, 103, 104, 105],
+    'Salary': [8500.0, 9200.0, np.nan, 7800.0, 11000.0],
+    'Dept': ['ISE', 'COE', 'ISE', np.nan, 'ISE']
+})
 
-# 2. Map squaring positive numbers:
-pos_sq = list(map(lambda x: x**2, pos))
-print("pos_sq:", pos_sq)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>pos: [1, 2, 3]
-pos_sq: [1, 4, 9]</code></pre></div></div>
+print("Shape (rows, cols):", df.shape)
+print("Row count via len(df.index):", len(df.index))
+print("Col count via len(df.columns):", len(df.columns))
+
+print("
+Non-null count per column (df.count()):")
+print(df.count())
+
+print("
+Missing values per column (df.isna().sum()):")
+print(df.isna().sum())
+
+print("
+Summary Statistics with include='all':")
+print(df.describe(include='all').fillna('-'))</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Shape (rows, cols): (5, 3)
+Row count via len(df.index): 5
+Col count via len(df.columns): 3
+
+Non-null count per column (df.count()):
+EmpID     5
+Salary    4
+Dept      4
+dtype: int64
+
+Missing values per column (df.isna().sum()):
+EmpID     0
+Salary    1
+Dept      1
+dtype: int64
+
+Summary Statistics with include='all':
+             EmpID       Salary Dept
+count          5.0          4.0    4
+unique           -            -    2
+top              -            -  ISE
+freq             -            -    3
+mean         103.0       9125.0    -
+std       1.581139  1391.342278    -
+min          101.0       7800.0    -
+25%          102.0       8325.0    -
+50%          103.0       8850.0    -
+75%          104.0       9650.0    -
+max          105.0      11000.0    -</code></pre>
+</div></div>
 </div><div class="section-card question-card" id="t4-q5">
-<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Combining map and filter with lambda</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
-<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of the following pipeline?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">nums = [1, 2, 3, 4]
-res = list(map(lambda x: x * 10, filter(lambda x: x % 2 == 1, nums)))
-print(res)</code></pre></div><div class="interactive-q" data-correct="C" data-source="Sample Mid .pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[10, 20, 30, 40]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[20, 40]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[10, 30]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[1, 3]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Row Counting and Non-Null Integrity Verification</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>To count the total number of rows of DataFrame <code>df</code>, and to determine the number of <strong>non-NaN</strong> values across every column, which two expressions should be executed?</p>
+<div class="interactive-q" data-correct="A" data-source="Topic 4 practice questions.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">len(df.index) and df.count()</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">df.len() and df.size()</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">len(df.columns) and df.isna().sum()</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">df.shape[1] and df.count()</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
 <button class="drill-solution-toggle" id="btn-toggle-t4-q5" onclick="toggleDrillSolution('t4-q5')">
   <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
 </button>
 <div class="drill-solution-container" id="sol-wrap-t4-q5" style="display: none;">
-  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) [10, 30]</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>filter(lambda x: x % 2 == 1, nums)</code> keeps only odd numbers: <code>[1, 3]</code>.</li><li><code>map(lambda x: x * 10, [1, 3])</code> multiplies each by 10: <code>[10, 30]</code>.</li></ol></div></div>
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) len(df.index) and df.count()</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li>To find the total number of rows: <code>len(df.index)</code> returns the number of entries in the row index. (Alternatively <code>df.shape[0]</code> can be used; <code>df.len()</code> does not exist).</li>
+  <li>To count non-NaN values per column: <code>df.count()</code> specifically evaluates and returns the non-null count for each column. <code>df.isna().sum()</code> counts nulls instead.</li>
+  <li>Hence, <strong>(A)</strong> is the exact correct pairing.</li>
+</ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t4-c6">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Functional Pipelines & Custom Key Sorting</h2></div>
-<div class="body-text"><p>Sorting complex data structures using the <code>key</code> parameter:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">students = [('Zayd', 82), ('Amr', 95), ('Bilal', 78)]
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Accessing Elements, Slicing (.loc vs .iloc) & Multi-Condition Filtering</h2></div>
+<div class="body-text"><p>Data extraction and subsetting in Pandas relies on two indexing accessors with fundamentally different slicing semantics (Slides 11, 12, 13, 14):</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>Accessor / Technique</th><th>Syntax Template</th><th>Indexing Mechanism & Boundary Rules</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Direct Column Access</strong></td>
+        <td><code>df['col_name']</code></td>
+        <td>Returns a Series. For multiple columns, use list-of-strings: <code>df[['c1', 'c2']]</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Label-based Access (.loc)</strong></td>
+        <td><code>df.loc[RowIndex, ColLabel]</code></td>
+        <td>Indexes by explicit <strong>names/labels</strong>. Slices are <strong>inclusive of both endpoints</strong> (e.g. <code>'r1':'r3'</code> includes <code>'r3'</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>Integer Positional (.iloc)</strong></td>
+        <td><code>df.iloc[RowPos, ColPos]</code></td>
+        <td>Indexes by zero-based <strong>integer positions</strong> ($0, 1, 2, \dots$). Slices are <strong>half-open</strong> (stop index is <strong>exclusive</strong>: <code>0:3</code> takes 0, 1, 2).</td>
+      </tr>
+      <tr>
+        <td><strong>Sorting Data</strong></td>
+        <td><code>df.sort_values(by=['c1', 'c6'], ascending=[True, False], inplace=True)</code></td>
+        <td>Sorts rows by one or more columns. <code>inplace=True</code> mutates original; <code>inplace=False</code> returns sorted copy.</td>
+      </tr>
+      <tr>
+        <td><strong>Boolean Filtering (Selecting)</strong></td>
+        <td><code>df.loc[(df['c1'] == 'A') & (df['c2'] > 50), :]</code></td>
+        <td>Combines criteria with bitwise operators <code>&</code> (AND), <code>|</code> (OR), <code>~</code> (NOT). <strong>Parentheses around each condition are mandatory!</strong></td>
+      </tr>
+      <tr>
+        <td><strong>Categorical Selection</strong></td>
+        <td><code>df[df['Job Type'].isin(['White-collar', 'Blue-collar'])]</code></td>
+        <td>Filters rows whose column value belongs to a specified list of categories.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
 
-# Sort by score descending:
-by_score = sorted(students, key=lambda s: s[1], reverse=True)
-print("by_score:", by_score)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>by_score: [('Amr', 95), ('Zayd', 82), ('Bilal', 78)]</code></pre></div></div>
+data = {
+    'Name': ['Ali', 'Omar', 'Saad', 'Fahad', 'Zaid'],
+    'Job Type': ['White-collar', 'Blue-collar', 'White-collar', 'White-collar', 'Blue-collar'],
+    'Province': ['Eastern', 'Eastern', 'Riyadh', 'Eastern', 'Makkah'],
+    'Rating': [88, 72, 95, 84, 69]
+}
+df = pd.DataFrame(data, index=['r1', 'r2', 'r3', 'r4', 'r5'])
+
+# 1. Label-based .loc (endpoints inclusive)
+print(".loc['r1':'r3', ['Name', 'Rating']]:
+", df.loc['r1':'r3', ['Name', 'Rating']])
+
+# 2. Integer positional .iloc (stop boundary exclusive)
+print("
+.iloc[0:2, 0:2]:
+", df.iloc[0:2, 0:2])
+
+# 3. Multi-criteria filtering (bitwise & with required parentheses)
+selected = (df['Job Type'] == 'White-collar') & (df['Province'] == 'Eastern')
+print("
+Filtered (White-collar AND Eastern):
+", df.loc[selected, ['Name', 'Job Type', 'Province']])
+
+# 4. Categorical filtering with .isin()
+print("
+Filtered with .isin(['Riyadh', 'Makkah']):
+", df[df['Province'].isin(['Riyadh', 'Makkah'])])</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>.loc['r1':'r3', ['Name', 'Rating']]:
+       Name  Rating
+r1     Ali      88
+r2    Omar      72
+r3    Saad      95
+
+.iloc[0:2, 0:2]:
+     Name      Job Type
+r1   Ali  White-collar
+r2  Omar   Blue-collar
+
+Filtered (White-collar AND Eastern):
+       Name      Job Type Province
+r1    Ali  White-collar  Eastern
+r4  Fahad  White-collar  Eastern
+
+Filtered with .isin(['Riyadh', 'Makkah']):
+      Name      Job Type Province  Rating
+r3  Saad  White-collar   Riyadh      95
+r5  Zaid   Blue-collar   Makkah      69</code></pre>
+</div></div>
 </div><div class="section-card question-card" id="t4-q6">
-<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Custom Key Sorting Tracing</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
-<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">words = ['apple', 'pie', 'banana', 'fig']
-words.sort(key=lambda w: len(w))
-print(words[0], words[-1])</code></pre></div><div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">apple banana</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">pie banana</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">fig banana</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">pie apple</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Positional Slicing Bounds with .iloc</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given a DataFrame <code>df</code> with 10 rows and 5 columns, what subset of data is extracted by the statement:</p>
+<div class="code-block-wrapper">
+  <div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div>
+  <pre class="line-numbers"><code class="language-python">subset = df.iloc[2 : 7, : 3]</code></pre>
+</div>
+<div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Displays the 2nd to 7th row and first four columns.</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Displays the 3rd to 7th row (positions 2 through 6) and the first three columns (positions 0, 1, 2).</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Displays rows matching index labels '2' and '7' only.</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Displays the 2nd to 6th row and first two columns.</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
 <button class="drill-solution-toggle" id="btn-toggle-t4-q6" onclick="toggleDrillSolution('t4-q6')">
   <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
 </button>
 <div class="drill-solution-container" id="sol-wrap-t4-q6" style="display: none;">
-  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) pie banana</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>Python's <code>.sort()</code> is stable. Lengths are: 'apple' (5), 'pie' (3), 'banana' (6), 'fig' (3). Sorted by length: <code>['pie', 'fig', 'apple', 'banana']</code>. <code>words[0]</code> is 'pie' and <code>words[-1]</code> is 'banana'.</p></div></div>
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) Displays the 3rd to 7th row (positions 2 through 6) and the first three columns (positions 0, 1, 2).</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li><code>.iloc</code> strictly uses zero-based positional integer offsets:
+    <ul>
+      <li>Row index 0 is 1st row, index 1 is 2nd row, and index 2 is the <strong>3rd row</strong>.</li>
+      <li>The slice <code>2:7</code> extracts integer positions $2, 3, 4, 5, 6$ (stop index 7 is exclusive), which corresponds to the 3rd, 4th, 5th, 6th, and 7th rows (5 rows total).</li>
+    </ul>
+  </li>
+  <li>Column slice <code>:3</code> extracts positions $0, 1, 2$ (stop index 3 is exclusive), which represents the <strong>first three columns</strong>.</li>
+  <li>Therefore, <strong>(B)</strong> is the mathematically and programmatically exact answer.</li>
+</ol></div></div>
+</div>
+</div><div class="section-card concept-card" id="t4-c7">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">7. Functional Transformations: apply(), map(), and Axis Orientation</h2></div>
+<div class="body-text"><p>In modern Pandas workflows, applying anonymous inline functions (<code>lambda</code>) enables vectorized transformations without slow Python for-loops (Slide 16):</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>Application Target</th><th>Syntax Pattern</th><th>Operational Functionality</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Single Column (.apply)</strong></td>
+        <td><code>df['c1'] = df['c1'].apply(lambda x: int(round(x)))</code></td>
+        <td>Applies the transformation function element-by-element down the single Series.</td>
+      </tr>
+      <tr>
+        <td><strong>Direct Lambda Call</strong></td>
+        <td><code>df['c1'] = (lambda x: round(x))(df['c1'])</code></td>
+        <td>Passes the entire Series into the lambda as argument <code>x</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>String Replacement</strong></td>
+        <td><code>df['c12'] = df['c12'].apply(lambda x: x.replace(' ', '_'))</code></td>
+        <td>Performs custom string transformations across text columns.</td>
+      </tr>
+      <tr>
+        <td><strong>Multiple Columns (.map)</strong></td>
+        <td><code>df.loc[:, ['c6', 'c11']] = df.loc[:, ['c6', 'c11']].map(lambda x: int(round(x)))</code></td>
+        <td>Applies function element-wise across a 2D subset of columns.</td>
+      </tr>
+      <tr>
+        <td><strong>Column-wise Apply (axis=0)</strong></td>
+        <td><code>df.apply(func, axis=0)</code></td>
+        <td><strong>Default</strong>. Passes each <strong>column</strong> as a Series into <code>func</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Row-wise Apply (axis=1)</strong></td>
+        <td><code>df.apply(func, axis=1)</code></td>
+        <td>Passes each <strong>row</strong> (across all columns) as a Series into <code>func</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({
+    'c1': [10.4, 20.8, 30.2],
+    'c6': [1.1, 2.9, 3.8],
+    'c12': ['Data Science', 'Machine Learning', 'Big Data']
+})
+
+# 1. Single column transformation (rounding)
+df['c1'] = df['c1'].apply(lambda x: int(round(x)))
+
+# 2. String transformation (spaces to underscores)
+df['c12'] = df['c12'].apply(lambda x: x.replace(' ', '_'))
+
+# 3. Element-wise map over multiple columns
+df[['c1', 'c6']] = df[['c1', 'c6']].map(lambda x: int(round(x)))
+
+# 4. Column-wise (axis=0) vs Row-wise (axis=1) aggregations
+col_sums = df[['c1', 'c6']].apply(lambda col: col.sum(), axis=0)
+row_sums = df[['c1', 'c6']].apply(lambda row: row.sum(), axis=1)
+
+print("Transformed DataFrame:
+", df)
+print("
+Column-wise sums (axis=0):
+", col_sums)
+print("
+Row-wise sums (axis=1):
+", row_sums)</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Transformed DataFrame:
+    c1  c6               c12
+0  10   1      Data_Science
+1  21   3  Machine_Learning
+2  30   4          Big_Data
+
+Column-wise sums (axis=0):
+ c1    61
+c6     8
+dtype: int64
+
+Row-wise sums (axis=1):
+ 0    11
+1    24
+2    34
+dtype: int64</code></pre>
+</div></div>
+</div><div class="section-card question-card" id="t4-q7">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 7: DataFrame apply() Axis Mechanics & Lambda Tracing</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In Pandas, when calling <code>df.apply(function, axis=...)</code> on a DataFrame, what is the exact operational distinction between <code>axis=0</code> and <code>axis=1</code>?</p>
+<div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">axis=0 applies function row-wise, while axis=1 applies function column-wise.</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">axis=0 applies function column-wise (down each column), while axis=1 applies function row-wise (across each row).</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">axis=0 operates only on missing values, while axis=1 operates on numeric data.</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">axis=0 sorts index labels, while axis=1 drops duplicate rows.</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
+<button class="drill-solution-toggle" id="btn-toggle-t4-q7" onclick="toggleDrillSolution('t4-q7')">
+  <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
+</button>
+<div class="drill-solution-container" id="sol-wrap-t4-q7" style="display: none;">
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) axis=0 applies function column-wise (down each column), while axis=1 applies function row-wise (across each row).</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li>In Pandas convention, <code>axis=0</code> (or <code>axis='index'</code>) means applying the operation along the vertical index &mdash; meaning the function receives each <strong>column</strong> as an input Series.</li>
+  <li><code>axis=1</code> (or <code>axis='columns'</code>) means applying the operation horizontally across the column dimension &mdash; meaning the function receives each <strong>row</strong> as an input Series.</li>
+  <li>This matches the official syllabus note on Slide 16: <code>df.apply(function, axis=0) # apply to each column</code> and <code>df.apply(function, axis=1) # apply to each row</code>.</li>
+</ol></div></div>
+</div>
+</div><div class="section-card concept-card" id="t4-c8">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">8. Data Visualization Fundamentals & Pandas In-Built Plotting</h2></div>
+<div class="body-text"><p>Data visualization is the graphical representation of information and data to uncover hidden patterns, trends, and correlations (Slides 17, 18, 19):</p>
+<ul>
+  <li><strong>Why Visualize? (The Scale Dilemma)</strong>:
+    <ul>
+      <li>When data is <em>small</em> (e.g. 5 rows and 2 columns), direct human inspection of numbers can extract meaningful patterns.</li>
+      <li>However, when dealing with enterprise real-world datasets (e.g. 5000 rows and 2000 columns), direct reading fails. Visualization harnesses the human visual cortex to detect distributions, clusters, multi-variable interactions, and anomalies instantly.</li>
+    </ul>
+  </li>
+  <li><strong>4 Core Elementary Visualizations</strong>:
+    <ol>
+      <li><strong>Histogram</strong>: Visualizes the shape and frequency distribution of a continuous numeric variable across bins.</li>
+      <li><strong>Box Plot</strong>: Depicts the 5-number summary (Minimum, $Q_1$, Median, $Q_3$, Maximum) and immediately flags outliers falling outside $[Q_1 - 1.5\cdot\text{IQR}, Q_3 + 1.5\cdot\text{IQR}]$.</li>
+      <li><strong>Scatter Plot</strong>: Plots pairs of numerical values as Cartesian coordinates to uncover correlation, clustering, and functional relationships between two variables.</li>
+      <li><strong>Line Plot</strong>: Tracks movements and directional trends across ordered sequences (such as time-series metrics).</li>
+    </ol>
+  </li>
+  <li><strong>Pandas Plotting Engine</strong>:
+    <br>Pandas provides in-built visualization wrappers built on top of Matplotlib:
+    <ul>
+      <li>Generic method: <code>df.plot(kind='scatter', x='c1', y='c2')</code>, <code>df.plot(kind='hist')</code>, <code>df.plot(kind='box')</code>, <code>df.plot(kind='line')</code>.</li>
+      <li>Dedicated shortcut methods: <code>df.hist()</code> (renders histograms grid) and <code>df.boxplot()</code>.</li>
+    </ul>
+  </li>
+</ul>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
+
+# Sample exam scores data
+np.random.seed(42)
+df = pd.DataFrame({
+    'Midterm': np.random.normal(78, 10, 100).round(1),
+    'Final': np.random.normal(82, 8, 100).round(1),
+    'Homework': np.random.uniform(70, 100, 100).round(1)
+})
+
+# Pandas plotting function signatures
+print("Pandas Plotting Signatures:")
+print("1. df.plot(kind='scatter', x='Midterm', y='Final')")
+print("2. df.hist(column='Midterm', bins=10)")
+print("3. df.boxplot(column=['Midterm', 'Final'])")
+print("
+Underlying engine: Matplotlib (via pandas.plotting)")
+print("Feature comparison: 5-number summary via boxplot, distribution via hist")</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Pandas Plotting Signatures:
+1. df.plot(kind='scatter', x='Midterm', y='Final')
+2. df.hist(column='Midterm', bins=10)
+3. df.boxplot(column=['Midterm', 'Final'])
+
+Underlying engine: Matplotlib (via pandas.plotting)
+Feature comparison: 5-number summary via boxplot, distribution via hist</code></pre>
+</div></div>
+</div><div class="section-card question-card" id="t4-q8">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 8: Purpose of Visualization & Outlier Detection</h3> <span class="tag-source">Source: MCQ_Practice_Topics_4_and_5.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which plot is specifically designed to identify <strong>noisy data and statistical outliers</strong> through a five-number summary?</p>
+<div class="interactive-q" data-correct="B" data-source="MCQ_Practice_Topics_4_and_5.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Countplot</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Boxplot (and Violinplot)</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Histogram without KDE</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Lineplot</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
+<button class="drill-solution-toggle" id="btn-toggle-t4-q8" onclick="toggleDrillSolution('t4-q8')">
+  <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
+</button>
+<div class="drill-solution-container" id="sol-wrap-t4-q8" style="display: none;">
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) Boxplot (and Violinplot)</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li>A <strong>Boxplot</strong> explicitly computes the interquartile range ($	ext{IQR} = Q_3 - Q_1$). Any point exceeding $1.5 	imes 	ext{IQR}$ beyond the quartiles is rendered as an isolated outlier dot, making it the premier tool for outlier detection.</li>
+  <li>A <strong>Violinplot</strong> embeds a miniature boxplot inside a kernel density estimation curve, also revealing outliers.</li>
+  <li>Countplots only count category frequencies, while histograms show frequency bin heights without explicitly isolating individual outlier observations.</li>
+</ol></div></div>
+</div>
+</div><div class="section-card concept-card" id="t4-c9">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">9. Seaborn Statistical Visualizations: Axes-Level vs. Figure-Level Functions</h2></div>
+<div class="body-text"><p>While Pandas basic plots provide quick EDA, <strong>Seaborn</strong> is the premier Python library for advanced statistical visualization. Built on Matplotlib, it natively understands Pandas DataFrames and organizes plotting functions into a clean two-tier architecture (Slides 20, 22):</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>Architecture Level</th><th>Function Names</th><th>Core Canvas Behavior & Multi-Plot Capabilities</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Axes-Level Functions</strong></td>
+        <td>
+          <code>sns.histplot()</code>, <code>sns.scatterplot()</code>, <code>sns.boxplot()</code>, <code>sns.violinplot()</code>, <code>sns.countplot()</code>, <code>sns.swarmplot()</code>, <code>sns.lineplot()</code>
+        </td>
+        <td>
+          Draw a <strong>single plot directly onto a single Matplotlib canvas (Axes object)</strong>. Can be embedded into existing subplot grids via <code>ax=...</code>.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Figure-Level Functions</strong></td>
+        <td>
+          <code>sns.displot()</code> (Distributions)<br>
+          <code>sns.relplot()</code> (Relational: scatter & line)<br>
+          <code>sns.catplot()</code> (Categorical: box, violin, count, swarm, bar)
+        </td>
+        <td>
+          Manage the <strong>entire figure (FacetGrid)</strong>. They automatically split data into multiple side-by-side or stacked subplots across categorical variables using the <code>row='var'</code> and <code>col='var'</code> parameters!
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
+
+# Demonstrating Seaborn's two-tier architecture syntax & mapping
+df = pd.DataFrame({
+    'Score': [85, 92, 78, 90, 65, 88, 72, 95],
+    'Gender': ['M', 'F', 'M', 'F', 'M', 'F', 'M', 'F'],
+    'Major': ['ISE', 'ISE', 'COE', 'COE', 'ISE', 'COE', 'ISE', 'COE']
+})
+
+print("Seaborn Plotting Architecture:")
+print("-" * 50)
+print("1. Axes-Level Plot (draws onto single Axes canvas):")
+print("   syntax: sns.histplot(data=df, x='Score', kde=True)")
+print("   syntax: sns.countplot(data=df, x='Major')")
+print("   syntax: sns.boxplot(data=df, x='Major', y='Score')")
+print("   syntax: sns.violinplot(data=df, x='Major', y='Score')")
+print("
+2. Figure-Level Plot (manages FacetGrid with row/col subplots):")
+print("   syntax: sns.catplot(data=df, x='Major', y='Score', col='Gender', kind='box')")
+print("   syntax: sns.relplot(data=df, x='Score', y='Score', col='Major', kind='scatter')")
+print("   syntax: sns.displot(data=df, x='Score', col='Major', kde=True)")</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Seaborn Plotting Architecture:
+--------------------------------------------------
+1. Axes-Level Plot (draws onto single Axes canvas):
+   syntax: sns.histplot(data=df, x='Score', kde=True)
+   syntax: sns.countplot(data=df, x='Major')
+   syntax: sns.boxplot(data=df, x='Major', y='Score')
+   syntax: sns.violinplot(data=df, x='Major', y='Score')
+
+2. Figure-Level Plot (manages FacetGrid with row/col subplots):
+   syntax: sns.catplot(data=df, x='Major', y='Score', col='Gender', kind='box')
+   syntax: sns.relplot(data=df, x='Score', y='Score', col='Major', kind='scatter')
+   syntax: sns.displot(data=df, x='Score', col='Major', kde=True)</code></pre>
+</div></div>
+</div><div class="section-card question-card" id="t4-q9">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 9: Categorical Distribution Plots in Seaborn</h3> <span class="tag-source">Source: MCQ_Practice_Topics_4_and_5.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which Seaborn function is specifically designed to plot the count and frequency distribution of a <strong>categorical variable</strong> (acting like a histogram for categories)?</p>
+<div class="interactive-q" data-correct="B" data-source="MCQ_Practice_Topics_4_and_5.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">sns.histplot()</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">sns.countplot()</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">sns.relplot()</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">sns.scatterplot()</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
+<button class="drill-solution-toggle" id="btn-toggle-t4-q9" onclick="toggleDrillSolution('t4-q9')">
+  <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
+</button>
+<div class="drill-solution-container" id="sol-wrap-t4-q9" style="display: none;">
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) sns.countplot()</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li>In Seaborn, <code>countplot()</code> is defined as a categorical histogram that counts the number of occurrences of each distinct discrete category along the chosen axis.</li>
+  <li><code>histplot()</code> is primarily designed for binning continuous quantitative numeric variables (though it has limited discrete support).</li>
+  <li><code>relplot()</code> is a figure-level relational function (scatter/line) between continuous variables.</li>
+</ol></div></div>
+</div>
+</div><div class="section-card concept-card" id="t4-c10">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">10. Seaborn Aesthetic Encodings & Comparison with Pandas Plots</h2></div>
+<div class="body-text"><p>Seaborn's primary strength lies in multi-variable aesthetic mappings that encode high-dimensional relationships onto a single 2D visual surface (Slides 21, 23, 24, 25):</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr><th>Aesthetic Parameter</th><th>Visual Channel Encoded</th><th>Data Science Purpose & Example Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>x, y</code></td>
+        <td>Spatial Position (Cartesian axes)</td>
+        <td>Defines primary feature variables: <code>sns.scatterplot(x='Total score', y='math score', data=df)</code>.</td>
+      </tr>
+      <tr>
+        <td><code>hue</code></td>
+        <td>Color Segmentation</td>
+        <td>Distinguishes categorical or numeric groups using distinct colors on the same figure. Enables simultaneous group comparison, detecting subgroup trends, and spotting class overlap (e.g. <code>hue='gender'</code> or <code>hue='Region'</code>).</td>
+      </tr>
+      <tr>
+        <td><code>palette</code></td>
+        <td>Color Palette Selection</td>
+        <td>Selects curated color schemes (e.g. <code>palette='Set2'</code>, <code>'viridis'</code>, <code>'tab10'</code>).</td>
+      </tr>
+      <tr>
+        <td><code>style</code></td>
+        <td>Marker Symbol / Line Dash</td>
+        <td>Assigns different marker shapes (e.g. circle, square, triangle) or dash styles to another categorical variable.</td>
+      </tr>
+      <tr>
+        <td><code>size</code></td>
+        <td>Point Radius / Line Width</td>
+        <td>Scales point sizes proportional to a third numeric variable.</td>
+      </tr>
+      <tr>
+        <td><code>alpha</code></td>
+        <td>Opacity / Transparency</td>
+        <td>Floats between $0.0$ (transparent) and $1.0$ (solid). Critical to prevent <strong>overplotting</strong> when thousands of points overlap in dense clusters.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p>The official comparison between <strong>Pandas Plots</strong> and <strong>Seaborn Plots</strong> (Slide 25):</p>
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Feature Dimension</th>
+        <th>Pandas Plot</th>
+        <th>Seaborn Plot</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Complexity</strong></td>
+        <td>Simple, basic</td>
+        <td>Advanced, statistical</td>
+      </tr>
+      <tr>
+        <td><strong>Style</strong></td>
+        <td>Minimal</td>
+        <td>Beautiful, pre-styled aesthetics</td>
+      </tr>
+      <tr>
+        <td><strong>Customization</strong></td>
+        <td>Limited</td>
+        <td>Rich + deep integration with Pandas</td>
+      </tr>
+      <tr>
+        <td><strong>Best For</strong></td>
+        <td>Quick EDA, rapid simple checks</td>
+        <td>Detailed analysis, publication stats, multi-group EDA</td>
+      </tr>
+      <tr>
+        <td><strong>Underlying Engine</strong></td>
+        <td>Matplotlib</td>
+        <td>Matplotlib</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-block-wrapper">
+  <div class="code-block-header">
+    <span class="code-lang-badge">PYTHON</span>
+    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+  </div>
+  <pre class="line-numbers"><code class="language-python">import pandas as pd
+
+# Multi-dimensional dataset
+df = pd.DataFrame({
+    'Total_Score': [450, 480, 390, 520, 410, 505, 470, 380],
+    'Math_Score':  [78,  85,  62,  95,  70,  88,  80,  60],
+    'Gender':      ['M', 'F', 'F', 'M', 'F', 'M', 'F', 'M'],
+    'Prep_Course': ['None', 'Completed', 'None', 'Completed', 'None', 'Completed', 'None', 'None']
+})
+
+print("Seaborn Aesthetic Mapping Parameters:")
+print("• x, y    : Position coordinates (e.g. x='Total_Score', y='Math_Score')")
+print("• hue     : Grouping by color comparison (e.g. hue='Gender')")
+print("• palette : Color scheme name (e.g. palette='Set2')")
+print("• style   : Marker symbol differentiation (e.g. style='Prep_Course')")
+print("• size    : Dot radius mapped to numerical metric")
+print("• alpha   : Opacity (0.0=clear to 1.0=solid) mitigating overplotting")
+print("
+Example Call:")
+print("sns.scatterplot(data=df, x='Total_Score', y='Math_Score', hue='Gender', style='Prep_Course', alpha=0.7)")</code></pre>
+</div>
+<div class="code-output-block">
+  <div class="output-header">
+    <div class="output-header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="output-title">Console Output</span>
+    </div>
+    <span class="output-badge">STDOUT</span>
+  </div>
+  <pre class="output-body"><code>Seaborn Aesthetic Mapping Parameters:
+• x, y    : Position coordinates (e.g. x='Total_Score', y='Math_Score')
+• hue     : Grouping by color comparison (e.g. hue='Gender')
+• palette : Color scheme name (e.g. palette='Set2')
+• style   : Marker symbol differentiation (e.g. style='Prep_Course')
+• size    : Dot radius mapped to numerical metric
+• alpha   : Opacity (0.0=clear to 1.0=solid) mitigating overplotting
+
+Example Call:
+sns.scatterplot(data=df, x='Total_Score', y='Math_Score', hue='Gender', style='Prep_Course', alpha=0.7)</code></pre>
+</div></div>
+</div><div class="section-card question-card" id="t4-q10">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 10: High-Dimensional Encodings & Overplotting Control</h3> <span class="tag-source">Source: MCQ_Practice_Topics_4_and_5.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In Seaborn, what is the exact function of the <code>hue</code> parameter and the <code>alpha</code> parameter when rendering scatterplots?</p>
+<div class="interactive-q" data-correct="B" data-source="MCQ_Practice_Topics_4_and_5.pdf">
+  <div class="q-options-grid">
+    <button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">hue sets the title font, while alpha sets the number of bins in a histogram.</span></button>
+    <button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">hue maps data groups to distinct colors for side-by-side comparison on the same plot, while alpha controls transparency to prevent overplotting.</span></button>
+    <button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">hue filters out rows with NaN values, while alpha scales features between 0 and 1.</span></button>
+    <button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">hue rotates axes labels, while alpha exports the figure to CSV format.</span></button>
+  </div>
+  <div class="q-feedback hidden"></div>
+</div></div></div>
+<button class="drill-solution-toggle" id="btn-toggle-t4-q10" onclick="toggleDrillSolution('t4-q10')">
+  <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
+</button>
+<div class="drill-solution-container" id="sol-wrap-t4-q10" style="display: none;">
+  <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) hue maps data groups to distinct colors for side-by-side comparison on the same plot, while alpha controls transparency to prevent overplotting.</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p>
+<ol>
+  <li><code>hue</code> specifies a grouping variable (such as Gender, Department, or Cluster ID) and applies distinct color mapping to each category, allowing group trends, separations, and overlaps to be analyzed simultaneously.</li>
+  <li><code>alpha</code> governs opacity from $0$ (completely invisible) to $1$ (fully solid). Setting $0.5 < \alpha < 0.8$ ensures that high-density regions where hundreds of points overlap become visibly darker without occluding each other.</li>
+  <li>This matches Slides 21, 23, and 24 of the official curriculum.</li>
+</ol></div></div>
 </div>
 </div>
             </div>
