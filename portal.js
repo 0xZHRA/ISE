@@ -326,25 +326,35 @@ function initStemRenderers(rootElement = document.body) {
         }
     }
 
-    // 3. Mermaid.js Diagrams
-    if (window.mermaid) {
+    // 3. Mermaid.js Diagrams (Lazy Initialization & High-Legibility Setup)
+    const mermaidNodes = (rootElement && rootElement.querySelectorAll) ? rootElement.querySelectorAll('.mermaid') : [];
+    if (mermaidNodes.length > 0 && window.mermaid) {
         try {
-            const mermaidNodes = rootElement.querySelectorAll ? rootElement.querySelectorAll('.mermaid') : [];
-            if (mermaidNodes.length > 0) {
-                mermaid.initialize({
-                    startOnLoad: false,
-                    theme: 'dark',
-                    themeVariables: {
-                        darkMode: true,
-                        background: '#111118',
-                        primaryColor: '#38bdf8',
-                        primaryTextColor: '#f8fafc',
-                        lineColor: '#64748b',
-                        fontSize: '13px'
-                    }
-                });
-                mermaid.run({ nodes: mermaidNodes });
-            }
+            mermaid.initialize({
+                startOnLoad: false,
+                securityLevel: 'loose',
+                theme: 'dark',
+                themeVariables: {
+                    darkMode: true,
+                    background: '#0d1117',
+                    primaryColor: '#38bdf8',
+                    primaryTextColor: '#f8fafc',
+                    primaryBorderColor: '#0284c7',
+                    lineColor: '#94a3b8',
+                    secondaryColor: '#1e293b',
+                    tertiaryColor: '#0f172a',
+                    fontFamily: 'var(--font-sans, system-ui, -apple-system, sans-serif)',
+                    fontSize: '16px',
+                    nodePadding: '14px'
+                },
+                flowchart: {
+                    htmlLabels: true,
+                    curve: 'basis',
+                    padding: 16,
+                    useMaxWidth: false
+                }
+            });
+            mermaid.run({ nodes: mermaidNodes });
         } catch (e) {
             console.warn("Mermaid rendering warning:", e);
         }

@@ -128,13 +128,87 @@
             <div class="page-stream">
                 <div class="section-card concept-card" id="t1-c1">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. What is Data Science, Key Disciplines & Team Roles</h2></div>
-<div class="body-text"><p><strong>Data Science</strong> is an interdisciplinary field that extracts actionable insights and knowledge from noisy, structured, and unstructured data using scientific methods, algorithms, and automated pipelines.</p><div class="mermaid-container"><pre class="mermaid">
-flowchart TD
-    DS(["Data Science Discipline"])
-    M["Mathematics & Statistics<br/>(Probability, Calculus, Linear Algebra)"] --> DS
-    CS["Computer Science & Programming<br/>(Python, SQL, Data Structures)"] --> DS
-    DK["Domain Knowledge & Business Acumen<br/>(Engineering, Healthcare, Finance)"] --> DS
-</pre></div><div class="table-wrapper"><table><thead><tr><th>Role Profile</th><th>Core Responsibilities</th><th>Primary Toolset</th></tr></thead><tbody><tr><td><strong>Data Scientist</strong></td><td>Develops statistical models, machine learning algorithms, and predictive analytics to discover deep patterns.</td><td>Python, R, Scikit-Learn, PyTorch, Statistics</td></tr><tr><td><strong>Data Engineer</strong></td><td>Designs, builds, and maintains robust scalable data pipelines, ETL workflows, and database architectures.</td><td>SQL, Spark, Hadoop, Kafka, Airflow</td></tr><tr><td><strong>Business Analyst</strong></td><td>Translates corporate problems into analytical requirements, evaluates KPIs, and creates dashboards.</td><td>PowerBI, Tableau, Excel, SQL</td></tr></tbody></table></div></div>
+<div class="body-text"><p><strong>Data Science</strong> is an interdisciplinary field that extracts actionable insights and empirical knowledge from noisy, structured, and unstructured data using scientific methods, statistical algorithms, and automated computational pipelines.</p>
+
+<div class="ds-pillars-container" role="region" aria-label="The Three Pillars of Data Science">
+  <div class="ds-pillars-header">
+    <span class="ds-pillars-badge">Interdisciplinary Foundation</span>
+    <h4 class="ds-pillars-title">The Three Foundational Pillars of Data Science</h4>
+    <p class="ds-pillars-subtitle">Data Science exists at the convergence of three critical fields of study:</p>
+  </div>
+  
+  <div class="ds-pillars-grid">
+    <!-- Pillar 1 -->
+    <div class="ds-pillar-card pillar-math">
+      <div class="ds-pillar-header">
+        <span class="ds-pillar-num">01</span>
+        <div class="ds-pillar-icon-box" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16l-7 10 7 6H4l7-6-7-10z"/></svg>
+        </div>
+      </div>
+      <h5 class="ds-pillar-name">Mathematics &amp; Statistics</h5>
+      <p class="ds-pillar-desc">Theoretical rigor, probabilistic reasoning, and quantitative optimization.</p>
+      <ul class="ds-pillar-tags">
+        <li>Probability &amp; Statistics</li>
+        <li>Multivariate Calculus</li>
+        <li>Linear Algebra</li>
+        <li>Statistical Inference</li>
+      </ul>
+    </div>
+
+    <!-- Pillar 2 -->
+    <div class="ds-pillar-card pillar-cs">
+      <div class="ds-pillar-header">
+        <span class="ds-pillar-num">02</span>
+        <div class="ds-pillar-icon-box" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+      </div>
+      <h5 class="ds-pillar-name">Computer Science &amp; Programming</h5>
+      <p class="ds-pillar-desc">Algorithmic implementation, data engineering, and scalable architecture.</p>
+      <ul class="ds-pillar-tags">
+        <li>Python &amp; SQL Systems</li>
+        <li>Data Structures &amp; Algorithms</li>
+        <li>Scalable ETL Pipelines</li>
+        <li>Database Management</li>
+      </ul>
+    </div>
+
+    <!-- Pillar 3 -->
+    <div class="ds-pillar-card pillar-domain">
+      <div class="ds-pillar-header">
+        <span class="ds-pillar-num">03</span>
+        <div class="ds-pillar-icon-box" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+      </div>
+      <h5 class="ds-pillar-name">Domain Expertise &amp; Business Acumen</h5>
+      <p class="ds-pillar-desc">Contextual framing, problem formulation, and organizational value creation.</p>
+      <ul class="ds-pillar-tags">
+        <li>Engineering Operations</li>
+        <li>Strategic KPI Metrics</li>
+        <li>Industrial Domain Context</li>
+        <li>Actionable Decision Value</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Center Target / Hub -->
+  <div class="ds-convergence-hub">
+    <div class="ds-convergence-arrows" aria-hidden="true">
+      <span class="ds-arrow">&#8659;</span>
+      <span class="ds-arrow-label">Synergy Convergence</span>
+      <span class="ds-arrow">&#8659;</span>
+    </div>
+    <div class="ds-hub-card">
+      <div class="ds-hub-badge">Central Convergence Target</div>
+      <h4 class="ds-hub-title">Data Science Discipline</h4>
+      <p class="ds-hub-desc">Extracting actionable insights, training predictive models, and automating intelligent decisions from complex industrial data.</p>
+    </div>
+  </div>
+</div>
+
+<div class="table-wrapper"><table><thead><tr><th>Role Profile</th><th>Core Responsibilities</th><th>Primary Toolset</th></tr></thead><tbody><tr><td><strong>Data Scientist</strong></td><td>Develops statistical models, machine learning algorithms, and predictive analytics to discover deep patterns.</td><td>Python, R, Scikit-Learn, PyTorch, Statistics</td></tr><tr><td><strong>Data Engineer</strong></td><td>Designs, builds, and maintains robust scalable data pipelines, ETL workflows, and database architectures.</td><td>SQL, Spark, Hadoop, Kafka, Airflow</td></tr><tr><td><strong>Business Analyst</strong></td><td>Translates corporate problems into analytical requirements, evaluates KPIs, and creates dashboards.</td><td>PowerBI, Tableau, Excel, SQL</td></tr></tbody></table></div></div>
 </div><div class="section-card question-card" id="t1-q1">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Identifying Core Engineering Roles</h3> <span class="tag-source">Source: 223_Midterm_Exam.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In an enterprise data science team, which team member is primarily tasked with data extraction, cleaning data infrastructure pipelines, and ensuring database transformations scale reliably for modeling?</p><div class="interactive-q" data-correct="A" data-source="223_Midterm_Exam.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Data Engineer</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Business Analyst</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Data Scientist</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Project Sponsor</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -170,15 +244,125 @@ flowchart TD
 </div>
 </div><div class="section-card concept-card" id="t1-c4">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. The CRISP-DM Methodology & Effort Allocation</h2></div>
-<div class="body-text"><p>The standard process model for data analytics and data mining projects is <strong>CRISP-DM</strong> (Cross-Industry Standard Process for Data Mining), consisting of six iterative phases:</p><div class="mermaid-container"><pre class="mermaid">
-flowchart LR
-    P1["1. Business Understanding"] --> P2["2. Data Understanding"]
-    P2 --> P3["3. Data Preparation<br/>(~80% of total effort)"]
-    P3 --> P4["4. Modeling"]
-    P4 --> P5["5. Evaluation"]
-    P5 --> P6["6. Deployment"]
-    P5 -.->|"Iterate if below threshold"| P1
-</pre></div><div class="callout callout-tip"><strong>Midterm Exam Golden Rule:</strong> Phase 3 (<strong>Data Preparation</strong>) consistently consumes between <strong>70% to 80%</strong> of the total time, resources, and effort in any realistic data science lifecycle.</div></div>
+<div class="body-text"><p>The standard process model for data analytics and data mining projects is <strong>CRISP-DM</strong> (Cross-Industry Standard Process for Data Mining), consisting of six iterative phases structured into an end-to-end engineering workflow:</p>
+
+<div class="crisp-flow-container" role="region" aria-label="CRISP-DM Process Model">
+  <div class="crisp-flow-header">
+    <div class="crisp-header-meta">
+      <span class="crisp-badge-standard">Industry Standard Methodology</span>
+      <span class="crisp-badge-loop">Iterative Engineering Workflow</span>
+    </div>
+    <h4 class="crisp-flow-title">CRISP-DM: The 6 Life-Cycle Phases</h4>
+    <p class="crisp-flow-subtitle">A structured, cyclical process where insights uncovered in downstream phases routinely loop back to earlier stages:</p>
+  </div>
+
+  <div class="crisp-process-grid">
+    <!-- Step 1 -->
+    <div class="crisp-step-card" data-step="1">
+      <div class="crisp-step-top">
+        <span class="crisp-step-num">01</span>
+        <span class="crisp-step-phase">Phase I</span>
+      </div>
+      <h5 class="crisp-step-title">Business Understanding</h5>
+      <p class="crisp-step-desc">Define project objectives, translate business requirements into an analytical problem definition, and set quantitative success metrics.</p>
+      <div class="crisp-step-deliverables">
+        <span class="crisp-deliverable-tag">Problem Definition</span>
+        <span class="crisp-deliverable-tag">Project Objectives</span>
+        <span class="crisp-deliverable-tag">Success Metrics</span>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="crisp-step-card" data-step="2">
+      <div class="crisp-step-top">
+        <span class="crisp-step-num">02</span>
+        <span class="crisp-step-phase">Phase II</span>
+      </div>
+      <h5 class="crisp-step-title">Data Understanding</h5>
+      <p class="crisp-step-desc">Collect initial data, explore distributions and summary statistics, identify quality bottlenecks, and uncover initial empirical patterns.</p>
+      <div class="crisp-step-deliverables">
+        <span class="crisp-deliverable-tag">Data Collection</span>
+        <span class="crisp-deliverable-tag">Initial Exploration</span>
+        <span class="crisp-deliverable-tag">Data Quality Audit</span>
+      </div>
+    </div>
+
+    <!-- Step 3 (Featured Effort Badge) -->
+    <div class="crisp-step-card crisp-step-featured" data-step="3">
+      <div class="crisp-effort-badge">
+        <span class="crisp-fire-icon">🔥</span>
+        <span>~70–80% of Total Project Effort</span>
+      </div>
+      <div class="crisp-step-top">
+        <span class="crisp-step-num">03</span>
+        <span class="crisp-step-phase">Phase III</span>
+      </div>
+      <h5 class="crisp-step-title">Data Preparation</h5>
+      <p class="crisp-step-desc">Cleanse raw tables, handle missing or corrupted values, normalize distributions, encode categorical attributes, and construct final modeling datasets.</p>
+      <div class="crisp-step-deliverables">
+        <span class="crisp-deliverable-tag">Data Cleaning</span>
+        <span class="crisp-deliverable-tag">Transformation</span>
+        <span class="crisp-deliverable-tag">Feature Engineering</span>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="crisp-step-card" data-step="4">
+      <div class="crisp-step-top">
+        <span class="crisp-step-num">04</span>
+        <span class="crisp-step-phase">Phase IV</span>
+      </div>
+      <h5 class="crisp-step-title">Modeling</h5>
+      <p class="crisp-step-desc">Select candidate modeling algorithms, calibrate hyperparameters, train predictive models, and validate across training/test splits.</p>
+      <div class="crisp-step-deliverables">
+        <span class="crisp-deliverable-tag">Algorithm Selection</span>
+        <span class="crisp-deliverable-tag">Model Training</span>
+        <span class="crisp-deliverable-tag">Hyperparameter Tuning</span>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="crisp-step-card" data-step="5">
+      <div class="crisp-step-top">
+        <span class="crisp-step-num">05</span>
+        <span class="crisp-step-phase">Phase V</span>
+      </div>
+      <h5 class="crisp-step-title">Evaluation</h5>
+      <p class="crisp-step-desc">Thoroughly validate model outputs against established business goals and project KPIs before authorizing production deployment.</p>
+      <div class="crisp-step-deliverables">
+        <span class="crisp-deliverable-tag">Validate vs Goals</span>
+        <span class="crisp-deliverable-tag">Model Quality Check</span>
+        <span class="crisp-deliverable-tag">Decision to Deploy</span>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="crisp-step-card" data-step="6">
+      <div class="crisp-step-top">
+        <span class="crisp-step-num">06</span>
+        <span class="crisp-step-phase">Phase VI</span>
+      </div>
+      <h5 class="crisp-step-title">Deployment</h5>
+      <p class="crisp-step-desc">Roll out model to live production environments, operationalize inference pipelines, monitor data drift, and establish maintenance schedules.</p>
+      <div class="crisp-step-deliverables">
+        <span class="crisp-deliverable-tag">Production Rollout</span>
+        <span class="crisp-deliverable-tag">Monitoring Pipelines</span>
+        <span class="crisp-deliverable-tag">Knowledge Transfer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Loop -->
+  <div class="crisp-feedback-loop">
+    <div class="crisp-loop-icon" aria-hidden="true">↺</div>
+    <div class="crisp-loop-content">
+      <div class="crisp-loop-title">Iterative Feedback Loop</div>
+      <div class="crisp-loop-text">If evaluation metrics do not meet business criteria, return to <strong>Business Understanding</strong> (to redefine problem scope) or to <strong>Modeling / Data Preparation</strong> before proceeding to Deployment.</div>
+    </div>
+  </div>
+</div>
+
+<div class="callout callout-tip"><strong>Midterm Exam Golden Rule:</strong> Phase 3 (<strong>Data Preparation</strong>) consistently consumes between <strong>70% to 80%</strong> of the total time, resources, and effort in any realistic data science lifecycle.</div></div>
 </div><div class="section-card question-card" id="t1-q4">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: CRISP-DM Phases Sequence</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In which sequence should a data science team proceed according to the CRISP-DM standard when developing a predictive churn model?</p><div class="interactive-q" data-correct="C" data-source="Sample Mid .pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Data Understanding &rarr; Business Understanding &rarr; Modeling &rarr; Data Prep</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Data Preparation &rarr; Modeling &rarr; Evaluation &rarr; Deployment &rarr; Business Understanding</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Business Understanding &rarr; Data Understanding &rarr; Data Preparation &rarr; Modeling</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Modeling &rarr; Evaluation &rarr; Business Understanding &rarr; Data Preparation</span></button></div><div class="q-feedback hidden"></div></div></div></div>
