@@ -1,526 +1,592 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="ISE 291 Interactive Question Bank - Introduction to Data Science" />
-  <title>ISE 291 | Question Bank</title>
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  
-  <!-- Cache-busted Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=2.4" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ISE 291 - Introduction to Data Science</title>
 
-  <!-- Critical Inlined Layout & Auth Gate CSS (Ensures zero styling glitches even on cold cache) -->
-  <style>
-    :root {
-      --font-scale: 1;
-      --bg-primary: #090c12;
-      --bg-card: #131926;
-      --border-color: #1e283d;
-      --text-primary: #f1f5f9;
-      --text-muted: #64748b;
-      --accent-primary: #3b82f6;
-    }
-    html {
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
-    }
-    .auth-gate {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      box-sizing: border-box;
-      background: radial-gradient(circle at top, #141d30 0%, #090c12 100%);
-    }
-    .auth-gate-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 36px 32px;
-      max-width: 420px;
-      width: 100%;
-      box-sizing: border-box;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-  </style>
+<!-- KaTeX Math & mhchem Chemistry -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/mhchem.min.js"></script>
+
+<!-- Prism.js Syntax Highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" />
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+<!-- Mermaid.js Diagrams -->
+<script defer src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+<!-- Portal Minimalist Stylesheet -->
+<link rel="stylesheet" href="portal.css" />
 </head>
-<body data-theme="dark">
+<body>
 
-  <!-- MANDATORY AUTH GATE -->
-  <div id="auth-gate" class="auth-gate">
-    <div class="auth-gate-card">
-      <div class="auth-gate-logo">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          <line x1="9" y1="7" x2="15" y2="7"></line>
-          <line x1="9" y1="11" x2="13" y2="11"></line>
-        </svg>
-      </div>
-      <h2 class="auth-gate-title">ISE 291 Question Bank</h2>
-      <p class="auth-gate-subtitle">Account required. Sign in or create an account to start practicing.</p>
+<!-- Unnoticed, Minimalist Scrolling Progress Bar -->
+<div id="scrollProgressBar"></div>
 
-      <!-- Auth Mode Switcher -->
-      <div class="auth-switch">
-        <button class="auth-switch-btn active" id="btn-gate-tab-login">Sign In</button>
-        <button class="auth-switch-btn" id="btn-gate-tab-signup">Create Account</button>
-      </div>
-
-      <!-- Warning Banner for Account Creation -->
-      <div class="auth-warning-banner" id="gate-signup-warning">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-          <line x1="12" y1="9" x2="12" y2="13"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <span>Notice: Once you create your account, it cannot be deleted.</span>
-      </div>
-
-      <!-- Form -->
-      <form id="gate-auth-form" class="auth-form" onsubmit="return false;">
-        <div class="form-field">
-          <label>Username</label>
-          <input type="text" id="gate-input-username" placeholder="Enter username..." required autocomplete="username" />
+<!-- Accessible & Minimalist Single-Row Sticky Navigation Bar -->
+<header class="top-nav-bar">
+    <div class="nav-inner-container">
+        <div class="brand-group">
+            <span class="brand-text">ISE 291</span>
         </div>
-        <div class="form-field">
-          <label>Password</label>
-          <input type="password" id="gate-input-password" placeholder="Enter password..." required autocomplete="current-password" />
-        </div>
-
-        <div id="gate-msg" class="auth-msg hidden"></div>
-
-        <button type="submit" class="btn-primary btn-large btn-block" id="btn-gate-submit">Sign In</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MAIN APP WRAPPER -->
-  <div id="app-wrapper" class="app-wrapper hidden">
-
-    <!-- COLLAPSIBLE SIDEBAR -->
-    <aside id="app-sidebar" class="app-sidebar">
-      
-      <!-- Sidebar Header -->
-      <div class="sidebar-header">
-        <div class="sidebar-brand">
-          <div class="brand-logo-sm">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-          </div>
-          <span class="sidebar-brand-name">ISE 291</span>
-        </div>
-        <button class="sidebar-close-btn" id="btn-sidebar-collapse" title="Collapse Sidebar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-      </div>
-
-      <!-- User Info Box -->
-      <div class="sidebar-user-box">
-        <div class="user-avatar-sm" id="sidebar-user-avatar">?</div>
-        <div class="sidebar-user-details">
-          <div class="sidebar-user-name" id="sidebar-user-name">User</div>
-          <div class="sidebar-user-stats" id="sidebar-user-stats">0 / 263 Solved</div>
-        </div>
-      </div>
-
-      <!-- Navigation Links -->
-      <nav class="sidebar-nav">
-        <button class="sidebar-nav-item active" data-tab="explorer" id="nav-explorer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-          <span>Questions</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="quiz" id="nav-quiz">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          <span>Practice Quiz</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="exam" id="nav-exam">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span>Midterm Simulator</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="saved" id="nav-saved">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          <span>Saved (<span id="saved-count">0</span>)</span>
-        </button>
-        <button class="sidebar-nav-item" data-tab="progress" id="nav-progress">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          <span>Classmates Progress</span>
-        </button>
-      </nav>
-
-      <!-- Sidebar Filters Section -->
-      <div class="sidebar-section">
-        <div class="sidebar-section-title">Filter Questions</div>
         
-        <!-- Search -->
-        <div class="sidebar-search">
-          <input type="text" id="input-search" placeholder="Search keywords, code..." />
+        <!-- Single Unified Topic Popup Trigger (42px Touch Target) -->
+        <button class="btn-topics-menu" id="btnTopicSelect" onclick="openTopicsModal()" title="Select Course Topic">
+            <span id="activeTopicBadge">01. Topic 1: Introduction to Data Science</span>
+            <span class="chevron">&blacktriangledown;</span>
+        </button>
+        
+        <!-- Tab Switcher -->
+        <div class="tab-switch">
+            <button class="tab-btn active" id="btnNotes" onclick="showTab('notes')">Lecture Notes & Drills</button>
+            <button class="tab-btn" id="btnVideos" onclick="showTab('videos')">Past Exam Bank</button>
         </div>
+    </div>
+</header>
 
-        <!-- Topics List -->
-        <div class="sidebar-topic-list" id="sidebar-topic-list">
-          <!-- Rendered via JS -->
+<!-- Quick-Select Topics Modal / Bottom Sheet -->
+<div class="topic-modal-overlay" id="topicsModal" onclick="closeTopicsModal(event)">
+    <div class="topic-modal-sheet" onclick="event.stopPropagation()">
+        <div class="topic-sheet-header">
+            <h3 class="topic-sheet-heading">Introduction to Data Science Topics (05)</h3>
+            <button class="topic-sheet-close" onclick="closeTopicsModal()">&times;</button>
         </div>
-
-        <!-- Source Files Accordion -->
-        <div class="accordion-group" style="margin-top: 10px;">
-          <button class="accordion-toggle collapsed" id="toggle-files-filter" aria-expanded="false">
-            <span class="accordion-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>
-              <span>Source Files</span>
-            </span>
-            <span class="chevron-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 6 15 12 9 18"></polyline></svg>
-            </span>
-          </button>
-          <div class="accordion-panel" id="panel-files">
-            <div class="sidebar-file-list" id="file-pills">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Status Filter -->
-        <div class="sidebar-status-group">
-          <button class="status-pill active" data-status="all" id="btn-status-all">All</button>
-          <button class="status-pill" data-status="unanswered" id="btn-status-unanswered">Unanswered</button>
-          <button class="status-pill" data-status="correct" id="btn-status-correct">Correct</button>
-          <button class="status-pill" data-status="incorrect" id="btn-status-incorrect">Incorrect</button>
-        </div>
-
-        <!-- Quick Question Actions -->
-        <div class="sidebar-actions-grid">
-          <button class="btn-sm" id="btn-reveal-all" title="Show all answers">Reveal</button>
-          <button class="btn-sm" id="btn-shuffle" title="Shuffle questions">Shuffle</button>
-          <button class="btn-sm btn-ghost" id="btn-reset" title="Reset answers">Reset</button>
-        </div>
-
-      </div>
-
-      <!-- Sidebar Footer -->
-      <div class="sidebar-footer">
-        <a href="https://drive.google.com/drive/folders/1Z7uAb6wNBfmhYtPq1-tvd-rxsDqa-TZv?usp=drive_link" target="_blank" rel="noopener noreferrer" class="sidebar-source-link" id="link-source-materials" title="View Source Files & Materials">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          <span>Source Materials</span>
-        </a>
-
-        <div class="sidebar-footer-icons">
-          <button class="icon-btn-sm" id="btn-theme" title="Toggle Theme">
-            <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          </button>
-          <button class="icon-btn-sm btn-logout" id="btn-sidebar-logout" title="Log Out">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-    </aside>
-
-    <!-- Mobile Backdrop -->
-    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
-
-    <!-- MAIN CANVAS -->
-    <div class="main-canvas">
-      
-      <!-- Minimal Top Bar with Font Size Scaler & Source Link -->
-      <header class="canvas-topbar">
-        <div class="canvas-topbar-left">
-          <button class="btn-sidebar-open" id="btn-sidebar-open" title="Toggle Sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
-          <span class="topbar-view-title" id="topbar-view-title">Questions</span>
-        </div>
-
-        <div class="canvas-topbar-right">
-          <!-- Font Size Scaler (Makes UI Bigger or Smaller) -->
-          <div class="font-scaler" title="Adjust Text & UI Size">
-            <button class="font-btn" id="btn-font-dec" title="Decrease font size">A−</button>
-            <button class="font-btn font-btn-reset" id="btn-font-reset" title="Reset font size">A</button>
-            <button class="font-btn" id="btn-font-inc" title="Increase font size">A+</button>
-          </div>
-
-          <!-- Direct Source Link -->
-          <a href="https://drive.google.com/drive/folders/1Z7uAb6wNBfmhYtPq1-tvd-rxsDqa-TZv?usp=drive_link" target="_blank" rel="noopener noreferrer" class="topbar-source-link" id="topbar-link-source" title="View Source Course Materials">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-            <span>Source Drive</span>
-          </a>
-        </div>
-      </header>
-
-      <!-- Views Container -->
-      <main class="canvas-body">
-
-        <!-- VIEW 1: QUESTIONS STREAM -->
-        <section id="view-explorer" class="view-section active">
-          <div id="questions-stream" class="questions-stream">
-            <!-- Rendered via JS -->
-          </div>
-
-          <div class="pagination-footer" id="pagination-footer">
-            <button id="btn-load-more" class="btn-primary">Load More Questions</button>
-          </div>
-        </section>
-
-        <!-- VIEW 2: PRACTICE QUIZ MODE -->
-        <section id="view-quiz" class="view-section">
-          <div class="quiz-container">
-            <div class="quiz-header-card">
-              <div class="quiz-meta">
-                <span class="quiz-step" id="quiz-progress-text">Question 1 of 20</span>
-                <span class="quiz-score" id="quiz-live-score">Score: 0 / 0</span>
-              </div>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="quiz-progress-bar" style="width: 5%;"></div>
-              </div>
-            </div>
-
-            <div id="quiz-card-container">
-              <!-- Active quiz question card -->
-            </div>
-
-            <div id="quiz-completion-card" class="exam-card hidden" style="text-align: center; margin-top: 20px;">
-              <h2>Practice Quiz Completed!</h2>
-              <div class="results-score-display" style="margin: 20px 0;">
-                <div class="score-large" id="quiz-final-score-pct">100%</div>
-                <div class="score-sub" id="quiz-final-score-fraction">20 / 20 Correct</div>
-              </div>
-              <button class="btn-primary" id="btn-quiz-retake">Take New Quiz</button>
-            </div>
-
-            <div class="quiz-actions-bar" id="quiz-actions-bar">
-              <button class="btn-secondary" id="btn-quiz-prev">Previous</button>
-              <button class="btn-primary" id="btn-quiz-next">Next Question</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- VIEW 3: MIDTERM EXAM SIMULATOR -->
-        <section id="view-exam" class="view-section">
-          <div class="exam-wrapper">
+        <div class="topic-sheet-body">
             
-            <div id="exam-setup-card" class="exam-card">
-              <div class="exam-badge">KFUPM ISE 291</div>
-              <h2 class="exam-title">Midterm Exam Simulator</h2>
-              <p class="exam-desc">
-                Simulate a realistic midterm exam environment with randomized questions selected across all topics. Immediate feedback is hidden until submission.
-              </p>
-
-              <div class="exam-options-grid">
-                <div class="option-field">
-                  <label>Number of Questions</label>
-                  <select id="exam-select-count">
-                    <option value="20">20 Questions (Standard Quiz)</option>
-                    <option value="30" selected>30 Questions (Midterm Simulation)</option>
-                    <option value="40">40 Questions (Comprehensive Practice)</option>
-                    <option value="50">50 Questions (Full Midterm Exam)</option>
-                  </select>
-                </div>
-                <div class="option-field">
-                  <label>Time Limit</label>
-                  <select id="exam-select-time">
-                    <option value="30">30 Minutes</option>
-                    <option value="45" selected>45 Minutes</option>
-                    <option value="60">60 Minutes</option>
-                    <option value="0">No Time Limit</option>
-                  </select>
-                </div>
-              </div>
-
-              <button id="btn-start-exam" class="btn-primary btn-large">Start Midterm Exam</button>
+        <button class="topic-sheet-item" data-topic="topic-1" onclick="switchTopic('topic-1'); closeTopicsModal();">
+            <span class="topic-sheet-num">01</span>
+            <div class="topic-sheet-meta">
+                <div class="topic-sheet-title">Topic 1: Introduction to Data Science</div>
+                <div class="topic-sheet-sub">Data Science Lifecycle, Roles, 5 V's of Big Data, Structured vs. Unstructured Data, and CRISP-DM Methodology</div>
             </div>
+        </button>
+        
 
-            <div id="exam-active-card" class="exam-card hidden">
-              <div class="exam-live-header">
-                <div class="exam-info">
-                  <span class="exam-badge" id="exam-q-current">Question 1 of 30</span>
-                  <span class="exam-timer" id="exam-timer-display">45:00</span>
+        <button class="topic-sheet-item" data-topic="topic-2" onclick="switchTopic('topic-2'); closeTopicsModal();">
+            <span class="topic-sheet-num">02</span>
+            <div class="topic-sheet-meta">
+                <div class="topic-sheet-title">Topic 2: Python Review & Data Structures</div>
+                <div class="topic-sheet-sub">Built-in Collections, Mutability, Slicing Semantics, NumPy Multi-Dimensional Arrays & Vectorization</div>
+            </div>
+        </button>
+        
+
+        <button class="topic-sheet-item" data-topic="topic-3" onclick="switchTopic('topic-3'); closeTopicsModal();">
+            <span class="topic-sheet-num">03</span>
+            <div class="topic-sheet-meta">
+                <div class="topic-sheet-title">Topic 3: Basic Statistics & Probability</div>
+                <div class="topic-sheet-sub">Central Tendency, Variance & Dispersion, Interquartile Range, Tukey Boxplot Fences, and Hypothesis Testing</div>
+            </div>
+        </button>
+        
+
+        <button class="topic-sheet-item" data-topic="topic-4" onclick="switchTopic('topic-4'); closeTopicsModal();">
+            <span class="topic-sheet-num">04</span>
+            <div class="topic-sheet-meta">
+                <div class="topic-sheet-title">Topic 4: Basic Programming Concepts</div>
+                <div class="topic-sheet-sub">Iterators, List Comprehensions with Conditions, Lambda Functions, and High-Order Functions (map/filter)</div>
+            </div>
+        </button>
+        
+
+        <button class="topic-sheet-item" data-topic="topic-5" onclick="switchTopic('topic-5'); closeTopicsModal();">
+            <span class="topic-sheet-num">05</span>
+            <div class="topic-sheet-meta">
+                <div class="topic-sheet-title">Topic 5: Data Understanding & Preparation</div>
+                <div class="topic-sheet-sub">Handling Missing Data, Imputation Strategies, Normalization vs. Standardization, and Categorical One-Hot Encoding</div>
+            </div>
+        </button>
+        
+        </div>
+    </div>
+</div>
+
+<main class="main-stage">
+    <!-- Explanations & Worked Examples Container -->
+    <div id="notesContainer">
+        
+        <section class="topic-page-unit" id="page-topic-1" style="display: block;">
+            <header class="page-header">
+                <div class="page-meta-badge">ISE 291 &bull; TOPIC 01 OF 05</div>
+                <h1 class="page-title">Topic 1: Introduction to Data Science</h1>
+                <p class="page-desc">Data Science Lifecycle, Roles, 5 V's of Big Data, Structured vs. Unstructured Data, and CRISP-DM Methodology</p>
+                
+            <div class="teleport-strip">
+                <span class="teleport-label">Jump to subsection:</span>
+                <div class="teleport-chips">
+                    <button class="teleport-chip" onclick="teleportTo('t1-c1')">&sect;1 What is Data Science, Key Di…</button><button class="teleport-chip" onclick="teleportTo('t1-q1')">&sect;2 Practice Drill 1: Identifyin…</button><button class="teleport-chip" onclick="teleportTo('t1-c2')">&sect;3 Data Taxonomy: Structured, S…</button><button class="teleport-chip" onclick="teleportTo('t1-q2')">&sect;4 Practice Drill 2: Classifyin…</button><button class="teleport-chip" onclick="teleportTo('t1-c3')">&sect;5 The 5 V's of Big Data</button><button class="teleport-chip" onclick="teleportTo('t1-q3')">&sect;6 Practice Drill 3: Discerning…</button><button class="teleport-chip" onclick="teleportTo('t1-c4')">&sect;7 The CRISP-DM Methodology & E…</button><button class="teleport-chip" onclick="teleportTo('t1-q4')">&sect;8 Practice Drill 4: CRISP-DM P…</button><button class="teleport-chip" onclick="teleportTo('t1-c5')">&sect;9 Model Building</button><button class="teleport-chip" onclick="teleportTo('t1-q5')">&sect;10 Practice Drill 5: Model Plan…</button>
                 </div>
-                <button class="btn-danger btn-sm" id="btn-finish-exam">Submit Exam</button>
-              </div>
-
-              <div class="exam-nav-grid" id="exam-nav-grid"></div>
-
-              <div id="exam-active-question"></div>
-
-              <div class="exam-footer-nav">
-                <button class="btn-secondary" id="btn-exam-prev">Previous</button>
-                <button class="btn-secondary" id="btn-exam-flag">Flag for Review</button>
-                <button class="btn-primary" id="btn-exam-next">Next</button>
-              </div>
             </div>
-
-            <div id="exam-results-card" class="exam-card hidden">
-              <div class="results-badge" id="results-grade-badge">A+</div>
-              <h2 class="results-title">Exam Summary & Score</h2>
-              <div class="results-score-display">
-                <div class="score-large" id="results-score-pct">92%</div>
-                <div class="score-sub" id="results-score-fraction">28 / 30 Correct</div>
-              </div>
-
-              <div class="results-topic-breakdown" id="results-topics-list"></div>
-
-              <div class="results-actions">
-                <button class="btn-primary" id="btn-exam-review">Review Detailed Answers</button>
-                <button class="btn-secondary" id="btn-exam-retake">Take Another Exam</button>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- VIEW 4: SAVED QUESTIONS -->
-        <section id="view-saved" class="view-section">
-          <div class="saved-header">
-            <h2>Bookmarked Questions</h2>
-            <p>Review and practice the questions you have saved for focused revision.</p>
-          </div>
-          <div id="saved-stream" class="questions-stream"></div>
-        </section>
-
-        <!-- VIEW 5: FRIENDS & CLASSMATES PROGRESS -->
-        <section id="view-progress" class="view-section">
-          <div class="progress-section-container">
             
-            <div class="user-my-progress-card">
-              <div class="my-progress-header">
-                <div class="my-progress-user-info">
-                  <div class="user-avatar-lg" id="my-profile-avatar">?</div>
-                  <div>
-                    <h2 class="my-profile-name" id="my-profile-username">User</h2>
-                    <p class="my-profile-sub">Account active and cloud synced across devices.</p>
-                  </div>
-                </div>
-                <div class="my-progress-actions">
-                  <button class="btn-secondary btn-sm" id="btn-refresh-progress" title="Refresh friends list">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                    <span>Refresh</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="kpi-grid">
-                <div class="kpi-card">
-                  <div class="kpi-num" id="my-kpi-answered">0 / 263</div>
-                  <div class="kpi-lbl">Questions Solved</div>
-                </div>
-                <div class="kpi-card">
-                  <div class="kpi-num stat-green" id="my-kpi-accuracy">0%</div>
-                  <div class="kpi-lbl">Overall Accuracy</div>
-                </div>
-                <div class="kpi-card">
-                  <div class="kpi-num stat-purple" id="my-kpi-exams">0</div>
-                  <div class="kpi-lbl">Midterms Taken</div>
-                </div>
-                <div class="kpi-card">
-                  <div class="kpi-num stat-amber" id="my-kpi-bookmarks">0</div>
-                  <div class="kpi-lbl">Saved Questions</div>
-                </div>
-              </div>
-
-              <div class="my-topic-breakdown" id="my-topic-breakdown"></div>
+            </header>
+            <div class="page-stream">
+                <div class="section-card concept-card" id="t1-c1">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. What is Data Science, Key Disciplines & Team Roles</h2></div>
+<div class="body-text"><p><strong>Data Science</strong> is an interdisciplinary field that extracts actionable insights and knowledge from noisy, structured, and unstructured data using scientific methods, algorithms, and automated pipelines.</p><div class="mermaid-container"><pre class="mermaid">
+flowchart TD
+    DS(["Data Science Discipline"])
+    M["Mathematics & Statistics<br/>(Probability, Calculus, Linear Algebra)"] --> DS
+    CS["Computer Science & Programming<br/>(Python, SQL, Data Structures)"] --> DS
+    DK["Domain Knowledge & Business Acumen<br/>(Engineering, Healthcare, Finance)"] --> DS
+</pre></div><div class="table-wrapper"><table><thead><tr><th>Role Profile</th><th>Core Responsibilities</th><th>Primary Toolset</th></tr></thead><tbody><tr><td><strong>Data Scientist</strong></td><td>Develops statistical models, machine learning algorithms, and predictive analytics to discover deep patterns.</td><td>Python, R, Scikit-Learn, PyTorch, Statistics</td></tr><tr><td><strong>Data Engineer</strong></td><td>Designs, builds, and maintains robust scalable data pipelines, ETL workflows, and database architectures.</td><td>SQL, Spark, Hadoop, Kafka, Airflow</td></tr><tr><td><strong>Business Analyst</strong></td><td>Translates corporate problems into analytical requirements, evaluates KPIs, and creates dashboards.</td><td>PowerBI, Tableau, Excel, SQL</td></tr></tbody></table></div></div>
+</div><div class="section-card question-card" id="t1-q1">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Identifying Core Engineering Roles</h3> <span class="tag-source">Source: 223_Midterm_Exam.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In an enterprise data science team, which team member is primarily tasked with data extraction, cleaning data infrastructure pipelines, and ensuring database transformations scale reliably for modeling?</p><div class="interactive-q" data-correct="A" data-source="223_Midterm_Exam.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Data Engineer</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Business Analyst</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Data Scientist</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Project Sponsor</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) Data Engineer</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><strong>Data Engineers</strong> focus on data infrastructure, extraction, ETL pipelines, and scalable storage.</li><li><strong>Data Scientists</strong> focus on statistical modeling, predictive algorithms, and hypothesis testing.</li><li><strong>Business Analysts</strong> bridge business strategy and visualization dashboards.</li></ol><p><strong>Reinforcement Rule:</strong> Data extraction, pipeline building, and database transformation are always the primary responsibility of the <em>Data Engineer</em>.</p></div></div>
+</div><div class="section-card concept-card" id="t1-c2">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Data Taxonomy: Structured, Semi-Structured, & Unstructured</h2></div>
+<div class="body-text"><p>Data across modern engineering organizations falls into three structural classifications:</p><div class="callout callout-important"><strong>The Three Data Classes:</strong><ul><li><strong>Structured Data:</strong> Highly organized tabular data conforming to a strict relational schema (e.g., SQL tables, CSV spreadsheets, OLAP cubes).</li><li><strong>Semi-Structured Data:</strong> Data containing tags, markers, or hierarchical key-value pairs without rigid relational schemas (e.g., JSON documents, XML feeds, NoSQL records).</li><li><strong>Unstructured Data:</strong> Data lacking any predefined structural format or data model; accounts for over 80% of enterprise information (e.g., Raw audio .wav, video streams, satellite imagery, free-form text comments).</li></ul></div></div>
+</div><div class="section-card question-card" id="t1-q2">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Classifying Industrial Data Streams</h3> <span class="tag-source">Source: 223_Midterm_Exam.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A smart manufacturing plant generates vibration sensor logs formatted as raw sound waves (.wav), employee shift schedules in SQL relational tables, and machine diagnostic reports in JSON format. How should these three data streams be classified respectively?</p><div class="interactive-q" data-correct="B" data-source="223_Midterm_Exam.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Semi-structured, Structured, Unstructured</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Unstructured, Structured, Semi-structured</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Structured, Semi-structured, Unstructured</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Unstructured, Semi-structured, Structured</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) Unstructured, Structured, Semi-structured</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><strong>Vibration audio (.wav):</strong> Audio files have no fixed row/column schema &rarr; <strong>Unstructured Data</strong>.</li><li><strong>SQL tables:</strong> Relational database records with fixed schemas &rarr; <strong>Structured Data</strong>.</li><li><strong>JSON reports:</strong> Key-value tagged hierarchies without rigid SQL schemas &rarr; <strong>Semi-Structured Data</strong>.</li></ol><p><strong>Reinforcement Rule:</strong> Audio, video, and natural language text are always unstructured. SQL is structured. JSON and XML are semi-structured.</p></div></div>
+</div><div class="section-card concept-card" id="t1-c3">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. The 5 V's of Big Data</h2></div>
+<div class="body-text"><p>Big Data is conventionally characterized by five dimensions known as the <strong>5 V's</strong>:</p><div class="table-wrapper"><table><thead><tr><th>Dimension</th><th>Definition</th><th>Real-World Industrial Example</th></tr></thead><tbody><tr><td><strong>Volume</strong></td><td>The sheer scale, size, and quantity of generated data.</td><td>Petabytes of flight telemetry generated daily by airline fleets.</td></tr><tr><td><strong>Velocity</strong></td><td>The speed at which new data is generated and must be processed.</td><td>Stock exchange trading ticks arriving in microseconds.</td></tr><tr><td><strong>Variety</strong></td><td>The diversity of data formats and structural types.</td><td>Combining video feeds, PDF invoices, and SQL inventories.</td></tr><tr><td><strong>Veracity</strong></td><td>The trustworthiness, accuracy, and cleanliness of data.</td><td>Filtering out noisy sensor spikes, fraudulent accounts, or corrupted timestamps.</td></tr><tr><td><strong>Value</strong></td><td>The actionable business or scientific return derived from data.</td><td>Predictive maintenance algorithms reducing factory downtime by 35%.</td></tr></tbody></table></div></div>
+</div><div class="section-card question-card" id="t1-q3">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Discerning Big Data Dimensions</h3> <span class="tag-source">Source: Mid exam v important questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>An automated fraud detection system at a digital bank processes transactions in real-time. However, inconsistent date formats, missing customer addresses, and noisy IP timestamps are severely degrading model accuracy. Which specific 'V' of Big Data is directly impacted by these data quality problems?</p><div class="interactive-q" data-correct="A" data-source="Mid exam v important questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Veracity</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Velocity</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Volume</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Variety</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) Veracity</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p><strong>Veracity</strong> represents data integrity, reliability, and accuracy. Whenever an exam problem mentions noise, inconsistency, missing values, or biases, it is directly testing <em>Veracity</em>.</p><div class="step-divider"></div><p><strong>Trap Alert:</strong> Do not confuse <em>Velocity</em> (speed of arrival) with <em>Veracity</em> (quality of data). Real-time arrival refers to Velocity, but data corruption targets Veracity.</p></div></div>
+</div><div class="section-card concept-card" id="t1-c4">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. The CRISP-DM Methodology & Effort Allocation</h2></div>
+<div class="body-text"><p>The standard process model for data analytics and data mining projects is <strong>CRISP-DM</strong> (Cross-Industry Standard Process for Data Mining), consisting of six iterative phases:</p><div class="mermaid-container"><pre class="mermaid">
+flowchart LR
+    P1["1. Business Understanding"] --> P2["2. Data Understanding"]
+    P2 --> P3["3. Data Preparation<br/>(~80% of total effort)"]
+    P3 --> P4["4. Modeling"]
+    P4 --> P5["5. Evaluation"]
+    P5 --> P6["6. Deployment"]
+    P5 -.->|"Iterate if below threshold"| P1
+</pre></div><div class="callout callout-tip"><strong>Midterm Exam Golden Rule:</strong> Phase 3 (<strong>Data Preparation</strong>) consistently consumes between <strong>70% to 80%</strong> of the total time, resources, and effort in any realistic data science lifecycle.</div></div>
+</div><div class="section-card question-card" id="t1-q4">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: CRISP-DM Phases Sequence</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In which sequence should a data science team proceed according to the CRISP-DM standard when developing a predictive churn model?</p><div class="interactive-q" data-correct="C" data-source="Sample Mid .pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Data Understanding &rarr; Business Understanding &rarr; Modeling &rarr; Data Prep</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Data Preparation &rarr; Modeling &rarr; Evaluation &rarr; Deployment &rarr; Business Understanding</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Business Understanding &rarr; Data Understanding &rarr; Data Preparation &rarr; Modeling</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Modeling &rarr; Evaluation &rarr; Business Understanding &rarr; Data Preparation</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) Business Understanding &rarr; Data Understanding &rarr; Data Preparation &rarr; Modeling</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>CRISP-DM strictly mandates starting with defining the business objective and success criteria (<strong>Business Understanding</strong>), followed by exploring initial data (<strong>Data Understanding</strong>), cleaning and feature engineering (<strong>Data Preparation</strong>), and finally applying algorithms (<strong>Modeling</strong>).</p></div></div>
+</div><div class="section-card concept-card" id="t1-c5">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Data Analytics Lifecycle: Model Planning vs. Model Building</h2></div>
+<div class="body-text"><p>In the broader Data Analytics Lifecycle, students often confuse Phase 3 (<strong>Model Planning</strong>) with Phase 4 (<strong>Model Building</strong>):</p><div class="table-wrapper"><table><thead><tr><th>Phase</th><th>Key Objective</th><th>Primary Activities</th></tr></thead><tbody><tr><td><strong>Phase 3: Model Planning</strong></td><td>Determine methods and techniques</td><td>Explore variable relationships, test hypotheses, assess collinearity, and select candidate algorithms.</td></tr><tr><td><strong>Phase 4: Model Building</strong></td><td>Execute training and validation</td><td>Split datasets into Training/Test sets, optimize hyper-parameters, and fit models to data.</td></tr></tbody></table></div></div>
+</div><div class="section-card question-card" id="t1-q5">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Model Planning vs Model Building Distinction</h3> <span class="tag-source">Source: Mid exam v important questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>In the model planning phase of the data analytics life cycle, the team determines the methods, techniques, and workflow it intends to follow for the ________________ phase.</p><div class="interactive-q" data-correct="D" data-source="Mid exam v important questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Discovery</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Operationalize</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Data preparation</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Model building</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(D) Model building</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>The explicit purpose of the <em>Model Planning</em> phase is to plan and design the analytical methodology that will be implemented during the subsequent <strong>Model Building</strong> phase.</p></div></div>
+</div>
             </div>
-
-            <div class="friends-directory-card">
-              <div class="directory-header">
-                <div>
-                  <h3>Classmates Progress</h3>
-                  <p>Click on any friend to inspect their detailed topic breakdown and question history.</p>
-                </div>
-                <div class="directory-search">
-                  <input type="text" id="input-search-friends" placeholder="Search friends by username..." />
-                </div>
-              </div>
-
-              <div class="friends-list" id="friends-list"></div>
+            <div class="page-bottom-actions">
+                <button class="btn-page-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">&uarr; Back to top of Topic 01</button>
             </div>
-
-          </div>
         </section>
+        
+        <section class="topic-page-unit" id="page-topic-2" style="display: none;">
+            <header class="page-header">
+                <div class="page-meta-badge">ISE 291 &bull; TOPIC 02 OF 05</div>
+                <h1 class="page-title">Topic 2: Python Review & Data Structures</h1>
+                <p class="page-desc">Built-in Collections, Mutability, Slicing Semantics, NumPy Multi-Dimensional Arrays & Vectorization</p>
+                
+            <div class="teleport-strip">
+                <span class="teleport-label">Jump to subsection:</span>
+                <div class="teleport-chips">
+                    <button class="teleport-chip" onclick="teleportTo('t2-c1')">&sect;1 Python Built-In Collections …</button><button class="teleport-chip" onclick="teleportTo('t2-q1')">&sect;2 Practice Drill 1: Dictionary…</button><button class="teleport-chip" onclick="teleportTo('t2-c2')">&sect;3 Python Advanced Slicing Mech…</button><button class="teleport-chip" onclick="teleportTo('t2-q2')">&sect;4 Practice Drill 2: Tracing Ne…</button><button class="teleport-chip" onclick="teleportTo('t2-c3')">&sect;5 Deep Copying</button><button class="teleport-chip" onclick="teleportTo('t2-q3')">&sect;6 Practice Drill 3: List Refer…</button><button class="teleport-chip" onclick="teleportTo('t2-c4')">&sect;7 NumPy Multi-Dimensional Arra…</button><button class="teleport-chip" onclick="teleportTo('t2-q4')">&sect;8 Practice Drill 4: Array Resh…</button><button class="teleport-chip" onclick="teleportTo('t2-c5')">&sect;9 NumPy Stacking, Splitting, &…</button><button class="teleport-chip" onclick="teleportTo('t2-q5')">&sect;10 Practice Drill 5: Row-wise v…</button><button class="teleport-chip" onclick="teleportTo('t2-c6')">&sect;11 Vectorization & Boolean Inde…</button><button class="teleport-chip" onclick="teleportTo('t2-q6')">&sect;12 Practice Drill 6: Boolean Ma…</button>
+                </div>
+            </div>
+            
+            </header>
+            <div class="page-stream">
+                <div class="section-card concept-card" id="t2-c1">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Python Built-In Collections & Mutability Matrix</h2></div>
+<div class="body-text"><p>Understanding collection properties is essential for tracing code and preventing aliasing bugs:</p><div class="table-wrapper"><table><thead><tr><th>Collection</th><th>Syntax</th><th>Mutable?</th><th>Ordered?</th><th>Duplicates Allowed?</th><th>Valid Dict Key?</th></tr></thead><tbody><tr><td><code>list</code></td><td><code>[1, 2, 3]</code></td><td><strong>Yes</strong></td><td>Yes</td><td>Yes</td><td><strong>No</strong> (unhashable)</td></tr><tr><td><code>tuple</code></td><td><code>(1, 2, 3)</code></td><td><strong>No</strong> (immutable)</td><td>Yes</td><td>Yes</td><td><strong>Yes</strong> (if elements are hashable)</td></tr><tr><td><code>set</code></td><td><code>{1, 2, 3}</code></td><td><strong>Yes</strong></td><td>No</td><td><strong>No</strong> (unique only)</td><td><strong>No</strong> (unhashable)</td></tr><tr><td><code>dict</code></td><td><code>{'k': 'v'}</code></td><td><strong>Yes</strong></td><td>Yes (3.7+)</td><td>Keys: No, Values: Yes</td><td><strong>No</strong> (unhashable)</td></tr></tbody></table></div><div class="callout callout-warning"><strong>Hashability Rule:</strong> To be a dictionary key or set element, an object must be <em>immutable</em> so its hash value never changes during its lifetime. Lists, sets, and dicts cannot be keys.</div></div>
+</div><div class="section-card question-card" id="t2-q1">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Dictionary Keys & Mutability Rules</h3> <span class="tag-source">Source: Sol-Practice Questions Topic2.docx</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A software engineer attempts to construct a dictionary mapping student credentials. Which of the following assignment statements will raise a <code>TypeError: unhashable type</code> at runtime?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">d1 = {(101, 102): "Pair"}
+d2 = {"ID_101": 95}
+d3 = {[101, 102]: "Scores"}
+d4 = {101: ("Math", "Science")}</code></pre></div><div class="interactive-q" data-correct="C" data-source="Sol-Practice Questions Topic2.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">d1 = {(101, 102): "Pair"}</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">d2 = {"ID_101": 95}</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">d3 = {[101, 102]: "Scores"}</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">d4 = {101: ("Math", "Science")}</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) d3 = {[101, 102]: "Scores"}</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li>In Python dictionaries, keys must be <strong>hashable</strong>, which requires immutability.</li><li><code>(101, 102)</code> is a tuple (immutable) &rarr; valid key.</li><li><code>"ID_101"</code> is a string (immutable) &rarr; valid key.</li><li><code>[101, 102]</code> is a <strong>list</strong> (mutable collection) &rarr; cannot be hashed &rarr; raises <code>TypeError: unhashable type: 'list'</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t2-c2">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Python Advanced Slicing Mechanics</h2></div>
+<div class="body-text"><p>Sequence slicing in Python conforms to the formal syntax:</p><div class="katex-display">$$\text{sequence}[\text{start} : \text{stop} : \text{step}]$$</div><ul><li><code>start</code>: Inclusive starting index (default is <code>0</code> when step > 0).</li><li><code>stop</code>: <strong>Exclusive</strong> termination boundary (element at index <code>stop</code> is NEVER included).</li><li><code>step</code>: Index stride interval. If negative, traversal moves backwards from right to left.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">data = [10, 20, 30, 40, 50, 60, 70]
+print(data[1:5])     # [20, 30, 40, 50] (index 5 is excluded)
+print(data[::-1])    # [70, 60, 50, 40, 30, 20, 10] (reverse sequence)
+print(data[4:1:-1])  # [50, 40, 30] (stops before index 1)</code></pre></div></div>
+</div><div class="section-card question-card" id="t2-q2">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Tracing Negative-Step Slicing</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the exact output of executing the following Python code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">vals = [2, 4, 6, 8, 10, 12, 14]
+result = vals[-2:1:-2]
+print(result)</code></pre></div><div class="interactive-q" data-correct="D" data-source="Quiz1_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[12, 10, 8]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[14, 10, 6]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[12, 8, 4]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[12, 8]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(D) [12, 8]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>vals[-2]</code> corresponds to index 5 (value <strong>12</strong>).</li><li>Step is <code>-2</code>, so next index is $5 - 2 = 3$ (value <strong>8</strong>).</li><li>Next index would be $3 - 2 = 1$ (value 4). However, the stop boundary is <code>1</code>, which is <strong>strictly exclusive</strong>.</li><li>Therefore, index 1 is not included. Output is strictly <code>[12, 8]</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t2-c3">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Aliasing, References, & Shallow vs. Deep Copying</h2></div>
+<div class="body-text"><p>In Python, variables are labels bound to memory objects rather than storage boxes:</p><div class="callout callout-warning"><strong>Aliasing Trap:</strong> <code>b = a</code> merely points variable <code>b</code> to the exact same list instance in memory. Mutating <code>b</code> (e.g., <code>b.append(99)</code>) immediately affects <code>a</code>!</div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">a = [1, 2, [3, 4]]
+b = a          # Aliasing: same memory pointer
+c = a.copy()   # Shallow copy: new outer list, shared inner lists
+import copy
+d = copy.deepcopy(a) # Deep copy: fully recursive independent duplicate</code></pre></div></div>
+</div><div class="section-card question-card" id="t2-q3">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: List Reference Aliasing Tracing</h3> <span class="tag-source">Source: Sol-Practice Questions Topic2.docx</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following script?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">x = [1, 2, 3]
+y = x
+y[0] = 99
+x.append(4)
+print(x)</code></pre></div><div class="interactive-q" data-correct="B" data-source="Sol-Practice Questions Topic2.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[1, 2, 3, 4]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[99, 2, 3, 4]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[99, 2, 3]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">TypeError: list is immutable</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [99, 2, 3, 4]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>y = x</code> creates an alias: both <code>x</code> and <code>y</code> reference the identical list object in heap memory.</li><li><code>y[0] = 99</code> mutates the first element of that object. Both <code>x[0]</code> and <code>y[0]</code> now evaluate to 99.</li><li><code>x.append(4)</code> appends 4 to that same list.</li><li>Printing <code>x</code> yields <code>[99, 2, 3, 4]</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t2-c4">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. NumPy Multi-Dimensional Arrays: Shapes & Reshaping</h2></div>
+<div class="body-text"><p>NumPy arrays provide efficient, contiguous N-dimensional memory blocks:</p><ul><li><code>arr.shape</code>: A tuple representing the dimensions along each axis (e.g., <code>(rows, columns)</code>).</li><li><code>arr.ndim</code>: The number of axes (dimensions) of the array.</li><li><code>arr.reshape(m, n)</code>: Returns a new view of the array with dimensions $(m, n)$ provided total elements $m \times n$ equals original size.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">import numpy as np
+arr = np.arange(12)      # 1D array of 12 elements: [0, 1, ..., 11]
+mat = arr.reshape(3, 4)  # 2D array: 3 rows, 4 columns
+print(mat.shape)         # (3, 4)
+print(mat.ndim)          # 2</code></pre></div></div>
+</div><div class="section-card question-card" id="t2-q4">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Array Reshaping & Dimension Matching</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given an array <code>a = np.arange(16)</code>. Which of the following reshape operations will raise a <code>ValueError: cannot reshape array</code>?</p><div class="interactive-q" data-correct="C" data-source="Quiz1_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">a.reshape(4, 4)</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">a.reshape(2, 8)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">a.reshape(3, 5)</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">a.reshape(1, 16)</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) a.reshape(3, 5)</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>The original array contains $16$ elements. Any valid reshape $(r, c)$ requires $r \times c = 16$:</p><ul><li>$4 \times 4 = 16$ (Valid)</li><li>$2 \times 8 = 16$ (Valid)</li><li>$3 \times 5 = 15 \ne 16$ &rarr; <strong>Raises ValueError</strong></li><li>$1 \times 16 = 16$ (Valid)</li></ul></div></div>
+</div><div class="section-card concept-card" id="t2-c5">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. NumPy Stacking, Splitting, & Concatenation</h2></div>
+<div class="body-text"><p>Array joining and splitting operations along coordinate axes:</p><div class="callout callout-note"><strong>Directional Symmetries:</strong><ul><li><code>np.vstack([a, b])</code>: Stacks vertically along <strong>axis=0</strong> (row-wise, adding rows).</li><li><code>np.hstack([a, b])</code>: Stacks horizontally along <strong>axis=1</strong> (column-wise, adding columns).</li><li><code>np.vsplit(arr, n)</code>: Splits array vertically into $n$ sub-arrays row-wise.</li><li><code>np.hsplit(arr, n)</code>: Splits array horizontally into $n$ sub-arrays column-wise.</li></ul></div></div>
+</div><div class="section-card question-card" id="t2-q5">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Row-wise vs Column-wise Splitting</h3> <span class="tag-source">Source: Sol_Quiz1_ISE291_S04_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which of the following statements regarding NumPy operations is <strong>INCORRECT</strong>?</p><div class="interactive-q" data-correct="A" data-source="Sol_Quiz1_ISE291_S04_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">.hsplit() is used for splitting an array row-wise.</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">.concatenate() joins two or more arrays along an existing axis.</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">.vstack() is used for row-wise joining of arrays.</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">.hstack() is used for column-wise joining of arrays.</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) .hsplit() is used for splitting an array row-wise.</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p><code>.hsplit()</code> splits an array <em>horizontally</em> (column-wise). To split an array <em>row-wise</em>, you must use <code>.vsplit()</code>. Hence statement A is false.</p></div></div>
+</div><div class="section-card concept-card" id="t2-c6">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Vectorization & Boolean Indexing Masks</h2></div>
+<div class="body-text"><p>NumPy eliminates slow Python for-loops by executing vectorized SIMD operations in compiled C:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">import numpy as np
+vals = np.array([10, 25, 40, 55, 70])
+# 1. Vectorized condition creates boolean mask:
+mask = vals > 30        # array([False, False,  True,  True,  True])
+# 2. Boolean indexing extracts matching values:
+filtered = vals[mask]   # array([40, 55, 70])
+# 3. In-place modification via mask:
+vals[vals < 30] = 0     # array([0, 0, 40, 55, 70])</code></pre></div></div>
+</div><div class="section-card question-card" id="t2-q6">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Boolean Masking & Conditional Filtering</h3> <span class="tag-source">Source: Sol_Quiz1_ISE291_S04_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of the following NumPy code snippet?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">import numpy as np
+arr = np.array([2, 5, 8, 11, 14])
+print(arr[(arr % 2 == 0) & (arr > 6)])</code></pre></div><div class="interactive-q" data-correct="C" data-source="Sol_Quiz1_ISE291_S04_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[2, 8, 14]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[8, 11, 14]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[8, 14]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[14]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) [8, 14]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>arr % 2 == 0</code> evaluates to: <code>[True, False, True, False, True]</code> (elements 2, 8, 14).</li><li><code>arr > 6</code> evaluates to: <code>[False, False, True, True, True]</code> (elements 8, 11, 14).</li><li>Bitwise AND <code>&</code> requires both conditions to hold: indices 2 and 4 (values <strong>8</strong> and <strong>14</strong>).</li></ol></div></div>
+</div>
+            </div>
+            <div class="page-bottom-actions">
+                <button class="btn-page-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">&uarr; Back to top of Topic 02</button>
+            </div>
+        </section>
+        
+        <section class="topic-page-unit" id="page-topic-3" style="display: none;">
+            <header class="page-header">
+                <div class="page-meta-badge">ISE 291 &bull; TOPIC 03 OF 05</div>
+                <h1 class="page-title">Topic 3: Basic Statistics & Probability</h1>
+                <p class="page-desc">Central Tendency, Variance & Dispersion, Interquartile Range, Tukey Boxplot Fences, and Hypothesis Testing</p>
+                
+            <div class="teleport-strip">
+                <span class="teleport-label">Jump to subsection:</span>
+                <div class="teleport-chips">
+                    <button class="teleport-chip" onclick="teleportTo('t3-c1')">&sect;1 Measures of Centrality & Rob…</button><button class="teleport-chip" onclick="teleportTo('t3-q1')">&sect;2 Practice Drill 1: Metric Sel…</button><button class="teleport-chip" onclick="teleportTo('t3-c2')">&sect;3 Skewness Direction & Metric …</button><button class="teleport-chip" onclick="teleportTo('t3-q2')">&sect;4 Practice Drill 2: Skewness M…</button><button class="teleport-chip" onclick="teleportTo('t3-c3')">&sect;5 Sample Variance & Bessel's C…</button><button class="teleport-chip" onclick="teleportTo('t3-q3')">&sect;6 Practice Drill 3: Sample Var…</button><button class="teleport-chip" onclick="teleportTo('t3-c4')">&sect;7 Quartiles, Five-Number Summa…</button><button class="teleport-chip" onclick="teleportTo('t3-q4')">&sect;8 Practice Drill 4: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t3-c5')">&sect;9 Tukey's Boxplot Outlier Fences</button><button class="teleport-chip" onclick="teleportTo('t3-q5')">&sect;10 Practice Drill 5: Outlier Fe…</button><button class="teleport-chip" onclick="teleportTo('t3-c6')">&sect;11 Hypothesis Testing & P-Value…</button><button class="teleport-chip" onclick="teleportTo('t3-q6')">&sect;12 Practice Drill 6: P-Value In…</button>
+                </div>
+            </div>
+            
+            </header>
+            <div class="page-stream">
+                <div class="section-card concept-card" id="t3-c1">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Measures of Centrality & Robustness to Outliers</h2></div>
+<div class="body-text"><p>Central tendency characterizes the middle value of a distribution:</p><div class="katex-display">$$\text{Sample Mean: } \bar{x} = \frac{1}{n} \sum_{i=1}^n x_i$$</div><ul><li><strong>Mean:</strong> Incorporates all observations; highly sensitive to extreme outliers.</li><li><strong>Median:</strong> Middle value in sorted order ($50^{\text{th}}$ percentile). <strong>Robust to outliers</strong>.</li><li><strong>Mode:</strong> Most frequently occurring value; applicable to both numerical and categorical data.</li></ul></div>
+</div><div class="section-card question-card" id="t3-q1">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Metric Selection under Skewed Data</h3> <span class="tag-source">Source: Sol-Practice Questions Topic3.docx</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A salary survey among industrial engineering graduates shows a strong positive (right-hand) skew due to a few multi-millionaire entrepreneurs. Which measure of central tendency provides the most representative, robust indicator of typical graduate earnings?</p><div class="interactive-q" data-correct="B" data-source="Sol-Practice Questions Topic3.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Arithmetic Mean</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Median</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Range</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Standard Deviation</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) Median</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>The mean is heavily distorted by extreme values in the right tail ($\text{Mean} > \text{Median}$). The <strong>Median</strong> relies strictly on rank order, making it unaffected by extreme outliers.</p></div></div>
+</div><div class="section-card concept-card" id="t3-c2">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Skewness Direction & Metric Inequalities</h2></div>
+<div class="body-text"><p>The asymmetry of a frequency distribution is characterized by its skewness:</p><div class="callout callout-important"><strong>The Skewness Hierarchy:</strong><ul><li><strong>Symmetric (Bell-shaped):</strong> $\mathbf{\text{Mean} \approx \text{Median} \approx \text{Mode}}$</li><li><strong>Right-Skewed (Positive Skew):</strong> Long tail stretches to the right &rarr; $\mathbf{\text{Mean} > \text{Median} > \text{Mode}}$</li><li><strong>Left-Skewed (Negative Skew):</strong> Long tail stretches to the left &rarr; $\mathbf{\text{Mean} < \text{Median} < \text{Mode}}$</li></ul></div></div>
+</div><div class="section-card question-card" id="t3-q2">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Skewness Metric Ordering</h3> <span class="tag-source">Source: MCQ_Practice_Topics_2_and_3.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A distribution of test scores has a mean of 82, a median of 75, and a mode of 70. What is the shape of this distribution?</p><div class="interactive-q" data-correct="A" data-source="MCQ_Practice_Topics_2_and_3.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Positively skewed (skewed to the right)</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Negatively skewed (skewed to the left)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Symmetric (Normal)</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Uniform</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) Positively skewed (skewed to the right)</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>We compare the three measures:</p><div class="katex-display">$$\text{Mean} (82) > \text{Median} (75) > \text{Mode} (70)$$</div><p>When the mean is pulled higher than the median and mode, the distribution is <strong>positively skewed (skewed to the right)</strong>.</p></div></div>
+</div><div class="section-card concept-card" id="t3-c3">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Sample Variance & Bessel's Correction</h2></div>
+<div class="body-text"><p>Dispersion quantifies the spread of observations around the central mean:</p><div class="katex-display">$$s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n - 1}, \quad s = \sqrt{s^2}$$</div><div class="callout callout-important"><strong>Bessel's Correction:</strong> When computing <em>sample</em> variance, dividing by $n-1$ (degrees of freedom) corrects for downward bias, yielding an unbiased estimator of population variance $\sigma^2$. In NumPy, use <code>np.var(data, ddof=1)</code>.</div></div>
+</div><div class="section-card question-card" id="t3-q3">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Sample Variance Calculation with Bessel's Correction</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given the sample dataset $X = [2, 4, 6, 8]$, what is the exact sample variance $s^2$ calculated using Bessel's correction?</p><div class="interactive-q" data-correct="C" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">5.0</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">6.25</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">6.67</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">4.5</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) 6.67</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><ol><li>Mean: $\bar{x} = \frac{2 + 4 + 6 + 8}{4} = \frac{20}{4} = 5$.</li><li>Deviations squared:<ul><li>$(2 - 5)^2 = (-3)^2 = 9$</li><li>$(4 - 5)^2 = (-1)^2 = 1$</li><li>$(6 - 5)^2 = (1)^2 = 1$</li><li>$(8 - 5)^2 = (3)^2 = 9$</li></ul></li><li>Sum of squared deviations: $9 + 1 + 1 + 9 = 20$.</li><li>Sample variance (divide by $n - 1 = 3$):$$s^2 = \frac{20}{3} \approx 6.67$$</li></ol></div></div>
+</div><div class="section-card concept-card" id="t3-c4">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Quartiles, Five-Number Summary & Interquartile Range (IQR)</h2></div>
+<div class="body-text"><p>The Five-Number Summary divides ordered data into four equal quarters:</p><div class="katex-display">$$\text{Summary} = \{ \text{Min}, Q_1, Q_2 (\text{Median}), Q_3, \text{Max} \}$$</div><ul><li><strong>$Q_1$ ($25^{\text{th}}$ percentile):</strong> Median of the lower half.</li><li><strong>$Q_3$ ($75^{\text{th}}$ percentile):</strong> Median of the upper half.</li><li><strong>Interquartile Range (IQR):</strong> $\text{IQR} = Q_3 - Q_1$, containing the central 50% of the distribution.</li></ul></div>
+</div><div class="section-card question-card" id="t3-q4">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Calculating IQR</h3> <span class="tag-source">Source: Sol-Practice Questions Topic3.docx</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A manufacturing sample of component lifetimes yields $Q_1 = 45$ hours and $Q_3 = 95$ hours. What is the Interquartile Range (IQR)?</p><div class="interactive-q" data-correct="B" data-source="Sol-Practice Questions Topic3.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">70 hours</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">50 hours</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">140 hours</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">25 hours</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) 50 hours</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><p>$$\text{IQR} = Q_3 - Q_1 = 95 - 45 = 50\text{ hours}$$</p></div></div>
+</div><div class="section-card concept-card" id="t3-c5">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Tukey's Boxplot Outlier Fences</h2></div>
+<div class="body-text"><p>In exploratory data analysis, Tukey defines threshold fences to detect unusual observations:</p><div class="callout callout-important"><strong>Tukey's Outlier Threshold Fences:</strong><ul><li><strong>Lower Inner Fence (LIF):</strong> $\text{LIF} = Q_1 - 1.5 \times \text{IQR}$</li><li><strong>Upper Inner Fence (UIF):</strong> $\text{UIF} = Q_3 + 1.5 \times \text{IQR}$</li><li>Any observed value $x < \text{LIF}$ or $x > \text{UIF}$ is formally classified as an <strong>outlier</strong>.</li></ul></div></div>
+</div><div class="section-card question-card" id="t3-q5">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Outlier Fence Identification</h3> <span class="tag-source">Source: 223_Midterm_Exam.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A quality control dataset yields $Q_1 = 30$ and $Q_3 = 70$. Which of the following observed values is an outlier according to Tukey's boxplot criteria?</p><div class="interactive-q" data-correct="D" data-source="223_Midterm_Exam.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">15</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">125</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">-10</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">135</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(D) 135</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><ol><li>$\text{IQR} = Q_3 - Q_1 = 70 - 30 = 40$.</li><li>Lower Fence: $\text{LIF} = Q_1 - 1.5 \times 40 = 30 - 60 = -30$.</li><li>Upper Fence: $\text{UIF} = Q_3 + 1.5 \times 40 = 70 + 60 = 130$.</li><li>Valid non-outlier range: $[-30, 130]$. Value $135 > 130$, so <strong>135 is an outlier</strong>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t3-c6">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Hypothesis Testing & P-Value Decision Rules</h2></div>
+<div class="body-text"><p>Hypothesis testing provides a statistical framework to test claims regarding population parameters:</p><div class="table-wrapper"><table><thead><tr><th>Condition</th><th>Decision on $H_0$</th><th>Scientific Interpretation</th></tr></thead><tbody><tr><td>$p\text{-value} \le \alpha$ (e.g., $p \le 0.05$)</td><td><strong>Reject $H_0$</strong></td><td>Statistically significant evidence supporting alternative claim $H_1$.</td></tr><tr><td>$p\text{-value} > \alpha$ (e.g., $p > 0.05$)</td><td><strong>Fail to reject $H_0$</strong></td><td>Insufficient evidence against null hypothesis; difference may be due to chance.</td></tr></tbody></table></div></div>
+</div><div class="section-card question-card" id="t3-q6">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: P-Value Interpretation Rule</h3> <span class="tag-source">Source: Sol_Quiz1_ISE291_S04_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>An engineer conducts a two-sample Student's t-test to compare two production lines at significance level $\alpha = 0.05$. The test returns $p = 0.18$. What is the proper statistical conclusion?</p><div class="interactive-q" data-correct="B" data-source="Sol_Quiz1_ISE291_S04_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Reject the null hypothesis; the lines have significantly different outputs.</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Fail to reject the null hypothesis; insufficient evidence of significant difference.</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Accept the alternative hypothesis as true.</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Conclude the test is defective since p-value exceeded 0.05.</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) Fail to reject the null hypothesis</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>Because $p = 0.18 > \alpha = 0.05$, we <strong>fail to reject $H_0$</strong>. There is not enough empirical evidence to establish a statistically significant difference between the two production lines.</p></div></div>
+</div>
+            </div>
+            <div class="page-bottom-actions">
+                <button class="btn-page-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">&uarr; Back to top of Topic 03</button>
+            </div>
+        </section>
+        
+        <section class="topic-page-unit" id="page-topic-4" style="display: none;">
+            <header class="page-header">
+                <div class="page-meta-badge">ISE 291 &bull; TOPIC 04 OF 05</div>
+                <h1 class="page-title">Topic 4: Basic Programming Concepts</h1>
+                <p class="page-desc">Iterators, List Comprehensions with Conditions, Lambda Functions, and High-Order Functions (map/filter)</p>
+                
+            <div class="teleport-strip">
+                <span class="teleport-label">Jump to subsection:</span>
+                <div class="teleport-chips">
+                    <button class="teleport-chip" onclick="teleportTo('t4-c1')">&sect;1 zip</button><button class="teleport-chip" onclick="teleportTo('t4-q1')">&sect;2 Practice Drill 1: Code Traci…</button><button class="teleport-chip" onclick="teleportTo('t4-c2')">&sect;3 Conditional List Comprehensi…</button><button class="teleport-chip" onclick="teleportTo('t4-q2')">&sect;4 Practice Drill 2: Double-Con…</button><button class="teleport-chip" onclick="teleportTo('t4-c3')">&sect;5 Nested List Comprehensions &…</button><button class="teleport-chip" onclick="teleportTo('t4-q3')">&sect;6 Practice Drill 3: Flattening…</button><button class="teleport-chip" onclick="teleportTo('t4-c4')">&sect;7 Functions & Variable Argumen…</button><button class="teleport-chip" onclick="teleportTo('t4-q4')">&sect;8 Practice Drill 4: Tracing *a…</button><button class="teleport-chip" onclick="teleportTo('t4-c5')">&sect;9 Anonymous Functions  & map /…</button><button class="teleport-chip" onclick="teleportTo('t4-q5')">&sect;10 Practice Drill 5: Combining …</button><button class="teleport-chip" onclick="teleportTo('t4-c6')">&sect;11 Functional Pipelines & Custo…</button><button class="teleport-chip" onclick="teleportTo('t4-q6')">&sect;12 Practice Drill 6: Custom Key…</button>
+                </div>
+            </div>
+            
+            </header>
+            <div class="page-stream">
+                <div class="section-card concept-card" id="t4-c1">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Iteration Controls: enumerate() vs. zip()</h2></div>
+<div class="body-text"><p>Idiomatic looping constructs in Python:</p><ul><li><code>enumerate(iterable, start=0)</code>: Returns pairs of <code>(index, element)</code>.</li><li><code>zip(*iterables)</code>: Aggregates elements from multiple iterables element-by-element into tuples, terminating at the shortest iterable.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">names = ['Ali', 'Omar', 'Saad']
+scores = [90, 85, 95]
+for idx, (name, sc) in enumerate(zip(names, scores)):
+    print(f"Rank {idx+1}: {name} -> {sc}")</code></pre></div></div>
+</div><div class="section-card question-card" id="t4-q1">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Code Tracing with zip & enumerate</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the printed output of the following Python loop?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">a = [10, 20]
+b = [100, 200, 300]
+out = [i + x for i, (x, y) in enumerate(zip(a, b))]
+print(out)</code></pre></div><div class="interactive-q" data-correct="A" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[10, 21]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[10, 21, 302]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[100, 201]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[11, 22]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) [10, 21]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>zip(a, b)</code> pairs <code>(10, 100)</code> and <code>(20, 200)</code> (stops after 2 items because <code>a</code> has length 2).</li><li>Iteration 0: <code>i = 0, x = 10, y = 100</code> &rarr; <code>0 + 10 = 10</code>.</li><li>Iteration 1: <code>i = 1, x = 20, y = 200</code> &rarr; <code>1 + 20 = 21</code>.</li><li>Result list: <code>[10, 21]</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t4-c2">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Conditional List Comprehensions</h2></div>
+<div class="body-text"><p>List comprehensions support both filtering (trailing <code>if</code>) and ternary transformations (leading <code>if-else</code>):</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># 1. Filtering condition (no else allowed at the end):
+evens = [x for x in range(10) if x % 2 == 0]
 
-      </main>
+# 2. Ternary conditional transformation (requires both if and else):
+labels = ["Even" if x % 2 == 0 else "Odd" for x in range(10)]</code></pre></div></div>
+</div><div class="section-card question-card" id="t4-q2">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Double-Condition List Comprehension</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of executing the following list comprehension?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">data = [3, 4, 7, 8, 12]
+res = [x // 2 if x % 2 == 0 else x * 2 for x in data if x > 5]
+print(res)</code></pre></div><div class="interactive-q" data-correct="B" data-source="Quiz1_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[6, 2, 14, 4, 6]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[14, 4, 6]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[14, 8, 12]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[7, 4, 6]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [14, 4, 6]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li>The filter <code>if x > 5</code> retains only elements: <code>[7, 8, 12]</code> (3 and 4 are discarded).</li><li>For 7 (odd): <code>7 * 2 = 14</code>.</li><li>For 8 (even): <code>8 // 2 = 4</code>.</li><li>For 12 (even): <code>12 // 2 = 6</code>.</li><li>Final list: <code>[14, 4, 6]</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t4-c3">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Nested List Comprehensions & 2D Matrix Flattening</h2></div>
+<div class="body-text"><p>Nested comprehensions mirror the order of nested for-loops from outer to inner:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# Flatten 2D into 1D (outer loop first, then inner loop):
+flat = [num for row in matrix for num in row]
+# flat is [1, 2, 3, 4, 5, 6, 7, 8, 9]</code></pre></div></div>
+</div><div class="section-card question-card" id="t4-q3">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Flattening 2D Matrices with List Comprehension</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given <code>grid = [[10, 20], [30, 40]]</code>, which expression produces <code>[10, 30]</code>?</p><div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[row[1] for row in grid]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[row[0] for row in grid]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[grid[0][col] for col in range(2)]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[grid[row][row] for row in range(2)]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) [row[0] for row in grid]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>Iterating <code>for row in grid</code> yields <code>[10, 20]</code> then <code>[30, 40]</code>. Indexing <code>row[0]</code> selects the first column of each row: <code>10</code> and <code>30</code>, resulting in <code>[10, 30]</code>.</p></div></div>
+</div><div class="section-card concept-card" id="t4-c4">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Functions & Variable Arguments: *args and **kwargs</h2></div>
+<div class="body-text"><p>Python allows dynamic numbers of positional and keyword arguments:</p><ul><li><code>*args</code>: Collects extra positional arguments into a <strong>tuple</strong>.</li><li><code>**kwargs</code>: Collects extra keyword arguments into a <strong>dictionary</strong>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">def summarize(*args, **kwargs):
+    total = sum(args)
+    prefix = kwargs.get('prefix', 'Total')
+    return f"{prefix}: {total}"
 
+print(summarize(10, 20, 30, prefix="Score")) # "Score: 60"</code></pre></div></div>
+</div><div class="section-card question-card" id="t4-q4">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Tracing *args and **kwargs</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">def compute(x, *args):
+    return x * sum(args)
+
+print(compute(2, 3, 4, 5))</code></pre></div><div class="interactive-q" data-correct="C" data-source="Sample Mid .pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">24</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">28</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">24</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">120</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) 24</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>x = 2</code> binds the first positional argument.</li><li><code>*args = (3, 4, 5)</code> packs the remaining values into a tuple.</li><li><code>sum(args) = 3 + 4 + 5 = 12</code>.</li><li><code>x * 12 = 2 * 12 = 24</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t4-c5">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Anonymous Functions (lambda) & map / filter</h2></div>
+<div class="body-text"><p>Modern functional tools in Python:</p><ul><li><code>lambda arguments: expression</code>: Anonymous inline function.</li><li><code>map(func, iterable)</code>: Applies <code>func</code> to every element.</li><li><code>filter(func, iterable)</code>: Retains elements where <code>func(x)</code> is <code>True</code>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># Squaring positive numbers using filter and map:
+nums = [-2, -1, 0, 1, 2, 3]
+pos_sq = list(map(lambda x: x**2, filter(lambda x: x > 0, nums)))
+# pos_sq is [1, 4, 9]</code></pre></div></div>
+</div><div class="section-card question-card" id="t4-q5">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Combining map and filter with lambda</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of the following pipeline?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">nums = [1, 2, 3, 4]
+res = list(map(lambda x: x * 10, filter(lambda x: x % 2 == 1, nums)))
+print(res)</code></pre></div><div class="interactive-q" data-correct="C" data-source="Sample Mid .pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[10, 20, 30, 40]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[20, 40]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[10, 30]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[1, 3]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) [10, 30]</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><ol><li><code>filter(lambda x: x % 2 == 1, nums)</code> keeps only odd numbers: <code>[1, 3]</code>.</li><li><code>map(lambda x: x * 10, [1, 3])</code> multiplies each by 10: <code>[10, 30]</code>.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t4-c6">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Functional Pipelines & Custom Key Sorting</h2></div>
+<div class="body-text"><p>Sorting complex data structures using the <code>key</code> parameter:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">students = [('Zayd', 82), ('Amr', 95), ('Bilal', 78)]
+# Sort by score descending:
+by_score = sorted(students, key=lambda s: s[1], reverse=True)
+# [('Amr', 95), ('Zayd', 82), ('Bilal', 78)]</code></pre></div></div>
+</div><div class="section-card question-card" id="t4-q6">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Custom Key Sorting Tracing</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">words = ['apple', 'pie', 'banana', 'fig']
+words.sort(key=lambda w: len(w))
+print(words[0], words[-1])</code></pre></div><div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">apple banana</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">pie banana</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">fig banana</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">pie apple</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) pie banana</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>Python's <code>.sort()</code> is stable. Lengths are: 'apple' (5), 'pie' (3), 'banana' (6), 'fig' (3). Sorted by length: <code>['pie', 'fig', 'apple', 'banana']</code>. <code>words[0]</code> is 'pie' and <code>words[-1]</code> is 'banana'.</p></div></div>
+</div>
+            </div>
+            <div class="page-bottom-actions">
+                <button class="btn-page-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">&uarr; Back to top of Topic 04</button>
+            </div>
+        </section>
+        
+        <section class="topic-page-unit" id="page-topic-5" style="display: none;">
+            <header class="page-header">
+                <div class="page-meta-badge">ISE 291 &bull; TOPIC 05 OF 05</div>
+                <h1 class="page-title">Topic 5: Data Understanding & Preparation</h1>
+                <p class="page-desc">Handling Missing Data, Imputation Strategies, Normalization vs. Standardization, and Categorical One-Hot Encoding</p>
+                
+            <div class="teleport-strip">
+                <span class="teleport-label">Jump to subsection:</span>
+                <div class="teleport-chips">
+                    <button class="teleport-chip" onclick="teleportTo('t5-c1')">&sect;1 Missing Data Handling: dropn…</button><button class="teleport-chip" onclick="teleportTo('t5-q1')">&sect;2 Practice Drill 1: Categorica…</button><button class="teleport-chip" onclick="teleportTo('t5-c2')">&sect;3 Duplicate Record Detection &…</button><button class="teleport-chip" onclick="teleportTo('t5-q2')">&sect;4 Practice Drill 2: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t5-c3')">&sect;5 Standardization</button><button class="teleport-chip" onclick="teleportTo('t5-q3')">&sect;6 Practice Drill 3: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t5-c4')">&sect;7 Categorical Encoding & The D…</button><button class="teleport-chip" onclick="teleportTo('t5-q4')">&sect;8 Practice Drill 4: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t5-c5')">&sect;9 Pandas Hierarchical Sorting …</button><button class="teleport-chip" onclick="teleportTo('t5-q5')">&sect;10 Practice Drill 5: Multi-Colu…</button><button class="teleport-chip" onclick="teleportTo('t5-c6')">&sect;11 Pandas Indexing Mechanics: .…</button><button class="teleport-chip" onclick="teleportTo('t5-q6')">&sect;12 Practice Drill 6: Tracing Sl…</button>
+                </div>
+            </div>
+            
+            </header>
+            <div class="page-stream">
+                <div class="section-card concept-card" id="t5-c1">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Missing Data Handling: dropna() vs fillna()</h2></div>
+<div class="body-text"><p>Real-world datasets frequently contain missing values (represented as <code>NaN</code> or <code>None</code> in pandas):</p><div class="table-wrapper"><table><thead><tr><th>Method</th><th>Imputation Metric</th><th>Optimal Scenario</th></tr></thead><tbody><tr><td><code>df.dropna()</code></td><td>Elimination</td><td>Missing rows represent less than 5% of total dataset and are Missing Completely at Random.</td></tr><tr><td><code>df.fillna(df[col].mean())</code></td><td>Mean</td><td>Numerical feature with approximately <strong>symmetric</strong>, normal distribution.</td></tr><tr><td><code>df.fillna(df[col].median())</code></td><td>Median</td><td>Numerical feature with <strong>skewed</strong> distribution or extreme outliers.</td></tr><tr><td><code>df.fillna(df[col].mode().iloc[0])</code></td><td>Mode</td><td><strong>Categorical</strong> features (replaces NaN with most frequent class).</td></tr></tbody></table></div></div>
+</div><div class="section-card question-card" id="t5-q1">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Categorical Missing Value Imputation</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given a pandas DataFrame <code>df</code> with a categorical column <code>Job_Type</code> containing values: <code>['Engineer', 'Doctor', 'Doctor', 'Teacher', np.nan]</code>. Which code snippet correctly replaces the missing value with the most frequent category?</p><div class="interactive-q" data-correct="A" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">df['Job_Type'].fillna(df['Job_Type'].mode().iloc[0], inplace=True)</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">df['Job_Type'].fillna(df['Job_Type'].mean(), inplace=True)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">df['Job_Type'].fillna(df['Job_Type'].median(), inplace=True)</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">df['Job_Type'].replace(np.nan, 0, inplace=True)</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) df['Job_Type'].fillna(df['Job_Type'].mode().iloc[0], inplace=True)</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>Categorical strings have no mathematical mean or median. The <strong>mode</strong> (most frequent value, here 'Doctor') is the proper metric. Because <code>.mode()</code> returns a Series, indexing with <code>.iloc[0]</code> extracts the scalar string to fill <code>NaN</code>.</p></div></div>
+</div><div class="section-card concept-card" id="t5-c2">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Duplicate Record Detection & Elimination</h2></div>
+<div class="body-text"><p>Duplicate rows distort statistical distributions and lead to data leakage in machine learning:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># Identify duplicate rows:
+dups = df.duplicated() # Boolean mask, True for repeated rows
+# Drop duplicates keeping first occurrence:
+df_clean = df.drop_duplicates(keep='first')
+# Drop duplicates based on specific primary keys:
+df_unique_users = df.drop_duplicates(subset=['UserID'])</code></pre></div></div>
+</div><div class="section-card question-card" id="t5-q2">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Calculating Unique Rows after Deduplication</h3> <span class="tag-source">Source: Sol-Practice Questions Topic5.docx</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A DataFrame <code>df</code> contains 100 rows. Executing <code>df.duplicated().sum()</code> returns 18. How many rows will remain after calling <code>df.drop_duplicates()</code>?</p><div class="interactive-q" data-correct="C" data-source="Sol-Practice Questions Topic5.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">18 rows</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">100 rows</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">82 rows</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">64 rows</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(C) 82 rows</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p><code>df.duplicated().sum()</code> counts how many rows are exact duplicates of earlier rows. Dropping them removes all 18 redundant rows: $100 - 18 = 82$ unique rows remain.</p></div></div>
+</div><div class="section-card concept-card" id="t5-c3">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Feature Rescaling: Normalization vs. Standardization</h2></div>
+<div class="body-text"><p>Distance-based algorithms (KNN, K-Means, Gradient Descent) require feature rescaling:</p><div class="table-wrapper"><table><thead><tr><th>Method</th><th>Mathematical Formula</th><th>Output Range</th><th>Properties</th></tr></thead><tbody><tr><td><strong>Min-Max Normalization</strong></td><td>$$x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$</td><td>$[0, 1]$</td><td>Preserves exact relationships; sensitive to outliers.</td></tr><tr><td><strong>Z-Score Standardization</strong></td><td>$$z = \frac{x - \mu}{\sigma}$$</td><td>$\mu = 0, \sigma = 1$</td><td>Centering around 0; robust to outliers; does not bound data into $[0, 1]$.</td></tr></tbody></table></div></div>
+</div><div class="section-card question-card" id="t5-q3">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Calculating Min-Max Scaled Median</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given the feature array $X = [1, 3, 5, 7, 9]$, what is the median of the data after applying Min-Max normalization to the range $[0, 1]$?</p><div class="interactive-q" data-correct="D" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">0.0</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">1.0</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">0.75</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">0.5</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(D) 0.5</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><ol><li>$x_{\min} = 1$, $x_{\max} = 9$.</li><li>Median of original sorted list is <strong>5</strong>.</li><li>Min-Max formula:$$x_{\text{norm}} = \frac{5 - 1}{9 - 1} = \frac{4}{8} = 0.5$$</li></ol></div></div>
+</div><div class="section-card concept-card" id="t5-c4">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Categorical Encoding & The Dummy Variable Trap</h2></div>
+<div class="body-text"><p>Machine learning models require numerical inputs. Categorical variables are converted via:</p><ul><li><strong>Label Encoding:</strong> Maps categories to integers $0, 1, 2, \dots$. <em>Use only for ordinal data</em> (e.g., Low=0, Med=1, High=2) where intrinsic ordering exists.</li><li><strong>One-Hot Encoding:</strong> Creates binary $0/1$ indicator columns for each category. <em>Use for nominal data</em> (e.g., Blood Types, Cities).</li></ul><div class="callout callout-important"><strong>The Dummy Variable Trap:</strong> If a categorical feature has $K$ distinct categories, retaining all $K$ binary columns introduces perfect multicollinearity (since $\sum_{j=1}^K x_j = 1$). To avoid this, always specify <code>drop_first=True</code> in <code>pd.get_dummies()</code>, creating $K - 1$ columns.</div></div>
+</div><div class="section-card question-card" id="t5-q4">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Calculating Column Counts after One-Hot Encoding</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A DataFrame has 9 total columns, including one categorical column <code>'Status'</code> that contains 4 unique values: <code>['Active', 'Pending', 'Suspended', 'Terminated']</code>. The developer executes:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">df = pd.get_dummies(df, columns=['Status'], drop_first=True)</code></pre></div><p>How many columns will the resulting DataFrame contain in total?</p><div class="interactive-q" data-correct="B" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">13</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">12</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">11</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">10</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) 12</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><ol><li>Original total columns = 9.</li><li>The <code>Status</code> column is dropped ($-1$). Remaining other columns = $9 - 1 = 8$.</li><li><code>Status</code> had 4 unique categories. With <code>drop_first=True</code>, $4 - 1 = 3$ new binary columns are added.</li><li>Total resulting columns = $8 + 3 = 12$.</li></ol></div></div>
+</div><div class="section-card concept-card" id="t5-c5">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Pandas Hierarchical Sorting & Ordering</h2></div>
+<div class="body-text"><p>Sorting operations in pandas:</p><ul><li><code>df.sort_values(by=['col1', 'col2'], ascending=[False, True])</code>: Multi-column hierarchical sorting.</li><li><code>ascending</code> can accept a boolean or list of booleans matching each column in <code>by</code>.</li><li><code>inplace=True</code> modifies the original DataFrame without returning a new copy.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># Sort department ascending, salary descending within department:
+df.sort_values(by=['Department', 'Salary'], ascending=[True, False], inplace=True)</code></pre></div></div>
+</div><div class="section-card question-card" id="t5-q5">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Multi-Column Sorting Syntax</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which pandas expression correctly sorts a DataFrame <code>df</code> by <code>Department</code> in ascending order, and within each department by <code>Salary</code> in descending order?</p><div class="interactive-q" data-correct="A" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">df.sort_values(by=['Department', 'Salary'], ascending=[True, False])</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">df.sort_values(by=['Department', 'Salary'], ascending=False)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">df.sort_values(by=['Department', 'Salary'], ascending=[False, True])</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">df.sort_by(['Department', 'Salary'], order=['asc', 'desc'])</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) df.sort_values(by=['Department', 'Salary'], ascending=[True, False])</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>In pandas, <code>sort_values</code> accepts parallel lists for <code>by</code> and <code>ascending</code>. <code>ascending=[True, False]</code> pairs <code>True</code> (ascending) with <code>Department</code> and <code>False</code> (descending) with <code>Salary</code>.</p></div></div>
+</div><div class="section-card concept-card" id="t5-c6">
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Pandas Indexing Mechanics: .loc vs .iloc</h2></div>
+<div class="body-text"><p>Explicit indexing in pandas:</p><div class="table-wrapper"><table><thead><tr><th>Indexer</th><th>Mechanism</th><th>Stop Boundary</th><th>Accepts</th></tr></thead><tbody><tr><td><code>.loc[]</code></td><td><strong>Label-based</strong></td><td><strong>Inclusive</strong></td><td>Row and column names/labels, boolean Series.</td></tr><tr><td><code>.iloc[]</code></td><td><strong>Integer position-based</strong></td><td><strong>Exclusive</strong></td><td>0-based integer positions, integer slices.</td></tr></tbody></table></div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># .iloc: 0:3 excludes index 3 (returns rows 0, 1, 2)
+df.iloc[0:3, 0:2]
+# .loc: 'A':'C' INCLUDES label 'C'
+df.loc['A':'C', 'Age':'Salary']</code></pre></div></div>
+</div><div class="section-card question-card" id="t5-q6">
+<div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Tracing Slicing Results with .loc vs .iloc</h3> <span class="tag-source">Source: Quiz_2.docx</span></div>
+<div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the fundamental difference in slice boundary handling between <code>.loc</code> and <code>.iloc</code>?</p><div class="interactive-q" data-correct="A" data-source="Quiz_2.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">.loc includes the stop endpoint, while .iloc excludes the stop endpoint</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">.loc excludes the stop endpoint, while .iloc includes the stop endpoint</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Both .loc and .iloc exclude the stop endpoint</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Both .loc and .iloc include the stop endpoint</span></button></div><div class="q-feedback hidden"></div></div></div></div>
+<div class="box-ans"><div class="ans-mini-label">Verified Final Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) .loc includes the stop endpoint, while .iloc excludes the stop endpoint</strong></p></div></div>
+<div class="box-sol"><div class="sol-mini-label">Step-by-Step Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p><code>.loc</code> is strictly label-based; since labels have no obvious 'preceding integer', slicing is inclusive of the end boundary. <code>.iloc</code> conforms to standard Python integer slice semantics where the stop index is strictly exclusive.</p></div></div>
+</div>
+            </div>
+            <div class="page-bottom-actions">
+                <button class="btn-page-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">&uarr; Back to top of Topic 05</button>
+            </div>
+        </section>
+        
     </div>
 
-  </div>
+    <!-- Past Exam Bank Tab Container -->
+    
+        <div id="videosContainer" style="display: none;">
+            <div class="exam-bank-header">
+                <h2 class="exam-bank-title">Past Exam Bank</h2>
+                <p class="exam-bank-subtitle">Comprehensive Past Midterms & Recent Term 251 Quizzes Practice Bank</p>
+                
+                <div class="exam-controls">
+                    <div class="exam-search-box">
+                        <span class="search-icon">&#128269;</span>
+                        <input type="text" id="examSearchInput" placeholder="Search 325 questions by keyword, code, or formula..." oninput="handleExamSearch(this.value)" />
+                        <button id="btnClearSearch" class="btn-clear-search" onclick="clearExamSearch()" style="display: none;">&times;</button>
+                    </div>
+                    <div class="exam-filter-strip">
+                        <button class="exam-chip active" data-filter="all" onclick="filterExamBank('all', this)">All (325)</button>
+                        <button class="exam-chip" data-filter="topic-1" onclick="filterExamBank('topic-1', this)">Topic 1: Intro</button>
+                        <button class="exam-chip" data-filter="topic-2" onclick="filterExamBank('topic-2', this)">Topic 2: Python</button>
+                        <button class="exam-chip" data-filter="topic-3" onclick="filterExamBank('topic-3', this)">Topic 3: Statistics</button>
+                        <button class="exam-chip" data-filter="topic-4" onclick="filterExamBank('topic-4', this)">Topic 4: Programming</button>
+                        <button class="exam-chip" data-filter="topic-5" onclick="filterExamBank('topic-5', this)">Topic 5: Data Prep</button>
+                        <button class="exam-chip" data-filter="term-251" onclick="filterExamBank('term-251', this)">Term 251 Quizzes</button>
+                        <button class="exam-chip" data-filter="past-midterms" onclick="filterExamBank('past-midterms', this)">Past Midterms</button>
+                    </div>
+                    <div class="exam-stats-bar">
+                        <div class="stats-left">
+                            <span id="examStatsCount">Showing 325 questions</span>
+                            <span class="stats-score" id="examStatsScore">Solved: 0 / 325</span>
+                        </div>
+                        <button class="btn-reset-stats" onclick="resetUserAnswers()" title="Reset your answered questions to re-practice">Reset Progress</button>
+                    </div>
+                </div>
+            </div>
 
-  <!-- USER DETAIL INSPECTOR MODAL -->
-  <div id="user-detail-modal" class="user-detail-modal hidden">
-    <div class="user-detail-backdrop" id="user-detail-backdrop"></div>
-    <div class="user-detail-card">
-      <button class="modal-close-btn" id="btn-user-detail-close">&times;</button>
-      
-      <div class="user-detail-header">
-        <div class="user-avatar-xl" id="detail-user-avatar">?</div>
-        <div>
-          <h2 id="detail-user-name">Username</h2>
-          <p class="user-detail-lastactive" id="detail-user-lastactive">Last active recently</p>
+            <!-- Dynamic Stream of Questions rendered by portal.js -->
+            <div id="examQuestionsStream" class="exam-questions-stream"></div>
+
+            <!-- Load More / Pagination -->
+            <div id="examLoadMoreContainer" style="text-align: center; margin: 28px 0;">
+                <button id="btnLoadMoreExam" class="btn-load-more" onclick="loadMoreExamQuestions()">Load More Questions</button>
+            </div>
+
+            
         </div>
-      </div>
+        
+</main>
 
-      <div class="kpi-grid" style="margin: 20px 0;">
-        <div class="kpi-card">
-          <div class="kpi-num" id="detail-kpi-solved">0 / 263</div>
-          <div class="kpi-lbl">Questions Solved</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-num stat-green" id="detail-kpi-acc">0%</div>
-          <div class="kpi-lbl">Accuracy</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-num stat-purple" id="detail-kpi-exams">0</div>
-          <div class="kpi-lbl">Midterms Taken</div>
-        </div>
-      </div>
-
-      <h4 style="margin-bottom: 12px;">Topic Mastery</h4>
-      <div class="detail-topic-bars" id="detail-topic-bars"></div>
-
-      <h4 style="margin: 20px 0 12px 0;">Recent Question History</h4>
-      <div class="detail-recent-answers" id="detail-recent-answers"></div>
-    </div>
-  </div>
-
-  <!-- Image Lightbox Modal -->
-  <div id="lightbox-modal" class="lightbox-modal hidden">
-    <div class="lightbox-backdrop"></div>
-    <div class="lightbox-content">
-      <button class="lightbox-close" id="lightbox-close">&times;</button>
-      <img id="lightbox-img" src="" alt="Enlarged Diagram / Figure" />
-    </div>
-  </div>
-
-  <!-- Load bundled question bank data first -->
-  <script src="questions_data.js?v=2.4"></script>
-  <!-- Main application script -->
-  <script src="app.js?v=2.4"></script>
+<script src="questions_data.js"></script>
+<script src="portal.js"></script>
 </body>
 </html>
