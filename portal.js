@@ -89,6 +89,13 @@ function switchTopic(targetTopicId) {
     targetPage.style.display = 'block';
     portalState.activeTopic = targetTopicId;
 
+    // Lazy KaTeX/Prism/Interactivity: only render when this topic is shown for the first time
+    if (!targetPage.getAttribute('data-math-rendered')) {
+        initInteractiveQuestions(targetPage);
+        initStemRenderers(targetPage);
+        targetPage.setAttribute('data-math-rendered', 'true');
+    }
+
     // 3. Update top-bar dropdown trigger text
     const badge = document.getElementById('activeTopicBadge');
     if (badge && topicLabels[targetTopicId]) {
@@ -107,6 +114,7 @@ function switchTopic(targetTopicId) {
     // 5. Restore saved scroll position for this specific topic
     const targetY = portalState.topicScroll[targetTopicId] || 0;
     applyScroll(targetY);
+    recalculateDocHeight();
 
     // 6. Persist state
     scheduleSaveState();
@@ -209,30 +217,44 @@ function showTab(tab) {
 }
 
 /**
- * Minimalist top progress bar tracking reading progress (0% - 100%)
+ * Minimalist top progress bar tracking reading progress (0% - 100%) - GPU Accelerated & Cached
  */
+let docScrollHeight = 0;
+let isScrollTicking = false;
+
+function recalculateDocHeight() {
+    docScrollHeight = Math.max(1, document.documentElement.scrollHeight - document.documentElement.clientHeight);
+}
+window.addEventListener('resize', recalculateDocHeight, { passive: true });
+
 function updateProgressBar() {
-    const winScroll = window.pageYOffset || document.documentElement.scrollTop || 0;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+    const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if (docScrollHeight <= 0) recalculateDocHeight();
+    const scrolled = Math.min(100, Math.max(0, (currentY / docScrollHeight) * 100));
     const bar = document.getElementById('scrollProgressBar');
     if (bar) {
-        bar.style.width = Math.min(100, Math.max(0, scrolled)) + '%';
+        bar.style.transform = `scaleX(${scrolled / 100})`;
     }
 }
 
 /**
- * Scroll listener
+ * High-performance throttled scroll listener using requestAnimationFrame
  */
 window.addEventListener('scroll', () => {
-    const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
-    if (portalState.activeTab === 'notes') {
-        portalState.topicScroll[portalState.activeTopic] = Math.round(currentY);
-    } else {
-        portalState.videosScroll = Math.round(currentY);
+    if (!isScrollTicking) {
+        requestAnimationFrame(() => {
+            const currentY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            if (portalState.activeTab === 'notes') {
+                portalState.topicScroll[portalState.activeTopic] = Math.round(currentY);
+            } else {
+                portalState.videosScroll = Math.round(currentY);
+            }
+            updateProgressBar();
+            scheduleSaveState();
+            isScrollTicking = false;
+        });
+        isScrollTicking = true;
     }
-    updateProgressBar();
-    scheduleSaveState();
 }, { passive: true });
 
 /**
@@ -307,22 +329,57 @@ function initStemRenderers(rootElement = document.body) {
     // 3. Mermaid.js Diagrams
     if (window.mermaid) {
         try {
-            mermaid.initialize({
-                startOnLoad: true,
-                theme: 'dark',
-                themeVariables: {
-                    darkMode: true,
-                    background: '#111118',
-                    primaryColor: '#38bdf8',
-                    primaryTextColor: '#f8fafc',
-                    lineColor: '#64748b',
-                    fontSize: '13px'
-                }
-            });
-            mermaid.run();
+            const mermaidNodes = rootElement.querySelectorAll ? rootElement.querySelectorAll('.mermaid') : [];
+            if (mermaidNodes.length > 0) {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    theme: 'dark',
+                    themeVariables: {
+                        darkMode: true,
+                        background: '#111118',
+                        primaryColor: '#38bdf8',
+                        primaryTextColor: '#f8fafc',
+                        lineColor: '#64748b',
+                        fontSize: '13px'
+                    }
+                });
+                mermaid.run({ nodes: mermaidNodes });
+            }
         } catch (e) {
             console.warn("Mermaid rendering warning:", e);
         }
+    }
+}
+
+/**
+ * Toggle Practice Drill Step-by-Step Solution & Explanation
+ */
+function toggleDrillSolution(nid) {
+    const wrap = document.getElementById('sol-wrap-' + nid);
+    const btn = document.getElementById('btn-toggle-' + nid);
+    if (!wrap) return;
+
+    const isHidden = (wrap.style.display === 'none' || wrap.style.display === '');
+    if (isHidden) {
+        wrap.style.display = 'block';
+        if (btn) {
+            btn.classList.add('expanded');
+            const txt = btn.querySelector('.toggle-text');
+            if (txt) txt.textContent = 'Hide Step-by-Step Solution';
+        }
+        if (!wrap.getAttribute('data-math-rendered')) {
+            initStemRenderers(wrap);
+            wrap.setAttribute('data-math-rendered', 'true');
+        }
+        recalculateDocHeight();
+    } else {
+        wrap.style.display = 'none';
+        if (btn) {
+            btn.classList.remove('expanded');
+            const txt = btn.querySelector('.toggle-text');
+            if (txt) txt.textContent = 'Show Step-by-Step Solution & Explanation';
+        }
+        recalculateDocHeight();
     }
 }
 
@@ -421,18 +478,52 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
                 statusBadge.textContent = isCorrect ? 'Solved Correct' : 'Attempted';
                 statusBadge.style.display = 'inline-flex';
             }
+
+            // Automatically reveal the solution container and rotate chevron after answering
+            const solWrap = document.getElementById('sol-wrap-' + resolvedQId);
+            const solBtn = document.getElementById('btn-toggle-' + resolvedQId);
+            if (solWrap) {
+                solWrap.style.display = 'block';
+                if (solBtn) {
+                    solBtn.classList.add('expanded');
+                    const txt = solBtn.querySelector('.toggle-text');
+                    if (txt) txt.textContent = 'Hide Step-by-Step Solution';
+                }
+                if (!solWrap.getAttribute('data-math-rendered')) {
+                    initStemRenderers(solWrap);
+                    solWrap.setAttribute('data-math-rendered', 'true');
+                }
+                recalculateDocHeight();
+            }
         };
     });
 
-    // Reveal feedback if already solved
-    if (existing && feedback) {
-        feedback.classList.remove('hidden');
-        if (existing.isCorrect) {
-            feedback.className = 'q-feedback feedback-correct';
-            feedback.innerHTML = `<strong>Correct!</strong> Matched verified solution.<span class="tag-source">Source: ${sourceFile}</span>`;
-        } else {
-            feedback.className = 'q-feedback feedback-wrong';
-            feedback.innerHTML = `<strong>Concept Check:</strong> The correct choice is <strong>(${correctKey}) ${correctText}</strong>.<span class="tag-source">Source: ${sourceFile}</span>`;
+    // Reveal feedback and solution if already solved
+    if (existing) {
+        if (feedback) {
+            feedback.classList.remove('hidden');
+            if (existing.isCorrect) {
+                feedback.className = 'q-feedback feedback-correct';
+                feedback.innerHTML = `<strong>Correct!</strong> Matched verified solution.<span class="tag-source">Source: ${sourceFile}</span>`;
+            } else {
+                feedback.className = 'q-feedback feedback-wrong';
+                feedback.innerHTML = `<strong>Concept Check:</strong> The correct choice is <strong>(${correctKey}) ${correctText}</strong>.<span class="tag-source">Source: ${sourceFile}</span>`;
+            }
+        }
+
+        const solWrap = document.getElementById('sol-wrap-' + resolvedQId);
+        const solBtn = document.getElementById('btn-toggle-' + resolvedQId);
+        if (solWrap) {
+            solWrap.style.display = 'block';
+            if (solBtn) {
+                solBtn.classList.add('expanded');
+                const txt = solBtn.querySelector('.toggle-text');
+                if (txt) txt.textContent = 'Hide Step-by-Step Solution';
+            }
+            if (!solWrap.getAttribute('data-math-rendered')) {
+                initStemRenderers(solWrap);
+                solWrap.setAttribute('data-math-rendered', 'true');
+            }
         }
     }
 }
@@ -455,8 +546,53 @@ let examBankState = {
     filteredQuestions: []
 };
 
+let isExamDataLoading = false;
+let examDataCallbacks = [];
+
+function loadExamDataAsync(callback) {
+    if (window.QUESTIONS_DATA && Array.isArray(window.QUESTIONS_DATA)) {
+        if (typeof callback === 'function') callback();
+        return;
+    }
+    if (callback) examDataCallbacks.push(callback);
+    if (isExamDataLoading) return;
+
+    isExamDataLoading = true;
+    const script = document.createElement('script');
+    const isLiveStaticDir = window.location.pathname.includes('/static/');
+    script.src = isLiveStaticDir ? '/static/js/questions_data.js' : 'questions_data.js';
+    script.async = true;
+    script.onload = () => {
+        isExamDataLoading = false;
+        examDataCallbacks.forEach(cb => { if (typeof cb === 'function') cb(); });
+        examDataCallbacks = [];
+    };
+    script.onerror = () => {
+        // Fallback to fetch questions.json
+        fetch('questions.json')
+            .then(res => res.json())
+            .then(data => {
+                window.QUESTIONS_DATA = data;
+                isExamDataLoading = false;
+                examDataCallbacks.forEach(cb => { if (typeof cb === 'function') cb(); });
+                examDataCallbacks = [];
+            })
+            .catch(err => {
+                isExamDataLoading = false;
+                console.error("Could not load exam data:", err);
+                const stream = document.getElementById('examQuestionsStream');
+                if (stream) {
+                    stream.innerHTML = '<p style="color: #f87171; padding: 20px;">Could not load past exam bank data. Ensure questions_data.js or questions.json is present.</p>';
+                }
+                examDataCallbacks.forEach(cb => { if (typeof cb === 'function') cb(); });
+                examDataCallbacks = [];
+            });
+    };
+    document.head.appendChild(script);
+}
+
 function initExamBank() {
-    if (examBankState.initialized) {
+    if (examBankState.initialized && window.QUESTIONS_DATA && Array.isArray(window.QUESTIONS_DATA)) {
         return;
     }
     examBankState.initialized = true;
@@ -464,21 +600,23 @@ function initExamBank() {
     // Load questions data if available
     if (window.QUESTIONS_DATA && Array.isArray(window.QUESTIONS_DATA)) {
         renderExamBank();
-    } else {
-        // Fallback: fetch questions.json
-        fetch('questions.json')
-            .then(res => res.json())
-            .then(data => {
-                window.QUESTIONS_DATA = data;
-                renderExamBank();
-            })
-            .catch(err => {
-                const stream = document.getElementById('examQuestionsStream');
-                if (stream) {
-                    stream.innerHTML = '<p style="color: #f87171; padding: 20px;">Could not load past exam bank data. Ensure questions_data.js or questions.json is present.</p>';
-                }
-            });
+        return;
     }
+
+    const stream = document.getElementById('examQuestionsStream');
+    if (stream) {
+        stream.innerHTML = `
+            <div style="text-align: center; padding: 50px 20px; color: var(--text-dim);">
+                <div style="display: inline-block; width: 34px; height: 34px; border: 3px solid var(--border-color); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 14px;"></div>
+                <p style="font-size: 15px; font-weight: 700; color: #f1f5f9;">Loading 325 Verified Practice Exam Questions...</p>
+                <p style="font-size: 12.5px; color: var(--text-dim);">Optimizing math formulas and solution breakdowns</p>
+            </div>
+        `;
+    }
+
+    loadExamDataAsync(() => {
+        renderExamBank();
+    });
 }
 
 function escapeHtml(text) {
@@ -573,22 +711,33 @@ function filterExamBank(filterKey, chipElement) {
     renderExamBank();
 }
 
+let searchDebounceTimer = null;
 function handleExamSearch(val) {
-    examBankState.searchQuery = val.trim();
-    examBankState.limit = 20;
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+        examBankState.searchQuery = val.trim();
+        examBankState.limit = 20;
 
-    const btnClear = document.getElementById('btnClearSearch');
-    if (btnClear) {
-        btnClear.style.display = examBankState.searchQuery ? 'inline-block' : 'none';
-    }
+        const btnClear = document.getElementById('btnClearSearch');
+        if (btnClear) {
+            btnClear.style.display = examBankState.searchQuery ? 'inline-block' : 'none';
+        }
 
-    renderExamBank();
+        renderExamBank();
+    }, 150);
 }
 
 function clearExamSearch() {
+    clearTimeout(searchDebounceTimer);
     const input = document.getElementById('examSearchInput');
     if (input) input.value = '';
-    handleExamSearch('');
+    examBankState.searchQuery = '';
+    examBankState.limit = 20;
+    const btnClear = document.getElementById('btnClearSearch');
+    if (btnClear) {
+        btnClear.style.display = 'none';
+    }
+    renderExamBank();
 }
 
 function toggleExamSolution(qId) {
@@ -603,8 +752,13 @@ function toggleExamSolution(qId) {
     } else {
         body.classList.add('open');
         btn.classList.add('expanded');
-        initStemRenderers(body);
+        // Lazy KaTeX: only typeset when the solution is first revealed
+        if (!body.getAttribute('data-math-rendered')) {
+            initStemRenderers(body);
+            body.setAttribute('data-math-rendered', 'true');
+        }
     }
+    recalculateDocHeight();
 }
 
 function renderExamBank() {
@@ -741,15 +895,10 @@ function renderExamBank() {
 
     stream.innerHTML = html;
 
-    // 5. Initialize interactivity and math/code on rendered cards
-    pageQuestions.forEach(q => {
-        const qId = q.id || 'Q';
-        const card = document.getElementById('card-' + qId);
-        if (card) {
-            initInteractiveQuestions(card);
-            initStemRenderers(card);
-        }
-    });
+    // 5. Initialize interactivity and math/code on rendered cards in a single batch
+    initInteractiveQuestions(stream);
+    initStemRenderers(stream);
+    recalculateDocHeight();
 
     // 6. Manage Load More button
     if (loadMoreContainer) {
@@ -809,18 +958,26 @@ function resetUserAnswers() {
             }
         });
 
+        // Reset all drill solution containers
+        document.querySelectorAll('.drill-solution-container').forEach(wrap => {
+            wrap.style.display = 'none';
+        });
+        document.querySelectorAll('.drill-solution-toggle').forEach(btn => {
+            btn.classList.remove('expanded');
+            const txt = btn.querySelector('.toggle-text');
+            if (txt) txt.textContent = 'Show Step-by-Step Solution & Explanation';
+        });
+
         // Re-render exam bank
         renderExamBank();
     }
 }
 
 /**
- * Initialize portal on page load
+ * Initialize portal on page load (Optimized & Lazy)
  */
 window.addEventListener('DOMContentLoaded', () => {
     initTopicLabels();
-    initStemRenderers();
-    initInteractiveQuestions();
 
     // 1. Restore local storage state
     try {
@@ -853,14 +1010,28 @@ window.addEventListener('DOMContentLoaded', () => {
         portalState.activeTab = 'videos';
     }
 
-    // 3. Render initial view and restore scroll
+    // 3. Render initial view and restore scroll (Lazy: Only typeset the active view!)
     if (portalState.activeTab === 'videos') {
         showTab('videos');
     } else {
+        const activePage = document.getElementById('page-' + portalState.activeTopic) || document.getElementById('page-topic-1');
+        if (activePage) {
+            initInteractiveQuestions(activePage);
+            initStemRenderers(activePage);
+            activePage.setAttribute('data-math-rendered', 'true');
+        }
         switchTopic(portalState.activeTopic);
     }
+    recalculateDocHeight();
 
-    // 4. Background server sync
+    // 4. Background pre-fetch of exam bank after idle
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(() => { loadExamDataAsync(); }, { timeout: 3500 });
+    } else {
+        setTimeout(() => { loadExamDataAsync(); }, 2500);
+    }
+
+    // 5. Background server sync
     fetch('/api/state')
         .then(r => r.json())
         .then(srvState => {

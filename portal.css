@@ -52,18 +52,25 @@ body {
 }
 
 /* ==========================================================================
-   Top 2.5px Scrolling Progress Bar
+   Top 2.5px Scrolling Progress Bar (GPU Accelerated)
    ========================================================================== */
 #scrollProgressBar {
     position: fixed;
     top: 0;
-    left: 0;
+    inset-inline-start: 0;
     height: 2.5px;
     background: var(--accent);
-    width: 0%;
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(0);
     z-index: 9999;
     pointer-events: none;
-    transition: width 0.08s ease-out;
+    will-change: transform;
+    transition: transform 0.05s linear;
+}
+
+[dir="rtl"] #scrollProgressBar {
+    transform-origin: right;
 }
 
 /* ==========================================================================
@@ -397,7 +404,14 @@ body {
 /* ==========================================================================
    Section Cards (Explanation & Example)
    ========================================================================== */
+.topic-page-unit {
+    contain: layout style;
+}
+
 .section-card {
+    contain: content;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 280px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 14px;
@@ -591,9 +605,9 @@ body {
    ========================================================================== */
 .chem-eq {
     background: #0f131a;
-    border-left: 3px solid var(--accent);
+    border-inline-start: 3px solid var(--accent);
     padding: 10px 14px;
-    border-radius: 0 8px 8px 0;
+    border-radius: 8px;
     margin: 10px 0;
     overflow-x: auto;
 }
@@ -705,7 +719,7 @@ code[class*="language-"] {
     padding: 12px 16px;
     border-radius: 10px;
     margin: 14px 0;
-    border-left: 4px solid var(--accent);
+    border-inline-start: 4px solid var(--accent);
     background: #121620;
     font-size: 14px;
 }
@@ -1127,6 +1141,9 @@ tr:nth-child(even) {
 }
 
 .exam-card {
+    contain: content;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 240px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -1330,4 +1347,78 @@ tr:nth-child(even) {
     border-color: var(--accent);
     box-shadow: 0 0 16px var(--accent-glow);
 }
+
+/* ==========================================================================
+   Practice Drill Solution Accordion Toggle & Container
+   ========================================================================== */
+.drill-solution-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-subtle);
+    border: 1px solid #28283a;
+    border-radius: 9px;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    margin-top: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    user-select: none;
+    line-height: 1.4;
+}
+
+.drill-solution-toggle:hover {
+    background: var(--bg-active);
+    border-color: var(--accent);
+    color: #ffffff;
+}
+
+.drill-solution-toggle .chevron {
+    font-size: 11px;
+    display: inline-block;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--accent);
+}
+
+/* Full Bidirectional RTL / LTR Mirroring Standards for Accordions */
+[dir="ltr"] .drill-solution-toggle .chevron {
+    transform: rotate(0deg);
+}
+
+[dir="ltr"] .drill-solution-toggle.expanded .chevron {
+    transform: rotate(90deg);
+}
+
+[dir="rtl"] .drill-solution-toggle .chevron {
+    transform: rotate(180deg);
+}
+
+[dir="rtl"] .drill-solution-toggle.expanded .chevron {
+    transform: rotate(90deg);
+}
+
+.drill-solution-container {
+    margin-top: 12px;
+    animation: fadeInDrill 0.18s ease-out;
+}
+
+@keyframes fadeInDrill {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 
