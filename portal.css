@@ -695,6 +695,134 @@ code[class*="language-"] {
     border: 1px solid #262638;
 }
 
+/* Seamless visual attachment when code block directly precedes output */
+.code-block-wrapper:has(+ .code-output-block) {
+    margin-block-end: 0;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   Terminal Console Execution Output Component
+   ========================================================================== */
+.code-output-block {
+    background: #080b12;
+    border: 1px solid #1e2638;
+    border-radius: 8px;
+    margin-block-start: -6px;
+    margin-block-end: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.code-block-wrapper + .code-output-block {
+    margin-block-start: 0;
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+}
+
+.output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0c101a;
+    padding-block: 6px;
+    padding-inline: 12px;
+    border-bottom: 1px solid #1e2638;
+}
+
+.output-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.terminal-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.terminal-dots .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.terminal-dots .dot-red {
+    background: #ef4444;
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+}
+
+.terminal-dots .dot-yellow {
+    background: #f59e0b;
+    box-shadow: 0 0 5px rgba(245, 158, 11, 0.4);
+}
+
+.terminal-dots .dot-green {
+    background: #10b981;
+    box-shadow: 0 0 5px rgba(16, 185, 129, 0.4);
+}
+
+.output-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-family: var(--font-mono);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.output-title::before {
+    content: "▶";
+    font-size: 8px;
+    color: #38bdf8;
+}
+
+.output-badge {
+    background: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    font-size: 10px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    padding-block: 2px;
+    padding-inline: 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.output-body {
+    padding-block: 10px;
+    padding-inline: 14px;
+    margin: 0 !important;
+    font-family: var(--font-mono) !important;
+    font-size: 13px !important;
+    line-height: 1.55;
+    color: #a5f3fc !important;
+    background: transparent !important;
+    overflow-x: auto;
+    white-space: pre;
+    -webkit-overflow-scrolling: touch;
+}
+
+.output-body code {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    color: inherit !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    box-shadow: none !important;
+}
+
 /* ==========================================================================
    Mermaid Diagrams Container (Universal Responsive & Legibility Protection)
    ========================================================================== */

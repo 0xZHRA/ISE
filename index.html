@@ -408,7 +408,15 @@
             <div class="page-stream">
                 <div class="section-card concept-card" id="t2-c1">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Python Built-In Collections & Mutability Matrix</h2></div>
-<div class="body-text"><p>Understanding collection properties is essential for tracing code and preventing aliasing bugs:</p><div class="table-wrapper"><table><thead><tr><th>Collection</th><th>Syntax</th><th>Mutable?</th><th>Ordered?</th><th>Duplicates Allowed?</th><th>Valid Dict Key?</th></tr></thead><tbody><tr><td><code>list</code></td><td><code>[1, 2, 3]</code></td><td><strong>Yes</strong></td><td>Yes</td><td>Yes</td><td><strong>No</strong> (unhashable)</td></tr><tr><td><code>tuple</code></td><td><code>(1, 2, 3)</code></td><td><strong>No</strong> (immutable)</td><td>Yes</td><td>Yes</td><td><strong>Yes</strong> (if elements are hashable)</td></tr><tr><td><code>set</code></td><td><code>{1, 2, 3}</code></td><td><strong>Yes</strong></td><td>No</td><td><strong>No</strong> (unique only)</td><td><strong>No</strong> (unhashable)</td></tr><tr><td><code>dict</code></td><td><code>{'k': 'v'}</code></td><td><strong>Yes</strong></td><td>Yes (3.7+)</td><td>Keys: No, Values: Yes</td><td><strong>No</strong> (unhashable)</td></tr></tbody></table></div><div class="callout callout-warning"><strong>Hashability Rule:</strong> To be a dictionary key or set element, an object must be <em>immutable</em> so its hash value never changes during its lifetime. Lists, sets, and dicts cannot be keys.</div></div>
+<div class="body-text"><p>Understanding collection properties is essential for tracing code and preventing aliasing bugs:</p><div class="table-wrapper"><table><thead><tr><th>Collection</th><th>Syntax</th><th>Mutable?</th><th>Ordered?</th><th>Duplicates Allowed?</th><th>Valid Dict Key?</th></tr></thead><tbody><tr><td><code>list</code></td><td><code>[1, 2, 3]</code></td><td><strong>Yes</strong></td><td>Yes</td><td>Yes</td><td><strong>No</strong> (unhashable)</td></tr><tr><td><code>tuple</code></td><td><code>(1, 2, 3)</code></td><td><strong>No</strong> (immutable)</td><td>Yes</td><td>Yes</td><td><strong>Yes</strong> (if elements are hashable)</td></tr><tr><td><code>set</code></td><td><code>{1, 2, 3}</code></td><td><strong>Yes</strong></td><td>No</td><td><strong>No</strong> (unique only)</td><td><strong>No</strong> (unhashable)</td></tr><tr><td><code>dict</code></td><td><code>{'k': 'v'}</code></td><td><strong>Yes</strong></td><td>Yes (3.7+)</td><td>Keys: No, Values: Yes</td><td><strong>No</strong> (unhashable)</td></tr></tbody></table></div><div class="callout callout-warning"><strong>Hashability Rule:</strong> To be a dictionary key or set element, an object must be <em>immutable</em> so its hash value never changes during its lifetime. Lists, sets, and dicts cannot be keys.</div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python"># Mutable collections (lists, dicts, sets) CANNOT be dictionary keys:
+valid_dict = {(101, 102): "Pair", "ID": 95}  # Tuples and strings are hashable
+print("valid_dict:", valid_dict)
+
+try:
+    invalid_dict = {[101, 102]: "Scores"}     # Raises TypeError!
+except TypeError as err:
+    print("TypeError caught:", err)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>valid_dict: {(101, 102): 'Pair', 'ID': 95}
+TypeError caught: unhashable type: 'list'</code></pre></div></div>
 </div><div class="section-card question-card" id="t2-q1">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Dictionary Keys & Mutability Rules</h3> <span class="tag-source">Source: Sol-Practice Questions Topic2.docx</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A software engineer attempts to construct a dictionary mapping student credentials. Which of the following assignment statements will raise a <code>TypeError: unhashable type</code> at runtime?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">d1 = {(101, 102): "Pair"}
@@ -423,10 +431,12 @@ d4 = {101: ("Math", "Science")}</code></pre></div><div class="interactive-q" dat
 </div>
 </div><div class="section-card concept-card" id="t2-c2">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Python Advanced Slicing Mechanics</h2></div>
-<div class="body-text"><p>Sequence slicing in Python conforms to the formal syntax:</p><div class="katex-display">$$\text{sequence}[\text{start} : \text{stop} : \text{step}]$$</div><ul><li><code>start</code>: Inclusive starting index (default is <code>0</code> when step > 0).</li><li><code>stop</code>: <strong>Exclusive</strong> termination boundary (element at index <code>stop</code> is NEVER included).</li><li><code>step</code>: Index stride interval. If negative, traversal moves backwards from right to left.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">data = [10, 20, 30, 40, 50, 60, 70]
+<div class="body-text"><p>Sequence slicing in Python conforms to the formal syntax:</p><div class="katex-display">$$\text{sequence}[\text{start} : \text{stop} : \text{step}]$$</div><ul><li><code>start</code>: Inclusive starting index (default is <code>0</code> when step > 0).</li><li><code>stop</code>: <strong>Exclusive</strong> termination boundary (element at index <code>stop</code> is NEVER included).</li><li><code>step</code>: Index stride interval. If negative, traversal moves backwards from right to left.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">data = [10, 20, 30, 40, 50, 60, 70]
 print(data[1:5])     # [20, 30, 40, 50] (index 5 is excluded)
 print(data[::-1])    # [70, 60, 50, 40, 30, 20, 10] (reverse sequence)
-print(data[4:1:-1])  # [50, 40, 30] (stops before index 1)</code></pre></div></div>
+print(data[4:1:-1])  # [50, 40, 30] (stops before index 1)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>[20, 30, 40, 50]
+[70, 60, 50, 40, 30, 20, 10]
+[50, 40, 30]</code></pre></div></div>
 </div><div class="section-card question-card" id="t2-q2">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Tracing Negative-Step Slicing</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the exact output of executing the following Python code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">vals = [2, 4, 6, 8, 10, 12, 14]
@@ -440,11 +450,23 @@ print(result)</code></pre></div><div class="interactive-q" data-correct="D" data
 </div>
 </div><div class="section-card concept-card" id="t2-c3">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Aliasing, References, & Shallow vs. Deep Copying</h2></div>
-<div class="body-text"><p>In Python, variables are labels bound to memory objects rather than storage boxes:</p><div class="callout callout-warning"><strong>Aliasing Trap:</strong> <code>b = a</code> merely points variable <code>b</code> to the exact same list instance in memory. Mutating <code>b</code> (e.g., <code>b.append(99)</code>) immediately affects <code>a</code>!</div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">a = [1, 2, [3, 4]]
-b = a          # Aliasing: same memory pointer
-c = a.copy()   # Shallow copy: new outer list, shared inner lists
-import copy
-d = copy.deepcopy(a) # Deep copy: fully recursive independent duplicate</code></pre></div></div>
+<div class="body-text"><p>In Python, variables are labels bound to memory objects rather than storage boxes:</p><div class="callout callout-warning"><strong>Aliasing Trap:</strong> <code>b = a</code> merely points variable <code>b</code> to the exact same list instance in memory. Mutating <code>b</code> immediately affects <code>a</code>!</div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import copy
+
+a = [1, 2, [3, 4]]
+b = a                 # Aliasing: points to same memory location
+c = a.copy()          # Shallow copy: new outer list, shared inner lists
+d = copy.deepcopy(a)  # Deep copy: fully recursive independent duplicate
+
+b[0] = 99
+c[2][0] = 888
+
+print("a:", a)
+print("b:", b)
+print("c:", c)
+print("d:", d)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>a: [99, 2, [888, 4]]
+b: [99, 2, [888, 4]]
+c: [1, 2, [888, 4]]
+d: [1, 2, [3, 4]]</code></pre></div></div>
 </div><div class="section-card question-card" id="t2-q3">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: List Reference Aliasing Tracing</h3> <span class="tag-source">Source: Sol-Practice Questions Topic2.docx</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following script?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">x = [1, 2, 3]
@@ -460,11 +482,19 @@ print(x)</code></pre></div><div class="interactive-q" data-correct="B" data-sour
 </div>
 </div><div class="section-card concept-card" id="t2-c4">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. NumPy Multi-Dimensional Arrays: Shapes & Reshaping</h2></div>
-<div class="body-text"><p>NumPy arrays provide efficient, contiguous N-dimensional memory blocks:</p><ul><li><code>arr.shape</code>: A tuple representing the dimensions along each axis (e.g., <code>(rows, columns)</code>).</li><li><code>arr.ndim</code>: The number of axes (dimensions) of the array.</li><li><code>arr.reshape(m, n)</code>: Returns a new view of the array with dimensions $(m, n)$ provided total elements $m \times n$ equals original size.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">import numpy as np
+<div class="body-text"><p>NumPy arrays provide efficient, contiguous N-dimensional memory blocks:</p><ul><li><code>arr.shape</code>: A tuple representing the dimensions along each axis (e.g., <code>(rows, columns)</code>).</li><li><code>arr.ndim</code>: The number of axes (dimensions) of the array.</li><li><code>arr.reshape(m, n)</code>: Returns a new view of the array with dimensions $(m, n)$ provided total elements $m \times n$ equals original size.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import numpy as np
+
 arr = np.arange(12)      # 1D array of 12 elements: [0, 1, ..., 11]
 mat = arr.reshape(3, 4)  # 2D array: 3 rows, 4 columns
-print(mat.shape)         # (3, 4)
-print(mat.ndim)          # 2</code></pre></div></div>
+
+print("mat:\n", mat)
+print("mat.shape:", mat.shape)
+print("mat.ndim:", mat.ndim)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>mat:
+ [[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+mat.shape: (3, 4)
+mat.ndim: 2</code></pre></div></div>
 </div><div class="section-card question-card" id="t2-q4">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Array Reshaping & Dimension Matching</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given an array <code>a = np.arange(16)</code>. Which of the following reshape operations will raise a <code>ValueError: cannot reshape array</code>?</p><div class="interactive-q" data-correct="C" data-source="Quiz1_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">a.reshape(4, 4)</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">a.reshape(2, 8)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">a.reshape(3, 5)</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">a.reshape(1, 16)</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -476,7 +506,23 @@ print(mat.ndim)          # 2</code></pre></div></div>
 </div>
 </div><div class="section-card concept-card" id="t2-c5">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. NumPy Stacking, Splitting, & Concatenation</h2></div>
-<div class="body-text"><p>Array joining and splitting operations along coordinate axes:</p><div class="callout callout-note"><strong>Directional Symmetries:</strong><ul><li><code>np.vstack([a, b])</code>: Stacks vertically along <strong>axis=0</strong> (row-wise, adding rows).</li><li><code>np.hstack([a, b])</code>: Stacks horizontally along <strong>axis=1</strong> (column-wise, adding columns).</li><li><code>np.vsplit(arr, n)</code>: Splits array vertically into $n$ sub-arrays row-wise.</li><li><code>np.hsplit(arr, n)</code>: Splits array horizontally into $n$ sub-arrays column-wise.</li></ul></div></div>
+<div class="body-text"><p>Array joining and splitting operations along coordinate axes:</p><div class="callout callout-note"><strong>Directional Symmetries:</strong><ul><li><code>np.vstack([a, b])</code>: Stacks vertically along <strong>axis=0</strong> (row-wise, adding rows).</li><li><code>np.hstack([a, b])</code>: Stacks horizontally along <strong>axis=1</strong> (column-wise, adding columns).</li><li><code>np.vsplit(arr, n)</code>: Splits array vertically into $n$ sub-arrays row-wise.</li><li><code>np.hsplit(arr, n)</code>: Splits array horizontally into $n$ sub-arrays column-wise.</li></ul></div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import numpy as np
+
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6], [7, 8]])
+
+v_stacked = np.vstack([a, b])  # Stack vertically along axis=0 (row-wise)
+h_stacked = np.hstack([a, b])  # Stack horizontally along axis=1 (col-wise)
+
+print("v_stacked:\n", v_stacked)
+print("h_stacked:\n", h_stacked)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>v_stacked:
+ [[1 2]
+ [3 4]
+ [5 6]
+ [7 8]]
+h_stacked:
+ [[1 2 5 6]
+ [3 4 7 8]]</code></pre></div></div>
 </div><div class="section-card question-card" id="t2-q5">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Row-wise vs Column-wise Splitting</h3> <span class="tag-source">Source: Sol_Quiz1_ISE291_S04_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which of the following statements regarding NumPy operations is <strong>INCORRECT</strong>?</p><div class="interactive-q" data-correct="A" data-source="Sol_Quiz1_ISE291_S04_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">.hsplit() is used for splitting an array row-wise.</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">.concatenate() joins two or more arrays along an existing axis.</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">.vstack() is used for row-wise joining of arrays.</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">.hstack() is used for column-wise joining of arrays.</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -488,14 +534,21 @@ print(mat.ndim)          # 2</code></pre></div></div>
 </div>
 </div><div class="section-card concept-card" id="t2-c6">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Vectorization & Boolean Indexing Masks</h2></div>
-<div class="body-text"><p>NumPy eliminates slow Python for-loops by executing vectorized SIMD operations in compiled C:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">import numpy as np
+<div class="body-text"><p>NumPy eliminates slow Python for-loops by executing vectorized SIMD operations in compiled C:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import numpy as np
+
 vals = np.array([10, 25, 40, 55, 70])
-# 1. Vectorized condition creates boolean mask:
-mask = vals > 30        # array([False, False,  True,  True,  True])
-# 2. Boolean indexing extracts matching values:
-filtered = vals[mask]   # array([40, 55, 70])
-# 3. In-place modification via mask:
-vals[vals < 30] = 0     # array([0, 0, 40, 55, 70])</code></pre></div></div>
+mask = vals &gt; 30
+filtered = vals[mask]
+
+print("Original:", vals)
+print("Mask (vals &gt; 30):", mask)
+print("Filtered:", filtered)
+
+vals[vals &lt; 30] = 0
+print("After vals[vals &lt; 30] = 0:", vals)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Original: [10 25 40 55 70]
+Mask (vals &gt; 30): [False False  True  True  True]
+Filtered: [40 55 70]
+After vals[vals &lt; 30] = 0: [ 0  0 40 55 70]</code></pre></div></div>
 </div><div class="section-card question-card" id="t2-q6">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Boolean Masking & Conditional Filtering</h3> <span class="tag-source">Source: Sol_Quiz1_ISE291_S04_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of the following NumPy code snippet?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">import numpy as np
@@ -625,10 +678,12 @@ print(arr[(arr % 2 == 0) & (arr > 6)])</code></pre></div><div class="interactive
             <div class="page-stream">
                 <div class="section-card concept-card" id="t4-c1">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Iteration Controls: enumerate() vs. zip()</h2></div>
-<div class="body-text"><p>Idiomatic looping constructs in Python:</p><ul><li><code>enumerate(iterable, start=0)</code>: Returns pairs of <code>(index, element)</code>.</li><li><code>zip(*iterables)</code>: Aggregates elements from multiple iterables element-by-element into tuples, terminating at the shortest iterable.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">names = ['Ali', 'Omar', 'Saad']
+<div class="body-text"><p>Idiomatic looping constructs in Python:</p><ul><li><code>enumerate(iterable, start=0)</code>: Returns pairs of <code>(index, element)</code>.</li><li><code>zip(*iterables)</code>: Aggregates elements from multiple iterables element-by-element into tuples, terminating at the shortest iterable.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">names = ['Ali', 'Omar', 'Saad']
 scores = [90, 85, 95]
 for idx, (name, sc) in enumerate(zip(names, scores)):
-    print(f"Rank {idx+1}: {name} -> {sc}")</code></pre></div></div>
+    print(f"Rank {idx+1}: {name} -&gt; {sc}")</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Rank 1: Ali -&gt; 90
+Rank 2: Omar -&gt; 85
+Rank 3: Saad -&gt; 95</code></pre></div></div>
 </div><div class="section-card question-card" id="t4-q1">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Code Tracing with zip & enumerate</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the printed output of the following Python loop?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">a = [10, 20]
@@ -643,11 +698,14 @@ print(out)</code></pre></div><div class="interactive-q" data-correct="A" data-so
 </div>
 </div><div class="section-card concept-card" id="t4-c2">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Conditional List Comprehensions</h2></div>
-<div class="body-text"><p>List comprehensions support both filtering (trailing <code>if</code>) and ternary transformations (leading <code>if-else</code>):</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># 1. Filtering condition (no else allowed at the end):
+<div class="body-text"><p>List comprehensions support both filtering (trailing <code>if</code>) and ternary transformations (leading <code>if-else</code>):</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python"># 1. Filtering condition (trailing if):
 evens = [x for x in range(10) if x % 2 == 0]
+print("evens:", evens)
 
-# 2. Ternary conditional transformation (requires both if and else):
-labels = ["Even" if x % 2 == 0 else "Odd" for x in range(10)]</code></pre></div></div>
+# 2. Ternary conditional transformation (leading if-else):
+labels = ["Even" if x % 2 == 0 else "Odd" for x in range(6)]
+print("labels:", labels)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>evens: [0, 2, 4, 6, 8]
+labels: ['Even', 'Odd', 'Even', 'Odd', 'Even', 'Odd']</code></pre></div></div>
 </div><div class="section-card question-card" id="t4-q2">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Double-Condition List Comprehension</h3> <span class="tag-source">Source: Quiz1_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of executing the following list comprehension?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">data = [3, 4, 7, 8, 12]
@@ -661,10 +719,11 @@ print(res)</code></pre></div><div class="interactive-q" data-correct="B" data-so
 </div>
 </div><div class="section-card concept-card" id="t4-c3">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Nested List Comprehensions & 2D Matrix Flattening</h2></div>
-<div class="body-text"><p>Nested comprehensions mirror the order of nested for-loops from outer to inner:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+<div class="body-text"><p>Nested comprehensions mirror the order of nested for-loops from outer to inner:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
 # Flatten 2D into 1D (outer loop first, then inner loop):
 flat = [num for row in matrix for num in row]
-# flat is [1, 2, 3, 4, 5, 6, 7, 8, 9]</code></pre></div></div>
+print("flat:", flat)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>flat: [1, 2, 3, 4, 5, 6, 7, 8, 9]</code></pre></div></div>
 </div><div class="section-card question-card" id="t4-q3">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Flattening 2D Matrices with List Comprehension</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given <code>grid = [[10, 20], [30, 40]]</code>, which expression produces <code>[10, 30]</code>?</p><div class="interactive-q" data-correct="B" data-source="Topic 4 practice questions.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">[row[1] for row in grid]</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">[row[0] for row in grid]</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">[grid[0][col] for col in range(2)]</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">[grid[row][row] for row in range(2)]</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -676,12 +735,11 @@ flat = [num for row in matrix for num in row]
 </div>
 </div><div class="section-card concept-card" id="t4-c4">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Functions & Variable Arguments: *args and **kwargs</h2></div>
-<div class="body-text"><p>Python allows dynamic numbers of positional and keyword arguments:</p><ul><li><code>*args</code>: Collects extra positional arguments into a <strong>tuple</strong>.</li><li><code>**kwargs</code>: Collects extra keyword arguments into a <strong>dictionary</strong>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">def summarize(*args, **kwargs):
-    total = sum(args)
-    prefix = kwargs.get('prefix', 'Total')
-    return f"{prefix}: {total}"
+<div class="body-text"><p>Python allows dynamic numbers of positional and keyword arguments:</p><ul><li><code>*args</code>: Collects extra positional arguments into a <strong>tuple</strong>.</li><li><code>**kwargs</code>: Collects extra keyword arguments into a <strong>dictionary</strong>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">def summarize(metric, *args, **kwargs):
+    total = round(sum(args), 2)
+    return f"Metric: {metric}, Sum: {total}, Options: {kwargs}"
 
-print(summarize(10, 20, 30, prefix="Score")) # "Score: 60"</code></pre></div></div>
+print(summarize("Loss", 2.1, 1.8, 0.9, optimizer="Adam", lr=0.001))</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Metric: Loss, Sum: 4.8, Options: {'optimizer': 'Adam', 'lr': 0.001}</code></pre></div></div>
 </div><div class="section-card question-card" id="t4-q4">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Tracing *args and **kwargs</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">def compute(x, *args):
@@ -696,10 +754,16 @@ print(compute(2, 3, 4, 5))</code></pre></div><div class="interactive-q" data-cor
 </div>
 </div><div class="section-card concept-card" id="t4-c5">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Anonymous Functions (lambda) & map / filter</h2></div>
-<div class="body-text"><p>Modern functional tools in Python:</p><ul><li><code>lambda arguments: expression</code>: Anonymous inline function.</li><li><code>map(func, iterable)</code>: Applies <code>func</code> to every element.</li><li><code>filter(func, iterable)</code>: Retains elements where <code>func(x)</code> is <code>True</code>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># Squaring positive numbers using filter and map:
-nums = [-2, -1, 0, 1, 2, 3]
-pos_sq = list(map(lambda x: x**2, filter(lambda x: x > 0, nums)))
-# pos_sq is [1, 4, 9]</code></pre></div></div>
+<div class="body-text"><p>Modern functional tools in Python:</p><ul><li><code>lambda arguments: expression</code>: Anonymous inline function.</li><li><code>map(func, iterable)</code>: Applies <code>func</code> to every element.</li><li><code>filter(func, iterable)</code>: Retains elements where <code>func(x)</code> is <code>True</code>.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">nums = [-2, -1, 0, 1, 2, 3]
+
+# 1. Filter positive numbers:
+pos = list(filter(lambda x: x &gt; 0, nums))
+print("pos:", pos)
+
+# 2. Map squaring positive numbers:
+pos_sq = list(map(lambda x: x**2, pos))
+print("pos_sq:", pos_sq)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>pos: [1, 2, 3]
+pos_sq: [1, 4, 9]</code></pre></div></div>
 </div><div class="section-card question-card" id="t4-q5">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Combining map and filter with lambda</h3> <span class="tag-source">Source: Sample Mid .pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the output of the following pipeline?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">nums = [1, 2, 3, 4]
@@ -713,10 +777,11 @@ print(res)</code></pre></div><div class="interactive-q" data-correct="C" data-so
 </div>
 </div><div class="section-card concept-card" id="t4-c6">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Functional Pipelines & Custom Key Sorting</h2></div>
-<div class="body-text"><p>Sorting complex data structures using the <code>key</code> parameter:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">students = [('Zayd', 82), ('Amr', 95), ('Bilal', 78)]
+<div class="body-text"><p>Sorting complex data structures using the <code>key</code> parameter:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">students = [('Zayd', 82), ('Amr', 95), ('Bilal', 78)]
+
 # Sort by score descending:
 by_score = sorted(students, key=lambda s: s[1], reverse=True)
-# [('Amr', 95), ('Zayd', 82), ('Bilal', 78)]</code></pre></div></div>
+print("by_score:", by_score)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>by_score: [('Amr', 95), ('Zayd', 82), ('Bilal', 78)]</code></pre></div></div>
 </div><div class="section-card question-card" id="t4-q6">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Custom Key Sorting Tracing</h3> <span class="tag-source">Source: Topic 4 practice questions.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is printed by the following code?</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">words = ['apple', 'pie', 'banana', 'fig']
@@ -752,7 +817,34 @@ print(words[0], words[-1])</code></pre></div><div class="interactive-q" data-cor
             <div class="page-stream">
                 <div class="section-card concept-card" id="t5-c1">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">1. Missing Data Handling: dropna() vs fillna()</h2></div>
-<div class="body-text"><p>Real-world datasets frequently contain missing values (represented as <code>NaN</code> or <code>None</code> in pandas):</p><div class="table-wrapper"><table><thead><tr><th>Method</th><th>Imputation Metric</th><th>Optimal Scenario</th></tr></thead><tbody><tr><td><code>df.dropna()</code></td><td>Elimination</td><td>Missing rows represent less than 5% of total dataset and are Missing Completely at Random.</td></tr><tr><td><code>df.fillna(df[col].mean())</code></td><td>Mean</td><td>Numerical feature with approximately <strong>symmetric</strong>, normal distribution.</td></tr><tr><td><code>df.fillna(df[col].median())</code></td><td>Median</td><td>Numerical feature with <strong>skewed</strong> distribution or extreme outliers.</td></tr><tr><td><code>df.fillna(df[col].mode().iloc[0])</code></td><td>Mode</td><td><strong>Categorical</strong> features (replaces NaN with most frequent class).</td></tr></tbody></table></div></div>
+<div class="body-text"><p>Real-world datasets frequently contain missing values (represented as <code>NaN</code> or <code>None</code> in pandas):</p><div class="table-wrapper"><table><thead><tr><th>Method</th><th>Imputation Metric</th><th>Optimal Scenario</th></tr></thead><tbody><tr><td><code>df.dropna()</code></td><td>Elimination</td><td>Missing rows represent less than 5% of total dataset and are Missing Completely at Random.</td></tr><tr><td><code>df.fillna(df[col].mean())</code></td><td>Mean</td><td>Numerical feature with approximately <strong>symmetric</strong>, normal distribution.</td></tr><tr><td><code>df.fillna(df[col].median())</code></td><td>Median</td><td>Numerical feature with <strong>skewed</strong> distribution or extreme outliers.</td></tr><tr><td><code>df.fillna(df[col].mode().iloc[0])</code></td><td>Mode</td><td><strong>Categorical</strong> features (replaces NaN with most frequent class).</td></tr></tbody></table></div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    'Student': ['Ali', 'Omar', 'Saad', 'Zaid'],
+    'Score': [85.0, np.nan, 90.0, np.nan],
+    'Attendance': [95.0, 80.0, np.nan, 70.0]
+})
+
+print("Original DataFrame:\n", df)
+print("\ndf.dropna():\n", df.dropna())
+print("\ndf.fillna(mean):\n", df.fillna(df.mean(numeric_only=True)))</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Original DataFrame:
+   Student  Score  Attendance
+0     Ali   85.0        95.0
+1    Omar    NaN        80.0
+2    Saad   90.0         NaN
+3    Zaid    NaN        70.0
+
+df.dropna():
+   Student  Score  Attendance
+0     Ali   85.0        95.0
+
+df.fillna(mean):
+   Student  Score  Attendance
+0     Ali   85.0   95.000000
+1    Omar   87.5   80.000000
+2    Saad   90.0   81.666667
+3    Zaid   87.5   70.000000</code></pre></div></div>
 </div><div class="section-card question-card" id="t5-q1">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 1: Categorical Missing Value Imputation</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given a pandas DataFrame <code>df</code> with a categorical column <code>Job_Type</code> containing values: <code>['Engineer', 'Doctor', 'Doctor', 'Teacher', np.nan]</code>. Which code snippet correctly replaces the missing value with the most frequent category?</p><div class="interactive-q" data-correct="A" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">df['Job_Type'].fillna(df['Job_Type'].mode().iloc[0], inplace=True)</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">df['Job_Type'].fillna(df['Job_Type'].mean(), inplace=True)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">df['Job_Type'].fillna(df['Job_Type'].median(), inplace=True)</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">df['Job_Type'].replace(np.nan, 0, inplace=True)</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -764,12 +856,25 @@ print(words[0], words[-1])</code></pre></div><div class="interactive-q" data-cor
 </div>
 </div><div class="section-card concept-card" id="t5-c2">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">2. Duplicate Record Detection & Elimination</h2></div>
-<div class="body-text"><p>Duplicate rows distort statistical distributions and lead to data leakage in machine learning:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># Identify duplicate rows:
-dups = df.duplicated() # Boolean mask, True for repeated rows
-# Drop duplicates keeping first occurrence:
-df_clean = df.drop_duplicates(keep='first')
-# Drop duplicates based on specific primary keys:
-df_unique_users = df.drop_duplicates(subset=['UserID'])</code></pre></div></div>
+<div class="body-text"><p>Duplicate rows distort statistical distributions and lead to data leakage in machine learning:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({
+    'UserID': [101, 102, 101, 103],
+    'Name': ['Ali', 'Omar', 'Ali', 'Saad']
+})
+
+print("df.duplicated():\n", df.duplicated().to_string())
+print("\ndf.drop_duplicates(keep='first'):\n", df.drop_duplicates(keep='first'))</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>df.duplicated():
+0    False
+1    False
+2     True
+3    False
+
+df.drop_duplicates(keep='first'):
+   UserID  Name
+0     101   Ali
+1     102  Omar
+3     103  Saad</code></pre></div></div>
 </div><div class="section-card question-card" id="t5-q2">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 2: Calculating Unique Rows after Deduplication</h3> <span class="tag-source">Source: Sol-Practice Questions Topic5.docx</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A DataFrame <code>df</code> contains 100 rows. Executing <code>df.duplicated().sum()</code> returns 18. How many rows will remain after calling <code>df.drop_duplicates()</code>?</p><div class="interactive-q" data-correct="C" data-source="Sol-Practice Questions Topic5.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">18 rows</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">100 rows</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">82 rows</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">64 rows</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -781,7 +886,25 @@ df_unique_users = df.drop_duplicates(subset=['UserID'])</code></pre></div></div>
 </div>
 </div><div class="section-card concept-card" id="t5-c3">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Feature Rescaling: Normalization vs. Standardization</h2></div>
-<div class="body-text"><p>Distance-based algorithms (KNN, K-Means, Gradient Descent) require feature rescaling:</p><div class="table-wrapper"><table><thead><tr><th>Method</th><th>Mathematical Formula</th><th>Output Range</th><th>Properties</th></tr></thead><tbody><tr><td><strong>Min-Max Normalization</strong></td><td>$$x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$</td><td>$[0, 1]$</td><td>Preserves exact relationships; sensitive to outliers.</td></tr><tr><td><strong>Z-Score Standardization</strong></td><td>$$z = \frac{x - \mu}{\sigma}$$</td><td>$\mu = 0, \sigma = 1$</td><td>Centering around 0; robust to outliers; does not bound data into $[0, 1]$.</td></tr></tbody></table></div></div>
+<div class="body-text"><p>Distance-based algorithms (KNN, K-Means, Gradient Descent) require feature rescaling:</p><div class="table-wrapper"><table><thead><tr><th>Method</th><th>Mathematical Formula</th><th>Output Range</th><th>Properties</th></tr></thead><tbody><tr><td><strong>Min-Max Normalization</strong></td><td>$$x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$</td><td>$[0, 1]$</td><td>Preserves exact relationships; sensitive to outliers.</td></tr><tr><td><strong>Z-Score Standardization</strong></td><td>$$z = \frac{x - \mu}{\sigma}$$</td><td>$\mu = 0, \sigma = 1$</td><td>Centering around 0; robust to outliers; does not bound data into $[0, 1]$.</td></tr></tbody></table></div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
+
+s = pd.Series([10.0, 20.0, 30.0, 40.0, 50.0])
+
+# 1. Min-Max Normalization: (x - min) / (max - min) -&gt; [0, 1]
+min_max = (s - s.min()) / (s.max() - s.min())
+
+# 2. Z-Score Standardization: (x - mean) / std -&gt; mean=0, std=1
+z_score = (s - s.mean()) / s.std()
+
+print("Original Series:\n", s.tolist())
+print("Min-Max Normalized:\n", min_max.tolist())
+print("Z-Score Standardized:\n", [round(x, 2) for x in z_score.tolist()])</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Original Series:
+ [10.0, 20.0, 30.0, 40.0, 50.0]
+Min-Max Normalized:
+ [0.0, 0.25, 0.5, 0.75, 1.0]
+Z-Score Standardized:
+ [-1.26, -0.63, 0.0, 0.63, 1.26]</code></pre></div></div>
 </div><div class="section-card question-card" id="t5-q3">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Calculating Min-Max Scaled Median</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given the feature array $X = [1, 3, 5, 7, 9]$, what is the median of the data after applying Min-Max normalization to the range $[0, 1]$?</p><div class="interactive-q" data-correct="D" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">0.0</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">1.0</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">0.75</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">0.5</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -793,7 +916,20 @@ df_unique_users = df.drop_duplicates(subset=['UserID'])</code></pre></div></div>
 </div>
 </div><div class="section-card concept-card" id="t5-c4">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">4. Categorical Encoding & The Dummy Variable Trap</h2></div>
-<div class="body-text"><p>Machine learning models require numerical inputs. Categorical variables are converted via:</p><ul><li><strong>Label Encoding:</strong> Maps categories to integers $0, 1, 2, \dots$. <em>Use only for ordinal data</em> (e.g., Low=0, Med=1, High=2) where intrinsic ordering exists.</li><li><strong>One-Hot Encoding:</strong> Creates binary $0/1$ indicator columns for each category. <em>Use for nominal data</em> (e.g., Blood Types, Cities).</li></ul><div class="callout callout-important"><strong>The Dummy Variable Trap:</strong> If a categorical feature has $K$ distinct categories, retaining all $K$ binary columns introduces perfect multicollinearity (since $\sum_{j=1}^K x_j = 1$). To avoid this, always specify <code>drop_first=True</code> in <code>pd.get_dummies()</code>, creating $K - 1$ columns.</div></div>
+<div class="body-text"><p>Machine learning models require numerical inputs. Categorical variables are converted via:</p><ul><li><strong>Label Encoding:</strong> Maps categories to integers $0, 1, 2, \dots$. <em>Use only for ordinal data</em> (e.g., Low=0, Med=1, High=2) where intrinsic ordering exists.</li><li><strong>One-Hot Encoding:</strong> Creates binary $0/1$ indicator columns for each category. <em>Use for nominal data</em> (e.g., Blood Types, Cities).</li></ul><div class="callout callout-important"><strong>The Dummy Variable Trap:</strong> If a categorical feature has $K$ distinct categories, retaining all $K$ binary columns introduces perfect multicollinearity (since $\sum_{j=1}^K x_j = 1$). To avoid this, always specify <code>drop_first=True</code> in <code>pd.get_dummies()</code>, creating $K - 1$ columns.</div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({
+    'City': ['Dhahran', 'Riyadh', 'Jeddah', 'Dhahran'],
+    'Sales': [250, 400, 310, 280]
+})
+
+# drop_first=True creates K - 1 columns to prevent multicollinearity:
+encoded = pd.get_dummies(df, columns=['City'], drop_first=True, dtype=int)
+print(encoded)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>   Sales  City_Jeddah  City_Riyadh
+0    250            0            0
+1    400            0            1
+2    310            1            0
+3    280            0            0</code></pre></div></div>
 </div><div class="section-card question-card" id="t5-q4">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 4: Calculating Column Counts after One-Hot Encoding</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>A DataFrame has 9 total columns, including one categorical column <code>'Status'</code> that contains 4 unique values: <code>['Active', 'Pending', 'Suspended', 'Terminated']</code>. The developer executes:</p><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python">df = pd.get_dummies(df, columns=['Status'], drop_first=True)</code></pre></div><p>How many columns will the resulting DataFrame contain in total?</p><div class="interactive-q" data-correct="B" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">13</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">12</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">11</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">10</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -805,8 +941,20 @@ df_unique_users = df.drop_duplicates(subset=['UserID'])</code></pre></div></div>
 </div>
 </div><div class="section-card concept-card" id="t5-c5">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Pandas Hierarchical Sorting & Ordering</h2></div>
-<div class="body-text"><p>Sorting operations in pandas:</p><ul><li><code>df.sort_values(by=['col1', 'col2'], ascending=[False, True])</code>: Multi-column hierarchical sorting.</li><li><code>ascending</code> can accept a boolean or list of booleans matching each column in <code>by</code>.</li><li><code>inplace=True</code> modifies the original DataFrame without returning a new copy.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># Sort department ascending, salary descending within department:
-df.sort_values(by=['Department', 'Salary'], ascending=[True, False], inplace=True)</code></pre></div></div>
+<div class="body-text"><p>Sorting operations in pandas:</p><ul><li><code>df.sort_values(by=['col1', 'col2'], ascending=[False, True])</code>: Multi-column hierarchical sorting.</li><li><code>ascending</code> can accept a boolean or list of booleans matching each column in <code>by</code>.</li><li><code>inplace=True</code> modifies the original DataFrame without returning a new copy.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({
+    'Dept': ['ISE', 'EE', 'ISE', 'EE'],
+    'Salary': [12000, 14000, 15000, 11000]
+})
+
+# Sort Department ascending, and Salary descending within department:
+df_sorted = df.sort_values(by=['Dept', 'Salary'], ascending=[True, False])
+print(df_sorted)</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>  Dept  Salary
+1   EE   14000
+3   EE   11000
+2  ISE   15000
+0  ISE   12000</code></pre></div></div>
 </div><div class="section-card question-card" id="t5-q5">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 5: Multi-Column Sorting Syntax</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Which pandas expression correctly sorts a DataFrame <code>df</code> by <code>Department</code> in ascending order, and within each department by <code>Salary</code> in descending order?</p><div class="interactive-q" data-correct="A" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">df.sort_values(by=['Department', 'Salary'], ascending=[True, False])</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">df.sort_values(by=['Department', 'Salary'], ascending=False)</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">df.sort_values(by=['Department', 'Salary'], ascending=[False, True])</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">df.sort_by(['Department', 'Salary'], order=['asc', 'desc'])</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -818,10 +966,24 @@ df.sort_values(by=['Department', 'Salary'], ascending=[True, False], inplace=Tru
 </div>
 </div><div class="section-card concept-card" id="t5-c6">
 <div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Pandas Indexing Mechanics: .loc vs .iloc</h2></div>
-<div class="body-text"><p>Explicit indexing in pandas:</p><div class="table-wrapper"><table><thead><tr><th>Indexer</th><th>Mechanism</th><th>Stop Boundary</th><th>Accepts</th></tr></thead><tbody><tr><td><code>.loc[]</code></td><td><strong>Label-based</strong></td><td><strong>Inclusive</strong></td><td>Row and column names/labels, boolean Series.</td></tr><tr><td><code>.iloc[]</code></td><td><strong>Integer position-based</strong></td><td><strong>Exclusive</strong></td><td>0-based integer positions, integer slices.</td></tr></tbody></table></div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span></div><pre class="line-numbers"><code class="language-python"># .iloc: 0:3 excludes index 3 (returns rows 0, 1, 2)
-df.iloc[0:3, 0:2]
-# .loc: 'A':'C' INCLUDES label 'C'
-df.loc['A':'C', 'Age':'Salary']</code></pre></div></div>
+<div class="body-text"><p>Explicit indexing in pandas:</p><div class="table-wrapper"><table><thead><tr><th>Indexer</th><th>Mechanism</th><th>Stop Boundary</th><th>Accepts</th></tr></thead><tbody><tr><td><code>.loc[]</code></td><td><strong>Label-based</strong></td><td><strong>Inclusive</strong></td><td>Row and column names/labels, boolean Series.</td></tr><tr><td><code>.iloc[]</code></td><td><strong>Integer position-based</strong></td><td><strong>Exclusive</strong></td><td>0-based integer positions, integer slices.</td></tr></tbody></table></div><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({
+    'Age': [20, 21, 22, 23],
+    'Score': [88, 92, 79, 95]
+}, index=['A', 'B', 'C', 'D'])
+
+print("df.iloc[0:2, 0:2] (Position-based, row index 2 excluded):\n", df.iloc[0:2, 0:2])
+print("\ndf.loc['A':'C', 'Age':'Score'] (Label-based, 'C' is INCLUDED):\n", df.loc['A':'C', 'Age':'Score'])</code></pre></div><div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>df.iloc[0:2, 0:2] (Position-based, row index 2 excluded):
+   Age  Score
+A   20     88
+B   21     92
+
+df.loc['A':'C', 'Age':'Score'] (Label-based, 'C' is INCLUDED):
+   Age  Score
+A   20     88
+B   21     92
+C   22     79</code></pre></div></div>
 </div><div class="section-card question-card" id="t5-q6">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: Tracing Slicing Results with .loc vs .iloc</h3> <span class="tag-source">Source: Quiz_2.docx</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>What is the fundamental difference in slice boundary handling between <code>.loc</code> and <code>.iloc</code>?</p><div class="interactive-q" data-correct="A" data-source="Quiz_2.docx"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">.loc includes the stop endpoint, while .iloc excludes the stop endpoint</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">.loc excludes the stop endpoint, while .iloc includes the stop endpoint</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Both .loc and .iloc exclude the stop endpoint</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Both .loc and .iloc include the stop endpoint</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -888,7 +1050,6 @@ df.loc['A':'C', 'Age':'Salary']</code></pre></div></div>
 
 <!-- Floating Anchors Quick Jump Navigation -->
 <nav id="floatingAnchorsNav" class="floating-anchors-nav" aria-label="On-page anchors navigation">
-    <!-- Floating Anchors Menu Panel -->
     <div id="floatingAnchorsPanel" class="floating-anchors-panel" aria-hidden="true" role="dialog" aria-labelledby="floatingAnchorsTopicTitle">
         <div class="floating-anchors-header">
             <div class="floating-anchors-title">
@@ -920,8 +1081,6 @@ df.loc['A':'C', 'Age':'Salary']</code></pre></div></div>
         </div>
         <div id="floatingAnchorsList" class="floating-anchors-list" role="list"></div>
     </div>
-
-    <!-- Floating Controls (Back to Top & Toggle Outline FAB) -->
     <div class="floating-anchors-controls">
         <button id="btnScrollToTop" class="floating-fab btn-back-to-top" aria-label="Scroll to top of page" onclick="scrollToTop()" title="Back to top">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
