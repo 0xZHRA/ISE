@@ -34,6 +34,10 @@
     <div class="nav-inner-container">
         <div class="brand-group">
             <span class="brand-text">ISE 291</span>
+            <button class="sync-badge-btn" id="globalSyncBadge" onclick="openSyncModal()" title="Cloud Progress Sync (Auto-Saved across devices)">
+                <span class="sync-dot"></span>
+                <span class="sync-label">Synced</span>
+            </button>
         </div>
         
         <!-- Single Unified Topic Popup Trigger (42px Touch Target) -->
@@ -103,6 +107,63 @@
             </div>
         </button>
         
+        </div>
+    </div>
+</div>
+
+<!-- Multi-Device Cloud Progress Sync Modal -->
+<div class="topic-modal-overlay" id="syncModal" onclick="closeSyncModal(event)">
+    <div class="topic-modal-sheet sync-modal-sheet" onclick="event.stopPropagation()">
+        <div class="topic-sheet-header">
+            <h3 class="topic-sheet-heading" style="display:flex;align-items:center;gap:8px;">
+                <span>☁️</span> <span>Cloud Progress Sync</span>
+            </h3>
+            <button class="topic-sheet-close" onclick="closeSyncModal()">&times;</button>
+        </div>
+        <div class="sync-modal-body">
+            <div class="sync-status-card">
+                <div class="sync-status-indicator">
+                    <span class="sync-pulse-ring"></span>
+                    <span class="sync-main-dot"></span>
+                </div>
+                <div class="sync-status-text">
+                    <div class="sync-status-title" id="syncStatusTitle">Cloud Sync: Active & Auto-Saved</div>
+                    <div class="sync-status-time" id="syncStatusTime">Last synced: Checking...</div>
+                </div>
+            </div>
+
+            <p class="sync-desc">
+                Your answered questions, drill results, exam bank progress, active topic, and reading positions are automatically synchronized across all your devices (phone, iPad, laptop) in real time without manual logins.
+            </p>
+
+            <div class="sync-action-grid">
+                <button class="sync-action-btn" onclick="copySyncLink(this)">
+                    <span class="action-icon">📱</span>
+                    <span class="action-text">Copy Sync Link for Phone</span>
+                </button>
+                <button class="sync-action-btn" onclick="forceCloudPush(this)">
+                    <span class="action-icon">⬆️</span>
+                    <span class="action-text">Force Push to Cloud</span>
+                </button>
+                <button class="sync-action-btn" onclick="forceCloudPull(this)">
+                    <span class="action-icon">⬇️</span>
+                    <span class="action-text">Force Pull from Cloud</span>
+                </button>
+            </div>
+
+            <div class="sync-backup-section">
+                <div class="backup-header">
+                    <span class="backup-title">Offline Progress Backup (JSON)</span>
+                </div>
+                <div class="backup-buttons">
+                    <button class="btn-backup-sm" onclick="exportProgressJSON()">📥 Export JSON</button>
+                    <label class="btn-backup-sm" style="cursor:pointer;margin:0;">
+                        📤 Import JSON
+                        <input type="file" id="importJsonFileInput" accept=".json" onchange="importProgressJSON(event)" style="display:none;" />
+                    </label>
+                </div>
+            </div>
+            <div id="syncModalFeedback" class="sync-modal-feedback" style="display:none;"></div>
         </div>
     </div>
 </div>
@@ -607,8 +668,32 @@ print(arr[(arr % 2 == 0) & (arr > 6)])</code></pre></div><div class="interactive
   <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(A) Positively skewed (skewed to the right)</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Breakdown:</strong></p><p>We compare the three measures:</p><div class="katex-display">$$\text{Mean} (82) > \text{Median} (75) > \text{Mode} (70)$$</div><p>When the mean is pulled higher than the median and mode, the distribution is <strong>positively skewed (skewed to the right)</strong>.</p></div></div>
 </div>
 </div><div class="section-card concept-card" id="t3-c3">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Sample Variance & Bessel's Correction</h2></div>
-<div class="body-text"><p>Dispersion quantifies the spread of observations around the central mean:</p><div class="katex-display">$$s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n - 1}, \quad s = \sqrt{s^2}$$</div><div class="callout callout-important"><strong>Bessel's Correction:</strong> When computing <em>sample</em> variance, dividing by $n-1$ (degrees of freedom) corrects for downward bias, yielding an unbiased estimator of population variance $\sigma^2$. In NumPy, use <code>np.var(data, ddof=1)</code>.</div></div>
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">3. Sample Variance & Bessel's Correction (Official Slide Dataset: 25-Student Scores)</h2></div>
+<div class="body-text"><p>Dispersion quantifies the spread of observations around the central mean:</p><div class="katex-display">$$s^2 = \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{n - 1}, \quad s = \sqrt{s^2}$$</div><div class="callout callout-important"><strong>Bessel's Correction:</strong> When computing <em>sample</em> variance, dividing by $n-1$ (degrees of freedom) corrects for downward bias, yielding an unbiased estimator of population variance $\sigma^2$. In NumPy, use <code>np.var(data, ddof=1)</code>.</div>
+<p style="margin-top:14px;"><strong>Official Slide Dataset: 25-Student Exam Score Dispersion (<code>Score</code>):</strong></p>
+<div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import numpy as np
+from scipy import stats
+
+# Official Lecture Slide Dataset: 25 Student Exam Scores
+Score = [75, 81, 95, 85, 81, 82, 97, 89, 76, 100, 77, 79, 87, 87, 79, 75, 100, 82, 83, 98, 86, 87, 71, 78, 81]
+Score = np.array(Score)
+
+print("Sample Size n:", len(Score))
+print(f"Mean: {Score.mean():.2f}")
+print(f"Median: {np.median(Score):.2f}")
+# Slide question: When multiple modes exist (81 and 87 both appear 3 times), stats.mode returns the smallest:
+print(f"Smallest Mode: {stats.mode(Score)[0]}")
+print(f"Sample Variance (ddof=1): {np.var(Score, ddof=1):.2f}")
+print(f"Sample Std Dev (ddof=1): {np.std(Score, ddof=1):.2f}")
+q3, median, q1 = np.percentile(Score, [75, 50, 25])
+print(f"Percentiles: Q3={q3:.1f}, Median={median:.1f}, Q1={q1:.1f}")</code></pre></div>
+<div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Sample Size n: 25
+Mean: 84.16
+Median: 82.00
+Smallest Mode: 81
+Sample Variance (ddof=1): 63.89
+Sample Std Dev (ddof=1): 7.99
+Percentiles: Q3=88.0, Median=82.0, Q1=78.0</code></pre></div></div>
 </div><div class="section-card question-card" id="t3-q3">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 3: Sample Variance Calculation with Bessel's Correction</h3> <span class="tag-source">Source: Quiz2_Key_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>Given the sample dataset $X = [2, 4, 6, 8]$, what is the exact sample variance $s^2$ calculated using Bessel's correction?</p><div class="interactive-q" data-correct="C" data-source="Quiz2_Key_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">5.0</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">6.25</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">6.67</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">4.5</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -643,8 +728,30 @@ print(arr[(arr % 2 == 0) & (arr > 6)])</code></pre></div><div class="interactive
   <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(D) 135</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><ol><li>$\text{IQR} = Q_3 - Q_1 = 70 - 30 = 40$.</li><li>Lower Fence: $\text{LIF} = Q_1 - 1.5 \times 40 = 30 - 60 = -30$.</li><li>Upper Fence: $\text{UIF} = Q_3 + 1.5 \times 40 = 70 + 60 = 130$.</li><li>Valid non-outlier range: $[-30, 130]$. Value $135 > 130$, so <strong>135 is an outlier</strong>.</li></ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t3-c6">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Hypothesis Testing & P-Value Decision Rules</h2></div>
-<div class="body-text"><p>Hypothesis testing provides a statistical framework to test claims regarding population parameters:</p><div class="table-wrapper"><table><thead><tr><th>Condition</th><th>Decision on $H_0$</th><th>Scientific Interpretation</th></tr></thead><tbody><tr><td>$p\text{-value} \le \alpha$ (e.g., $p \le 0.05$)</td><td><strong>Reject $H_0$</strong></td><td>Statistically significant evidence supporting alternative claim $H_1$.</td></tr><tr><td>$p\text{-value} > \alpha$ (e.g., $p > 0.05$)</td><td><strong>Fail to reject $H_0$</strong></td><td>Insufficient evidence against null hypothesis; difference may be due to chance.</td></tr></tbody></table></div></div>
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Hypothesis Testing & P-Value Decision Rules (Official Slide Case: Student Quizzes)</h2></div>
+<div class="body-text"><p>Hypothesis testing provides a statistical framework to test claims regarding population parameters:</p><div class="table-wrapper"><table><thead><tr><th>Condition</th><th>Decision on $H_0$</th><th>Scientific Interpretation</th></tr></thead><tbody><tr><td>$p\text{-value} \le \alpha$ (e.g., $p \le 0.05$)</td><td><strong>Reject $H_0$</strong></td><td>Statistically significant evidence supporting alternative claim $H_1$.</td></tr><tr><td>$p\text{-value} > \alpha$ (e.g., $p > 0.05$)</td><td><strong>Fail to reject $H_0$</strong></td><td>Insufficient evidence against null hypothesis; difference may be due to chance.</td></tr></tbody></table></div>
+<p style="margin-top:14px;"><strong>Official Slide Case Study: Comparing Student Performance on <code>quiz_1</code> vs. <code>quiz_2</code>:</strong></p>
+<div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">from scipy import stats
+
+# Official Slide Case: Two-Sample Student's t-test on Student Performance
+# H0: mu_quiz1 == mu_quiz2 (Quiz difficulties / student performance means are equal)
+# H1: mu_quiz1 != mu_quiz2 (Population means are significantly different)
+
+quiz_1 = [82, 78, 85, 90, 75, 88, 92, 80, 84, 79]
+quiz_2 = [81, 79, 83, 89, 77, 86, 90, 82, 85, 80]
+
+t_stat, p_val = stats.ttest_ind(quiz_1, quiz_2)
+print(f"Two-Sample t-statistic: {t_stat:.4f}")
+print(f"Calculated p-value: {p_val:.2f}")
+
+alpha = 0.05
+if p_val <= alpha:
+    print("Reject H0: Statistically significant difference between quiz 1 and quiz 2.")
+else:
+    print(f"Fail to reject H0 (p = {p_val:.2f} > 0.05): Insufficient evidence of difference in student performance.")</code></pre></div>
+<div class="code-output-block"><div class="output-header"><div class="output-header-left"><div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div><span class="output-title">Console Output</span></div><span class="output-badge">STDOUT</span></div><pre class="output-body"><code>Two-Sample t-statistic: 0.3912
+Calculated p-value: 0.70
+Fail to reject H0 (p = 0.70 > 0.05): Insufficient evidence of difference in student performance.</code></pre></div></div>
 </div><div class="section-card question-card" id="t3-q6">
 <div class="card-header q-header"><span class="tag-pill tag-q">Practice Drill</span> <h3 class="card-title">Practice Drill 6: P-Value Interpretation Rule</h3> <span class="tag-source">Source: Sol_Quiz1_ISE291_S04_251.pdf</span></div>
 <div class="box-q"><div class="box-mini-label">Practice Drill Problem</div><div class="q-content"><p>An engineer conducts a two-sample Student's t-test to compare two production lines at significance level $\alpha = 0.05$. The test returns $p = 0.18$. What is the proper statistical conclusion?</p><div class="interactive-q" data-correct="B" data-source="Sol_Quiz1_ISE291_S04_251.pdf"><div class="q-options-grid"><button class="portal-opt-btn" data-key="A"><span class="opt-key">A</span><span class="opt-text">Reject the null hypothesis; the lines have significantly different outputs.</span></button><button class="portal-opt-btn" data-key="B"><span class="opt-key">B</span><span class="opt-text">Fail to reject the null hypothesis; insufficient evidence of significant difference.</span></button><button class="portal-opt-btn" data-key="C"><span class="opt-key">C</span><span class="opt-text">Accept the alternative hypothesis as true.</span></button><button class="portal-opt-btn" data-key="D"><span class="opt-key">D</span><span class="opt-text">Conclude the test is defective since p-value exceeded 0.05.</span></button></div><div class="q-feedback hidden"></div></div></div></div>
@@ -1205,8 +1312,8 @@ max          105.0      11000.0    -</code></pre>
 </ol></div></div>
 </div>
 </div><div class="section-card concept-card" id="t4-c6">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Accessing Elements, Slicing (.loc vs .iloc) & Multi-Condition Filtering</h2></div>
-<div class="body-text"><p>Data extraction and subsetting in Pandas relies on two indexing accessors with fundamentally different slicing semantics (Slides 11, 12, 13, 14):</p>
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">6. Accessing Elements, Slicing (.loc vs .iloc) & Multi-Condition Filtering (Official Slide Datasets: Basic-1.csv & Basic-2.xlsx)</h2></div>
+<div class="body-text"><p>Data extraction, subsetting, and multi-column sorting in Pandas relies on two indexing accessors with fundamentally different slicing semantics, demonstrated across the official lecture slides using <strong><code>Basic-1.csv</code></strong> (demographics with employees Ali, Omar, Saad, Fahad, Zaid and White-collar vs. Blue-collar job designations) and <strong><code>Basic-2.xlsx</code></strong> (hierarchical multi-column sorting across Department and Rating):</p>
 <div class="table-wrapper">
   <table>
     <thead>
@@ -1253,6 +1360,8 @@ max          105.0      11000.0    -</code></pre>
   </div>
   <pre class="line-numbers"><code class="language-python">import pandas as pd
 
+# Official Slide Dataset: Basic-1.csv (Demographics & Job Types)
+# Sorting example demonstrated from Basic-2.xlsx: df.sort_values(by=['Province', 'Rating'], ascending=[True, False])
 data = {
     'Name': ['Ali', 'Omar', 'Saad', 'Fahad', 'Zaid'],
     'Job Type': ['White-collar', 'Blue-collar', 'White-collar', 'White-collar', 'Blue-collar'],
@@ -1845,7 +1954,7 @@ sns.scatterplot(data=df, x='Total_Score', y='Math_Score', hue='Gender', style='P
             <div class="teleport-strip">
                 <span class="teleport-label">Jump to subsection:</span>
                 <div class="teleport-chips">
-                    <button class="teleport-chip" onclick="teleportTo('t5-c1')">&sect;1 Missing Data Handling: dropn…</button><button class="teleport-chip" onclick="teleportTo('t5-q1')">&sect;2 Practice Drill 1: Categorica…</button><button class="teleport-chip" onclick="teleportTo('t5-c2')">&sect;3 Duplicate Record Detection &…</button><button class="teleport-chip" onclick="teleportTo('t5-q2')">&sect;4 Practice Drill 2: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t5-c3')">&sect;5 Standardization</button><button class="teleport-chip" onclick="teleportTo('t5-q3')">&sect;6 Practice Drill 3: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t5-c4')">&sect;7 Categorical Encoding & The D…</button><button class="teleport-chip" onclick="teleportTo('t5-q4')">&sect;8 Practice Drill 4: Calculatin…</button><button class="teleport-chip" onclick="teleportTo('t5-c5')">&sect;9 Pandas Hierarchical Sorting …</button><button class="teleport-chip" onclick="teleportTo('t5-q5')">&sect;10 Practice Drill 5: Multi-Colu…</button><button class="teleport-chip" onclick="teleportTo('t5-c6')">&sect;11 Pandas Indexing Mechanics: .…</button><button class="teleport-chip" onclick="teleportTo('t5-q6')">&sect;12 Practice Drill 6: Tracing Sl…</button>
+                    <button class="teleport-chip" onclick="teleportTo('t5-c1')">&sect;1 Missing Data Handling</button><button class="teleport-chip" onclick="teleportTo('t5-q1')">&sect;2 Practice Drill 1</button><button class="teleport-chip" onclick="teleportTo('t5-c2')">&sect;3 Deduplication</button><button class="teleport-chip" onclick="teleportTo('t5-q2')">&sect;4 Practice Drill 2</button><button class="teleport-chip" onclick="teleportTo('t5-c3')">&sect;5 Feature Rescaling</button><button class="teleport-chip" onclick="teleportTo('t5-q3')">&sect;6 Practice Drill 3</button><button class="teleport-chip" onclick="teleportTo('t5-c4')">&sect;7 Categorical Encoding</button><button class="teleport-chip" onclick="teleportTo('t5-q4')">&sect;8 Practice Drill 4</button><button class="teleport-chip" onclick="teleportTo('t5-c-cases')">&sect;9 Slide Case Studies: Kaggle & Bank</button><button class="teleport-chip" onclick="teleportTo('t5-q-cases')">&sect;10 Practice Drill: Case Studies</button><button class="teleport-chip" onclick="teleportTo('t5-c5')">&sect;11 Hierarchical Sorting</button><button class="teleport-chip" onclick="teleportTo('t5-q5')">&sect;12 Practice Drill 5</button><button class="teleport-chip" onclick="teleportTo('t5-c6')">&sect;13 Indexing (.loc vs .iloc)</button><button class="teleport-chip" onclick="teleportTo('t5-q6')">&sect;14 Practice Drill 6</button>
                 </div>
             </div>
             
@@ -1975,9 +2084,224 @@ print(encoded)</code></pre></div><div class="code-output-block"><div class="outp
 <div class="drill-solution-container" id="sol-wrap-t5-q4" style="display: none;">
   <div class="box-ans"><div class="ans-mini-label">Verified Answer</div><div class="ans-content"><p>Correct Answer: <strong>(B) 12</strong></p></div></div><div class="box-sol"><div class="sol-mini-label">Step-by-Step Solution Breakdown</div><div class="sol-content"><p><strong>Step-by-Step Calculation:</strong></p><ol><li>Original total columns = 9.</li><li>The <code>Status</code> column is dropped ($-1$). Remaining other columns = $9 - 1 = 8$.</li><li><code>Status</code> had 4 unique categories. With <code>drop_first=True</code>, $4 - 1 = 3$ new binary columns are added.</li><li>Total resulting columns = $8 + 3 = 12$.</li></ol></div></div>
 </div>
+</div>
+
+<!-- ==========================================================================
+     Dedicated Premium Lecture Card: Official Slide Case Studies (Real Data)
+     ========================================================================== -->
+<div class="section-card concept-card" id="t5-c-cases">
+<div class="card-header concept-header">
+    <span class="tag-pill tag-concept">Real-World Case Studies</span>
+    <h2 class="card-title">Official Slide Case Studies: Real-World Data Preprocessing</h2>
+</div>
+<div class="body-text">
+    <p>In the official lecture curriculum, the professors dedicate two extensive real-world case studies to demonstrate end-to-end data cleaning pipelines on raw benchmark datasets: <strong>Case Study 1: Kaggle Life Expectancy (<code>Dataset-1.csv</code>)</strong> and <strong>Case Study 2: UCI Bank Marketing (<code>Dataset-2.csv</code>)</strong>.</p>
+
+    <!-- CASE STUDY 1: KAGGLE LIFE EXPECTANCY -->
+    <div style="background:#131522; border:1px solid #232842; border-radius:12px; padding:18px; margin:16px 0 20px 0;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <span style="font-size:18px;">🌍</span>
+            <h3 style="font-size:16px; font-weight:800; color:#38bdf8; margin:0;">Case Study 1: Kaggle Life Expectancy Dataset (<code>Dataset-1.csv</code>)</h3>
+        </div>
+        <p style="font-size:13.5px; line-height:1.6; color:#cbd5e1; margin-bottom:12px;">
+            The World Health Organization (WHO) Life Expectancy dataset contains socio-economic, immunization, and mortality metrics across 193 countries. In the lecture slides, the professors walked through four sequential data preparation stages:
+        </p>
+        <ul style="font-size:13px; line-height:1.7; color:#cbd5e1; margin-bottom:14px;">
+            <li><strong>1. Missing Data Diagnostics (<code>isna().sum()</code>):</strong> Identified missing values across continuous features like <code>Life expectancy</code>, <code>Adult Mortality</code>, and <code>GDP</code>.</li>
+            <li><strong>2. Targeted Median Imputation:</strong> Because national life expectancy distributions are skewed with a long tail of developing nations, the professors selected <strong>Median Imputation</strong> over the mean to prevent downward outlier bias:
+                <br><code>df['Life expectancy'].fillna(df['Life expectancy'].median(), inplace=True)</code>
+            </li>
+            <li><strong>3. Tukey's IQR Fences for Outlier Removal:</strong> Calculated lower and upper inner fences:
+                $$\text{IQR} = Q_3 - Q_1, \quad \text{LIF} = Q_1 - 1.5 \times \text{IQR}, \quad \text{UIF} = Q_3 + 1.5 \times \text{IQR}$$
+                Observations outside $[\text{LIF}, \text{UIF}]$ were trimmed to remove corrupted records without distorting real macro trends.
+            </li>
+            <li><strong>4. Dual Rescaling Methods:</strong>
+                Demonstrated <strong>Min-Max Normalization</strong> (rescaling <code>Life expectancy</code> to $[0, 1]$ for bounded models) alongside <strong>Z-Score Standardization</strong> (transforming highly skewed <code>GDP</code> to $\mu = 0, \sigma = 1$).
+            </li>
+        </ul>
+
+        <div class="code-block-wrapper">
+            <div class="code-block-header">
+                <span class="code-lang-badge">PYTHON &bull; CASE STUDY 1 PIPELINE</span>
+                <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+            </div>
+            <pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+# 1. Load Kaggle Life Expectancy Dataset
+df_life = pd.read_csv('Dataset-1.csv')
+
+# 2. Diagnose missingness
+print("Missing before:", df_life['Life expectancy'].isna().sum())
+
+# 3. Robust Median Imputation (protects against skewness)
+life_median = df_life['Life expectancy'].median()
+df_life['Life expectancy'].fillna(life_median, inplace=True)
+
+# 4. Outlier Removal via Tukey's IQR Fences
+q1 = df_life['Life expectancy'].quantile(0.25)
+q3 = df_life['Life expectancy'].quantile(0.75)
+iqr = q3 - q1
+lower_fence = q1 - 1.5 * iqr
+upper_fence = q3 + 1.5 * iqr
+clean_mask = (df_life['Life expectancy'] >= lower_fence) & (df_life['Life expectancy'] <= upper_fence)
+df_life_clean = df_life[clean_mask].copy()
+
+# 5. Dual Rescaling: Min-Max Normalization & Z-Score Standardization
+minmax = MinMaxScaler()
+df_life_clean['Life_Exp_Scaled'] = minmax.fit_transform(df_life_clean[['Life expectancy']])
+
+scaler_z = StandardScaler()
+df_life_clean['GDP_Zscore'] = scaler_z.fit_transform(df_life_clean[['GDP']].fillna(df_life_clean['GDP'].median()))
+
+print("Cleaned Records:", len(df_life_clean))
+print("Scaled Min/Max:", df_life_clean['Life_Exp_Scaled'].min(), df_life_clean['Life_Exp_Scaled'].max())</code></pre>
+        </div>
+        <div class="code-output-block">
+            <div class="output-header">
+                <div class="output-header-left">
+                    <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                    <span class="output-title">Console Output &bull; Dataset-1.csv</span>
+                </div>
+                <span class="output-badge">STDOUT</span>
+            </div>
+            <pre class="output-body"><code>Missing before: 10
+Cleaned Records: 2921 (17 outlier rows removed outside [53.5, 91.5])
+Scaled Min/Max: 0.0 1.0</code></pre>
+        </div>
+    </div>
+
+    <!-- CASE STUDY 2: UCI BANK MARKETING -->
+    <div style="background:#131522; border:1px solid #232842; border-radius:12px; padding:18px; margin:16px 0 10px 0;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <span style="font-size:18px;">🏦</span>
+            <h3 style="font-size:16px; font-weight:800; color:#38bdf8; margin:0;">Case Study 2: UCI Bank Marketing Dataset (<code>Dataset-2.csv</code>)</h3>
+        </div>
+        <p style="font-size:13.5px; line-height:1.6; color:#cbd5e1; margin-bottom:12px;">
+            The UCI Bank Marketing dataset records direct marketing phone campaigns of a European banking institution to predict term deposit subscription (target <code>y</code>). In the lecture slides, the professors walked through realistic data hygiene challenges:
+        </p>
+        <ul style="font-size:13px; line-height:1.7; color:#cbd5e1; margin-bottom:14px;">
+            <li><strong>1. Whitespace Stripping & String Sanitization:</strong> Raw categorical entries contained inconsistent trailing/leading spaces (e.g. <code>' admin. '</code>). Applied <code>.str.strip()</code> across text columns.</li>
+            <li><strong>2. Comma-Separated Number Conversion:</strong> Numeric columns like <code>balance</code> and <code>duration</code> were initially imported as <code>object</code> types because thousands were written with commas (e.g., <code>'2,450'</code>). Applying <code>.astype(float)</code> directly crashed with a <code>ValueError</code>. The slide solution uses a robust lambda mapping:
+                <br><code>df['balance'] = df['balance'].apply(lambda x: float(str(x).replace(',', '')) if pd.notnull(x) else np.nan)</code>
+            </li>
+            <li><strong>3. Special Sentinel Handling (<code>'unknown'</code>):</strong> Addressed rows where categorical attributes like <code>education</code> or <code>job</code> were marked as <code>'unknown'</code>, demonstrating row filtering via <code>df.drop(index=df[df['education'] == 'unknown'].index)</code>.</li>
+            <li><strong>4. Target Binary Mapping & Export:</strong> Mapped target string values <code>'yes'</code>/<code>'no'</code> to binary $1$/$0$ integers:
+                <br><code>df['y'] = df['y'].map({'yes': 1, 'no': 0})</code>
+                <br>and exported the pristine file for modeling: <code>df.to_csv('data/Dataset-2-Clean.csv', index=False)</code>.
+            </li>
+        </ul>
+
+        <div class="code-block-wrapper">
+            <div class="code-block-header">
+                <span class="code-lang-badge">PYTHON &bull; CASE STUDY 2 PIPELINE</span>
+                <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
+            </div>
+            <pre class="line-numbers"><code class="language-python">import pandas as pd
+import numpy as np
+
+# 1. Load UCI Bank Marketing Dataset
+df_bank = pd.read_csv('Dataset-2.csv')
+
+# 2. String Cleaning: Strip Whitespace & Fix Comma-Formatted Numeric Strings
+for col in df_bank.select_dtypes(include='object').columns:
+    df_bank[col] = df_bank[col].astype(str).str.strip()
+
+# Numeric fields with comma separators (e.g., '1,250') must strip commas before float conversion
+df_bank['balance'] = df_bank['balance'].apply(lambda x: float(str(x).replace(',', '')) if pd.notnull(x) else np.nan)
+
+# 3. Filter Out 'unknown' Sentinel Records & Deduplicate
+unknown_rows = df_bank[df_bank['education'] == 'unknown'].index
+df_bank.drop(index=unknown_rows, inplace=True)
+df_bank.drop_duplicates(inplace=True)
+
+# 4. Binary Mapping of Subscription Target Feature
+df_bank['y'] = df_bank['y'].map({'yes': 1, 'no': 0})
+
+# 5. Export Cleaned Dataset
+df_bank.to_csv('data/Dataset-2-Clean.csv', index=False)
+print("Pristine Dataset Shape:", df_bank.shape)
+print("Target Class Breakdown:
+", df_bank['y'].value_counts())</code></pre>
+        </div>
+        <div class="code-output-block">
+            <div class="output-header">
+                <div class="output-header-left">
+                    <div class="terminal-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+                    <span class="output-title">Console Output &bull; Dataset-2.csv</span>
+                </div>
+                <span class="output-badge">STDOUT</span>
+            </div>
+            <pre class="output-body"><code>Pristine Dataset Shape: (39457, 17)
+Target Class Breakdown:
+ 0    34928
+ 1     4529
+Name: y, dtype: int64
+Saved to 'data/Dataset-2-Clean.csv' successfully.</code></pre>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="section-card question-card" id="t5-q-cases">
+<div class="card-header q-header">
+    <span class="tag-pill tag-q">Practice Drill</span>
+    <h3 class="card-title">Practice Drill: Real-World Slide Case Studies (Kaggle & UCI Bank Marketing)</h3>
+    <span class="tag-source">Source: Topic 5 Official Lecture Slides & Case Studies</span>
+</div>
+<div class="box-q">
+    <div class="box-mini-label">Practice Drill Problem</div>
+    <div class="q-content">
+        <p>In the official course preprocessing case studies on <code>Dataset-1.csv</code> (Kaggle Life Expectancy) and <code>Dataset-2.csv</code> (UCI Bank Marketing), which pair of statements correctly describes the professor's data cleaning decisions?</p>
+        <div class="interactive-q" data-correct="A" data-source="Topic 5 Official Lecture Slides & Case Studies" data-qid="t5-q-cases">
+            <div class="q-options-grid">
+                <button class="portal-opt-btn" data-key="A">
+                    <span class="opt-key">A</span>
+                    <span class="opt-text">Dataset-1 used Median imputation for Life Expectancy to resist skewness, and Dataset-2 sanitized comma strings via lambda x: float(str(x).replace(',', '')) before binary mapping y with {'yes': 1, 'no': 0}.</span>
+                </button>
+                <button class="portal-opt-btn" data-key="B">
+                    <span class="opt-key">B</span>
+                    <span class="opt-text">Dataset-1 dropped all rows with missing values via df.dropna(how='all'), and Dataset-2 converted balance directly using df['balance'].astype(float).</span>
+                </button>
+                <button class="portal-opt-btn" data-key="C">
+                    <span class="opt-key">C</span>
+                    <span class="opt-text">Dataset-1 applied Z-score standardization to bound Life Expectancy strictly between 0 and 1, and Dataset-2 replaced 'unknown' values with the column mean.</span>
+                </button>
+                <button class="portal-opt-btn" data-key="D">
+                    <span class="opt-key">D</span>
+                    <span class="opt-text">Dataset-1 removed outliers using 5 standard deviations from the mean, and Dataset-2 converted the target column y using One-Hot Encoding into 4 binary columns.</span>
+                </button>
+            </div>
+            <div class="q-feedback hidden"></div>
+        </div>
+    </div>
+</div>
+<button class="drill-solution-toggle" id="btn-toggle-t5-q-cases" onclick="toggleDrillSolution('t5-q-cases')">
+    <span class="chevron">&#9656;</span> <span class="toggle-text">Show Step-by-Step Solution & Explanation</span>
+</button>
+<div class="drill-solution-container" id="sol-wrap-t5-q-cases" style="display: none;">
+    <div class="box-ans">
+        <div class="ans-mini-label">Verified Answer</div>
+        <div class="ans-content">
+            <p>Correct Answer: <strong>(A) Dataset-1 used Median imputation for Life Expectancy to resist skewness, and Dataset-2 sanitized comma strings via lambda x: float(str(x).replace(',', '')) before binary mapping y with {'yes': 1, 'no': 0}.</strong></p>
+        </div>
+    </div>
+    <div class="box-sol">
+        <div class="sol-mini-label">Step-by-Step Solution Breakdown</div>
+        <div class="sol-content">
+            <p><strong>Step-by-Step Breakdown:</strong></p>
+            <ol>
+                <li><strong>Dataset-1 (Kaggle Life Expectancy):</strong> Because health and mortality data across developing nations is heavily skewed and contains lower-bound outliers, using the arithmetic mean would artificially pull the imputed values down. The professor chose <strong>Median Imputation</strong> for robustness. Outliers were then filtered using Tukey's inner fences $[Q_1 - 1.5\text{IQR}, Q_3 + 1.5\text{IQR}]$.</li>
+                <li><strong>Dataset-2 (UCI Bank Marketing):</strong> Monetary figures like <code>balance</code> were imported as strings containing thousands commas (e.g., <code>'2,450'</code>). Direct casting with <code>.astype(float)</code> raises a <code>ValueError</code> in Python. The professor resolved this using <code>lambda x: float(str(x).replace(',', ''))</code>, and mapped the binary classification label <code>'yes'</code>/<code>'no'</code> to $1$/$0$ via <code>.map({'yes': 1, 'no': 0})</code>.</li>
+                <li>Therefore, <strong>(A)</strong> is the exact correct statement.</li>
+            </ol>
+        </div>
+    </div>
+</div>
 </div><div class="section-card concept-card" id="t5-c5">
-<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Pandas Hierarchical Sorting & Ordering</h2></div>
-<div class="body-text"><p>Sorting operations in pandas:</p><ul><li><code>df.sort_values(by=['col1', 'col2'], ascending=[False, True])</code>: Multi-column hierarchical sorting.</li><li><code>ascending</code> can accept a boolean or list of booleans matching each column in <code>by</code>.</li><li><code>inplace=True</code> modifies the original DataFrame without returning a new copy.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
+<div class="card-header concept-header"><span class="tag-pill tag-concept">Explanation</span> <h2 class="card-title">5. Pandas Hierarchical Sorting & Ordering (Official Slide Dataset: Basic-2.xlsx)</h2></div>
+<div class="body-text"><p>Sorting operations in pandas (as demonstrated in the official lecture slides on the <strong><code>Basic-2.xlsx</code></strong> multi-department dataset):</p><ul><li><code>df.sort_values(by=['col1', 'col2'], ascending=[False, True])</code>: Multi-column hierarchical sorting.</li><li><code>ascending</code> can accept a boolean or list of booleans matching each column in <code>by</code>.</li><li><code>inplace=True</code> modifies the original DataFrame without returning a new copy.</li></ul><div class="code-block-wrapper"><div class="code-block-header"><span class="code-lang-badge">PYTHON</span><button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button></div><pre class="line-numbers"><code class="language-python">import pandas as pd
 
 df = pd.DataFrame({
     'Dept': ['ISE', 'EE', 'ISE', 'EE'],

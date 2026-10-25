@@ -37,6 +37,407 @@ function saveUserAnswers() {
 }
 
 /**
+ * ==========================================================================
+ * Seamless Multi-Device Cloud Progress Sync Engine
+ * ==========================================================================
+ */
+const CLOUD_SYNC_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a09d98f701a173fce8cc09d6';
+let lastCloudSyncTime = null;
+let isCloudSyncing = false;
+let cloudPushTimer = null;
+
+/**
+ * Smart merge local answers with cloud answers
+ */
+function smartMergeAnswers(localMap, remoteMap) {
+    const merged = Object.assign({}, localMap || {});
+    let localChanged = false;
+    let remoteChanged = false;
+
+    if (!remoteMap || typeof remoteMap !== 'object') {
+        return { merged, localChanged: false, remoteChanged: true };
+    }
+
+    Object.keys(remoteMap).forEach(k => {
+        const rItem = remoteMap[k];
+        const lItem = merged[k];
+
+        if (!lItem) {
+            merged[k] = rItem;
+            localChanged = true;
+        } else {
+            // Keep correct answer if one of them is right
+            if (rItem.isCorrect && !lItem.isCorrect) {
+                merged[k] = rItem;
+                localChanged = true;
+            } else if (!rItem.isCorrect && lItem.isCorrect) {
+                remoteChanged = true;
+            } else {
+                const rTime = rItem.answeredAt || 0;
+                const lTime = lItem.answeredAt || 0;
+                if (rTime > lTime) {
+                    merged[k] = rItem;
+                    localChanged = true;
+                } else if (lTime > rTime) {
+                    remoteChanged = true;
+                }
+            }
+        }
+    });
+
+    Object.keys(merged).forEach(k => {
+        if (!remoteMap[k]) {
+            remoteChanged = true;
+        }
+    });
+
+    return { merged, localChanged, remoteChanged };
+}
+
+/**
+ * Re-apply restored/merged answers to all interactive question widgets currently in DOM
+ */
+function applyAnswersToDOM() {
+    document.querySelectorAll('.interactive-q').forEach(qEl => {
+        const qId = qEl.getAttribute('data-qid') || (qEl.closest('.section-card') ? qEl.closest('.section-card').id : null);
+        if (!qId || !userAnswers[qId]) return;
+
+        const ans = userAnswers[qId];
+        const correctKey = qEl.getAttribute('data-correct');
+        const feedback = qEl.querySelector('.q-feedback');
+        const buttons = Array.from(qEl.querySelectorAll('.portal-opt-btn'));
+
+        buttons.forEach(b => {
+            b.disabled = true;
+            const bKey = b.getAttribute('data-key');
+            if (bKey === correctKey) {
+                b.classList.add('correct');
+            } else if (bKey === ans.selectedKey) {
+                b.classList.add('incorrect');
+            } else {
+                b.classList.remove('correct', 'incorrect');
+            }
+        });
+
+        if (feedback) {
+            feedback.classList.remove('hidden');
+            if (ans.isCorrect) {
+                feedback.className = 'q-feedback feedback-correct';
+                feedback.innerHTML = '<strong>&#10003; Correct!</strong> Solved previously.';
+            } else {
+                let correctText = '';
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('data-key') === correctKey) {
+                        correctText = btn.querySelector('.opt-text') ? btn.querySelector('.opt-text').textContent.trim() : '';
+                    }
+                });
+                feedback.className = 'q-feedback feedback-wrong';
+                feedback.innerHTML = `<strong>&#10007; Incorrect.</strong> The correct answer is <strong>${escapeHtml(correctKey)}: ${escapeHtml(correctText)}</strong>.`;
+            }
+        }
+    });
+
+    updateExamStats();
+}
+
+/**
+ * Minimalist Sync Badge State Management
+ */
+function updateSyncBadge(status, label) {
+    const badge = document.getElementById('globalSyncBadge');
+    if (!badge) return;
+    badge.className = 'sync-badge-btn';
+    if (status === 'syncing') {
+        badge.classList.add('syncing');
+    } else if (status === 'offline') {
+        badge.classList.add('offline');
+    }
+    const labelEl = badge.querySelector('.sync-label');
+    if (labelEl) labelEl.textContent = label;
+}
+
+function updateSyncModalTime() {
+    const timeEl = document.getElementById('syncStatusTime');
+    if (!timeEl) return;
+    if (!lastCloudSyncTime) {
+        timeEl.textContent = 'Last synced: Not synced yet';
+        return;
+    }
+    const date = new Date(parseInt(lastCloudSyncTime, 10));
+    const now = new Date();
+    const diffSec = Math.floor((now - date) / 1000);
+    if (diffSec < 10) {
+        timeEl.textContent = 'Last synced: Just now';
+    } else if (diffSec < 60) {
+        timeEl.textContent = `Last synced: ${diffSec}s ago`;
+    } else if (diffSec < 3600) {
+        timeEl.textContent = `Last synced: ${Math.floor(diffSec / 60)}m ago`;
+    } else {
+        timeEl.textContent = `Last synced: ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+}
+
+function openSyncModal() {
+    const modal = document.getElementById('syncModal');
+    if (modal) {
+        updateSyncModalTime();
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeSyncModal(event) {
+    if (event && event.target && event.target !== event.currentTarget && !event.target.classList.contains('topic-sheet-close')) {
+        return;
+    }
+    const modal = document.getElementById('syncModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        const fb = document.getElementById('syncModalFeedback');
+        if (fb) fb.style.display = 'none';
+    }
+}
+
+function setModalFeedback(msg, isError = false) {
+    const fb = document.getElementById('syncModalFeedback');
+    if (!fb) return;
+    fb.style.display = 'block';
+    fb.style.color = isError ? '#fbbf24' : '#38bdf8';
+    fb.style.borderColor = isError ? 'rgba(245, 158, 11, 0.4)' : 'rgba(56, 189, 248, 0.3)';
+    fb.textContent = msg;
+    setTimeout(() => {
+        if (fb) fb.style.display = 'none';
+    }, 4500);
+}
+
+function showToast(msg, icon = '☁️') {
+    let toast = document.getElementById('portalToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'portalToast';
+        toast.className = 'portal-toast';
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<span>${icon}</span> <span>${escapeHtml(msg)}</span>`;
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+/**
+ * Background GET pull from cloud endpoint
+ */
+async function pullCloudState(isManual = false) {
+    if (isCloudSyncing) return;
+    isCloudSyncing = true;
+    updateSyncBadge('syncing', 'Syncing...');
+
+    try {
+        const response = await fetch(CLOUD_SYNC_ENDPOINT, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const remoteDoc = await response.json();
+        const remoteData = (remoteDoc && remoteDoc.data) ? remoteDoc.data : null;
+
+        if (remoteData) {
+            const remoteAnswers = remoteData.userAnswers || {};
+            const { merged, localChanged, remoteChanged } = smartMergeAnswers(userAnswers, remoteAnswers);
+
+            userAnswers = merged;
+            saveUserAnswers();
+
+            if (remoteData.portalState && typeof remoteData.portalState === 'object') {
+                const rs = remoteData.portalState;
+                if (rs.topicScroll) {
+                    portalState.topicScroll = Object.assign({}, rs.topicScroll, portalState.topicScroll);
+                }
+                if (rs.videosScroll && !portalState.videosScroll) {
+                    portalState.videosScroll = rs.videosScroll;
+                }
+            }
+
+            lastCloudSyncTime = remoteData.updatedAt || Date.now();
+            try {
+                localStorage.setItem('ise291_last_cloud_sync', String(lastCloudSyncTime));
+            } catch (e) {}
+
+            applyAnswersToDOM();
+            updateSyncBadge('synced', 'Synced');
+            updateSyncModalTime();
+
+            if (isManual) {
+                showToast('Progress successfully loaded from cloud!', '⬇️');
+                setModalFeedback('Cloud data loaded and merged successfully!');
+            }
+
+            if (remoteChanged) {
+                scheduleCloudPush(2000);
+            }
+        } else {
+            updateSyncBadge('synced', 'Synced');
+        }
+    } catch (err) {
+        console.warn('Cloud sync pull notice:', err);
+        updateSyncBadge('offline', 'Offline');
+        if (isManual) {
+            setModalFeedback('Could not fetch cloud data. Check internet connection.', true);
+        }
+    } finally {
+        isCloudSyncing = false;
+    }
+}
+
+/**
+ * Background PUT push to cloud endpoint
+ */
+async function pushCloudState(isManual = false) {
+    if (isCloudSyncing) return;
+    isCloudSyncing = true;
+    updateSyncBadge('syncing', 'Syncing...');
+
+    const solvedCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf')).length;
+    const correctCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf') && userAnswers[k].isCorrect).length;
+
+    const payload = {
+        name: 'ISE291_0xZHRA_GLOBAL_SYNC',
+        data: {
+            updatedAt: Date.now(),
+            userAnswers: userAnswers,
+            portalState: {
+                activeTopic: portalState.activeTopic,
+                activeTab: portalState.activeTab,
+                topicScroll: portalState.topicScroll,
+                videosScroll: portalState.videosScroll
+            },
+            stats: {
+                totalAnswered: solvedCount,
+                correctCount: correctCount
+            }
+        }
+    };
+
+    try {
+        const response = await fetch(CLOUD_SYNC_ENDPOINT, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        lastCloudSyncTime = Date.now();
+        try {
+            localStorage.setItem('ise291_last_cloud_sync', String(lastCloudSyncTime));
+        } catch (e) {}
+
+        updateSyncBadge('synced', 'Synced');
+        updateSyncModalTime();
+
+        if (isManual) {
+            showToast('Progress saved to cloud!', '⬆️');
+            setModalFeedback('Progress auto-saved to cloud successfully!');
+        }
+    } catch (err) {
+        console.warn('Cloud sync push notice:', err);
+        updateSyncBadge('offline', 'Offline');
+        if (isManual) {
+            setModalFeedback('Cloud save failed. Check connection.', true);
+        }
+    } finally {
+        isCloudSyncing = false;
+    }
+}
+
+/**
+ * Debounced automatic cloud push (1.2s delay)
+ */
+function scheduleCloudPush(delay = 1200) {
+    clearTimeout(cloudPushTimer);
+    updateSyncBadge('syncing', 'Syncing...');
+    cloudPushTimer = setTimeout(() => {
+        pushCloudState(false);
+    }, delay);
+}
+
+function forceCloudPush(btn) {
+    if (btn) btn.disabled = true;
+    pushCloudState(true).finally(() => {
+        if (btn) btn.disabled = false;
+    });
+}
+
+function forceCloudPull(btn) {
+    if (btn) btn.disabled = true;
+    pullCloudState(true).finally(() => {
+        if (btn) btn.disabled = false;
+    });
+}
+
+function copySyncLink(btn) {
+    const cleanUrl = window.location.origin + window.location.pathname + '?cloud_sync=1';
+    navigator.clipboard.writeText(cleanUrl).then(() => {
+        showToast('Sync link copied! Open on your phone to sync.', '📱');
+        setModalFeedback('Link copied to clipboard! Open on your phone to synchronize immediately.');
+    }).catch(() => {
+        prompt('Copy this sync link to your mobile device:', cleanUrl);
+    });
+}
+
+function exportProgressJSON() {
+    const solvedCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf')).length;
+    const correctCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf') && userAnswers[k].isCorrect).length;
+    const exportData = {
+        course: 'KFUPM ISE 291 Midterm Study Portal',
+        exportedAt: new Date().toISOString(),
+        stats: { solvedCount, correctCount },
+        portalState: portalState,
+        userAnswers: userAnswers
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ise291_portal_progress_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Progress backup exported!', '📥');
+}
+
+function importProgressJSON(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data && data.userAnswers) {
+                const { merged } = smartMergeAnswers(userAnswers, data.userAnswers);
+                userAnswers = merged;
+                saveUserAnswers();
+                if (data.portalState && typeof data.portalState === 'object') {
+                    if (data.portalState.activeTopic) portalState.activeTopic = data.portalState.activeTopic;
+                    if (data.portalState.topicScroll) portalState.topicScroll = Object.assign({}, portalState.topicScroll, data.portalState.topicScroll);
+                }
+                applyAnswersToDOM();
+                scheduleCloudPush(400);
+                showToast('Progress imported and synced!', '📤');
+                setModalFeedback('Backup successfully imported and synchronized!');
+            } else {
+                throw new Error('Invalid format');
+            }
+        } catch (err) {
+            alert('Failed to parse backup JSON file. Please ensure it is a valid ISE 291 portal backup.');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+/**
  * Initialize topic labels from DOM
  */
 function initTopicLabels() {
@@ -118,6 +519,7 @@ function switchTopic(targetTopicId) {
 
     // 6. Persist state
     scheduleSaveState();
+    scheduleCloudPush(1200);
 }
 
 /**
@@ -217,6 +619,7 @@ function showTab(tab) {
     updateFloatingAnchors();
 
     scheduleSaveState();
+    scheduleCloudPush(1200);
 }
 
 /**
@@ -463,6 +866,7 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
             };
             saveUserAnswers();
             updateExamStats();
+            scheduleCloudPush(1200);
 
             shuffledButtons.forEach(b => {
                 b.disabled = true;
@@ -957,6 +1361,7 @@ function resetUserAnswers() {
         try {
             localStorage.removeItem('ise291_user_answers');
         } catch (e) {}
+        scheduleCloudPush(500);
 
         // Reset DOM questions in notes
         document.querySelectorAll('.interactive-q').forEach(qEl => {
@@ -1070,6 +1475,21 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(() => {});
+
+    // 7. Multi-device Cloud Progress Sync initialization
+    try {
+        lastCloudSyncTime = localStorage.getItem('ise291_last_cloud_sync');
+    } catch (e) {}
+    updateSyncBadge('synced', 'Synced');
+    updateSyncModalTime();
+
+    // Check if opened with ?cloud_sync=1 or ?sync=1
+    const urlSync = urlParams.get('cloud_sync') || urlParams.get('sync') || urlParams.get('pull');
+    if (urlSync) {
+        pullCloudState(true);
+    } else {
+        pullCloudState(false);
+    }
 });
 
 /**
