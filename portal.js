@@ -814,6 +814,82 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
     const resolvedQId = qId || qEl.getAttribute('data-qid') || (qEl.closest('.section-card') ? qEl.closest('.section-card').id : null) || 'q_' + Math.random().toString(36).substring(2, 9);
     qEl.setAttribute('data-qid', resolvedQId);
 
+    // Setup action bar with Reset button immediately before .q-options-grid
+    let actionsBar = qEl.querySelector('.q-actions-bar');
+    if (!actionsBar) {
+        actionsBar = document.createElement('div');
+        actionsBar.className = 'q-actions-bar';
+        actionsBar.innerHTML = `
+            <span class="q-action-hint">Choose one answer:</span>
+            <button class="btn-reset-q" type="button" title="Reset question to try again" aria-label="Reset question">
+              <svg class="icon-reset" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+              <span class="reset-text">Reset</span>
+            </button>
+        `;
+        grid.parentNode.insertBefore(actionsBar, grid);
+    }
+
+    const resetBtn = actionsBar.querySelector('.btn-reset-q');
+    if (resetBtn) {
+        resetBtn.onclick = (e) => {
+            if (e) e.stopPropagation();
+            delete userAnswers[resolvedQId];
+            saveUserAnswers();
+            updateExamStats();
+            scheduleCloudPush(800);
+
+            // Re-enable all buttons and remove state classes
+            const allBtns = grid.querySelectorAll('.portal-opt-btn');
+            allBtns.forEach(b => {
+                b.disabled = false;
+                b.classList.remove('correct', 'incorrect', 'selected');
+            });
+
+            // Clear and hide feedback
+            if (feedback) {
+                feedback.className = 'q-feedback hidden';
+                feedback.innerHTML = '';
+            }
+
+            // Collapse drill solution accordion if present
+            const solWrap = document.getElementById('sol-wrap-' + resolvedQId);
+            const solBtn = document.getElementById('btn-toggle-' + resolvedQId);
+            if (solWrap) {
+                solWrap.style.display = 'none';
+                solWrap.classList.remove('open');
+            }
+            if (solBtn) {
+                solBtn.classList.remove('expanded');
+                const txt = solBtn.querySelector('.toggle-text');
+                if (txt) txt.textContent = 'Show Step-by-Step Solution & Explanation';
+            }
+
+            // Collapse exam bank solution accordion if present
+            const examSolBody = document.getElementById('sol-' + resolvedQId);
+            const examSolBtn = document.getElementById('btn-sol-' + resolvedQId);
+            if (examSolBody) {
+                examSolBody.classList.remove('open');
+            }
+            if (examSolBtn) {
+                examSolBtn.classList.remove('expanded');
+            }
+
+            // Hide status badge if in exam bank
+            const statusBadge = document.getElementById('status-' + resolvedQId);
+            if (statusBadge) {
+                statusBadge.style.display = 'none';
+            }
+
+            recalculateDocHeight();
+            if (typeof showToast === 'function') {
+                showToast('Question reset. Try again!', '↺');
+            }
+        };
+    }
+
     const buttons = Array.from(grid.querySelectorAll('.portal-opt-btn'));
     const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -897,26 +973,12 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
                 statusBadge.style.display = 'inline-flex';
             }
 
-            // Automatically reveal the solution container and rotate chevron after answering
-            const solWrap = document.getElementById('sol-wrap-' + resolvedQId);
-            const solBtn = document.getElementById('btn-toggle-' + resolvedQId);
-            if (solWrap) {
-                solWrap.style.display = 'block';
-                if (solBtn) {
-                    solBtn.classList.add('expanded');
-                    const txt = solBtn.querySelector('.toggle-text');
-                    if (txt) txt.textContent = 'Hide Step-by-Step Solution';
-                }
-                if (!solWrap.getAttribute('data-math-rendered')) {
-                    initStemRenderers(solWrap);
-                    solWrap.setAttribute('data-math-rendered', 'true');
-                }
-                recalculateDocHeight();
-            }
+            // Solution accordion strictly remains collapsed until manually clicked
+            recalculateDocHeight();
         };
     });
 
-    // Reveal feedback and solution if already solved
+    // Reveal feedback if already solved (solution accordion strictly remains collapsed until manually clicked)
     if (existing) {
         if (feedback) {
             feedback.classList.remove('hidden');
@@ -926,21 +988,6 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
             } else {
                 feedback.className = 'q-feedback feedback-wrong';
                 feedback.innerHTML = `<strong>Concept Check:</strong> The correct choice is <strong>(${correctKey}) ${correctText}</strong>.<span class="tag-source">Source: ${sourceFile}</span>`;
-            }
-        }
-
-        const solWrap = document.getElementById('sol-wrap-' + resolvedQId);
-        const solBtn = document.getElementById('btn-toggle-' + resolvedQId);
-        if (solWrap) {
-            solWrap.style.display = 'block';
-            if (solBtn) {
-                solBtn.classList.add('expanded');
-                const txt = solBtn.querySelector('.toggle-text');
-                if (txt) txt.textContent = 'Hide Step-by-Step Solution';
-            }
-            if (!solWrap.getAttribute('data-math-rendered')) {
-                initStemRenderers(solWrap);
-                solWrap.setAttribute('data-math-rendered', 'true');
             }
         }
     }
