@@ -916,7 +916,7 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
     const shuffledButtons = Array.from(grid.querySelectorAll('.portal-opt-btn'));
     shuffledButtons.forEach((btn, idx) => {
         const keySpan = btn.querySelector('.opt-key');
-        if (keySpan) keySpan.textContent = letters[idx];
+        if (keySpan) keySpan.textContent = letters[idx] + ':';
 
         // Restore solved state if present
         if (existing) {
@@ -1007,7 +1007,9 @@ let examBankState = {
     initialized: false,
     activeFilter: 'all',
     searchQuery: '',
-    limit: 20,
+    currentPage: 1,
+    pageSize: 5, // Authentic KFUPM exam booklet: 5 questions per physical printed sheet
+    viewMode: 'paginated', // 'paginated' (5 qs per sheet) or 'continuous' (all sheets stacked)
     filteredQuestions: []
 };
 
@@ -1165,7 +1167,7 @@ function matchesSearch(q, query) {
 
 function filterExamBank(filterKey, chipElement) {
     examBankState.activeFilter = filterKey;
-    examBankState.limit = 20;
+    examBankState.currentPage = 1;
 
     // Update active chip UI
     document.querySelectorAll('.exam-chip').forEach(c => c.classList.remove('active'));
@@ -1181,7 +1183,7 @@ function handleExamSearch(val) {
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(() => {
         examBankState.searchQuery = val.trim();
-        examBankState.limit = 20;
+        examBankState.currentPage = 1;
 
         const btnClear = document.getElementById('btnClearSearch');
         if (btnClear) {
@@ -1197,11 +1199,40 @@ function clearExamSearch() {
     const input = document.getElementById('examSearchInput');
     if (input) input.value = '';
     examBankState.searchQuery = '';
-    examBankState.limit = 20;
+    examBankState.currentPage = 1;
     const btnClear = document.getElementById('btnClearSearch');
     if (btnClear) {
         btnClear.style.display = 'none';
     }
+    renderExamBank();
+}
+
+function setExamPage(pageNumber) {
+    const totalPages = Math.max(1, Math.ceil((examBankState.filteredQuestions || []).length / examBankState.pageSize));
+    const target = Math.max(1, Math.min(pageNumber, totalPages));
+    examBankState.currentPage = target;
+    renderExamBank();
+    const stream = document.getElementById('examQuestionsStream') || document.getElementById('videosContainer');
+    if (stream) {
+        const topY = stream.getBoundingClientRect().top + window.pageYOffset - 70;
+        window.scrollTo({ top: Math.max(0, topY), behavior: 'smooth' });
+    }
+}
+
+function prevExamPage() {
+    setExamPage(examBankState.currentPage - 1);
+}
+
+function nextExamPage() {
+    setExamPage(examBankState.currentPage + 1);
+}
+
+function jumpToExamPage(val) {
+    setExamPage(parseInt(val, 10) || 1);
+}
+
+function toggleExamViewMode(mode) {
+    examBankState.viewMode = mode;
     renderExamBank();
 }
 
@@ -1231,6 +1262,7 @@ function renderExamBank() {
     const stream = document.getElementById('examQuestionsStream');
     const loadMoreContainer = document.getElementById('examLoadMoreContainer');
     if (!stream) return;
+    if (loadMoreContainer) loadMoreContainer.style.display = 'none';
 
     // 1. Filter questions
     const filtered = allQuestions.filter(q => {
@@ -1241,148 +1273,238 @@ function renderExamBank() {
     // 2. Update Stats Bar
     updateExamStats();
 
-    if (filtered.length === 0) {
+    const totalFiltered = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalFiltered / examBankState.pageSize));
+
+    if (examBankState.currentPage > totalPages) examBankState.currentPage = totalPages;
+    if (examBankState.currentPage < 1) examBankState.currentPage = 1;
+
+    if (totalFiltered === 0) {
         stream.innerHTML = `
-            <div style="text-align: center; padding: 40px 20px; color: var(--text-dim); background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
-                <p style="font-size: 16px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px;">No questions found</p>
-                <p style="font-size: 13px;">No questions matched the current filter or search query. Try broadening your search or choosing "All".</p>
+            <div class="exam-paper-sheet" style="text-align: center; padding: 48px 24px;">
+                <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">No Exam Questions Found</h3>
+                <p style="font-size: 14px; color: #475569; margin-bottom: 16px;">No questions matched the current filter or search criteria. Try choosing "All" or clearing the search bar.</p>
+                <button class="btn-sheet-nav" onclick="clearExamSearch(); filterExamBank('all', document.querySelector('.exam-chip[data-filter=\\'all\\']'));">
+                    ↺ View All Questions
+                </button>
             </div>
         `;
-        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
         return;
     }
 
-    // 3. Slice for current pagination limit
-    const pageQuestions = filtered.slice(0, examBankState.limit);
-
-    // 4. Build HTML
-    let html = '';
-    pageQuestions.forEach(q => {
-        const qId = q.id || 'Q' + Math.random().toString(36).substring(2, 7);
-        const codeBlock = q.code ? `
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span class="code-lang-badge">PYTHON</span>
-                    <button class="btn-copy-code" onclick="copyCode(this)"><span>Copy</span></button>
-                </div>
-                <pre class="line-numbers"><code class="language-python">${escapeHtml(q.code)}</code></pre>
-            </div>
-        ` : '';
-
-        // Options
-        const optionsHtml = (q.options || []).map(opt => {
-            return `
-                <button class="portal-opt-btn" data-key="${opt.key}">
-                    <span class="opt-key">${opt.key}</span>
-                    <span class="opt-text">${escapeHtml(opt.text)}</span>
-                </button>
-            `;
-        }).join('');
-
-        // Find correct option text
-        let correctOptText = '';
-        (q.options || []).forEach(opt => {
-            if (opt.key === q.correctAnswer) correctOptText = opt.text;
-        });
-
-        // Solved state indicator
-        const ansInfo = userAnswers[qId];
-        let solvedBadgeClass = '';
-        let solvedBadgeText = '';
-        let solvedBadgeDisplay = 'none';
-        if (ansInfo) {
-            solvedBadgeClass = ansInfo.isCorrect ? 'solved-correct' : 'solved-wrong';
-            solvedBadgeText = ansInfo.isCorrect ? 'Solved Correct' : 'Attempted';
-            solvedBadgeDisplay = 'inline-flex';
+    // Helper: Build Exam Paper Navigation Dock (Top & Bottom)
+    function buildNavDockHtml(isBottom = false) {
+        let optionsHtml = '';
+        for (let p = 1; p <= totalPages; p++) {
+            const selected = p === examBankState.currentPage ? 'selected' : '';
+            optionsHtml += `<option value="${p}" ${selected}>Sheet ${p} of ${totalPages}</option>`;
         }
-
-        // Reinforcement Drill (if present)
-        let reinforcementHtml = '';
-        if (q.reinforcementQuestion) {
-            const rq = q.reinforcementQuestion;
-            const rOpts = (rq.options || []).map(ropt => `
-                <button class="portal-opt-btn" data-key="${ropt.key}">
-                    <span class="opt-key">${ropt.key}</span>
-                    <span class="opt-text">${escapeHtml(ropt.text)}</span>
-                </button>
-            `).join('');
-
-            reinforcementHtml = `
-                <div class="reinforcement-card">
-                    <div class="reinforcement-header">&#128161; Concept Reinforcement Drill</div>
-                    <div class="exam-q-text">${escapeHtml(rq.questionText)}</div>
-                    ${rq.code ? `<pre class="exam-q-code"><code>${escapeHtml(rq.code)}</code></pre>` : ''}
-                    <div class="interactive-q" data-correct="${rq.correctAnswer}" data-source="${escapeHtml(q.sourceFile || '')}" data-qid="${qId}_reinf">
-                        <div class="q-options-grid">${rOpts}</div>
-                        <div class="q-feedback hidden"></div>
+        return `
+            <div class="exam-nav-dock ${isBottom ? 'bottom-dock' : 'top-dock'}">
+                <div class="exam-nav-left">
+                    <button class="btn-sheet-nav" onclick="prevExamPage()" ${examBankState.currentPage <= 1 ? 'disabled' : ''} title="Previous Sheet">
+                        &larr; Prev Sheet
+                    </button>
+                    <div class="exam-sheet-indicator">
+                        <span>Sheet</span>
+                        <select class="exam-sheet-select" onchange="jumpToExamPage(this.value)" aria-label="Jump to exam sheet">
+                            ${optionsHtml}
+                        </select>
+                        <span>of ${totalPages}</span>
                     </div>
+                    <button class="btn-sheet-nav" onclick="nextExamPage()" ${examBankState.currentPage >= totalPages ? 'disabled' : ''} title="Next Sheet">
+                        Next Sheet &rarr;
+                    </button>
                 </div>
-            `;
-        }
-
-        html += `
-            <div class="exam-card" id="card-${qId}">
-                <div class="exam-meta-bar">
-                    <div class="exam-badges-group">
-                        <span class="badge-qid">${qId}</span>
-                        <span class="badge-topic">${escapeHtml(q.topic || 'General')}</span>
-                        <span class="badge-source">${escapeHtml(q.sourceFile || 'ISE 291 Exam')}</span>
+                <div class="exam-nav-right">
+                    <div class="exam-view-toggle">
+                        <button class="btn-view-toggle ${examBankState.viewMode === 'paginated' ? 'active' : ''}" onclick="toggleExamViewMode('paginated')" title="Flip through 5 questions per printed sheet">
+                            📄 5 Qs / Sheet
+                        </button>
+                        <button class="btn-view-toggle ${examBankState.viewMode === 'continuous' ? 'active' : ''}" onclick="toggleExamViewMode('continuous')" title="View complete printed exam booklet continuous sheets">
+                            📚 All Sheets
+                        </button>
                     </div>
-                    <span class="badge-solved-status ${solvedBadgeClass}" id="status-${qId}" style="display: ${solvedBadgeDisplay};">${solvedBadgeText}</span>
-                </div>
-                <div class="exam-q-text">${escapeHtml(q.questionText)}</div>
-                ${codeBlock}
-                <div class="interactive-q" data-correct="${q.correctAnswer}" data-source="${escapeHtml(q.sourceFile || '')}" data-qid="${qId}">
-                    <div class="q-options-grid">
-                        ${optionsHtml}
-                    </div>
-                    <div class="q-feedback hidden"></div>
-                </div>
-                
-                <!-- Collapsible Step-by-Step Solution Accordion -->
-                <button class="exam-accordion-toggle" id="btn-sol-${qId}" onclick="toggleExamSolution('${qId}')">
-                    <span class="toggle-label"><span class="chevron">&blacktriangleright;</span> Step-by-Step Solution & Concept Walkthrough</span>
-                </button>
-                <div class="exam-solution-body" id="sol-${qId}">
-                    <div class="box-ans" style="margin-top: 10px;">
-                        <div class="ans-mini-label">Verified Correct Option</div>
-                        <div class="ans-content"><strong>Option (${q.correctAnswer}):</strong> ${escapeHtml(correctOptText)}</div>
-                    </div>
-                    <div class="box-sol">
-                        <div class="sol-mini-label">Detailed Breakdown & Distractor Analysis</div>
-                        <div class="sol-content">${formatExplanation(q.explanation)}</div>
-                    </div>
-                    ${reinforcementHtml}
                 </div>
             </div>
         `;
-    });
+    }
 
-    stream.innerHTML = html;
+    // Helper: Render Single Physical Paper Sheet (Matching Sample_Midterm_Exam.pdf)
+    function renderSingleSheetHtml(pageNum, sheetQuestions, startIndex) {
+        let sheetHeaderHtml = '';
+        if (pageNum === 1) {
+            sheetHeaderHtml = `
+                <div class="exam-paper-header-cover">
+                    <div class="kfupm-banner">
+                        <div class="kfupm-uni-name">KING FAHD UNIVERSITY OF PETROLEUM &amp; MINERALS</div>
+                        <div class="kfupm-dept-name">Department of Industrial &amp; Systems Engineering</div>
+                        <div class="kfupm-course-name">ISE 291: Introduction to Data Science &mdash; Midterm Examination</div>
+                    </div>
+                    <div class="kfupm-divider-rule"></div>
+                    <div class="exam-student-id-box">
+                        <div class="student-id-line">
+                            <span class="id-field"><strong>Name:</strong> ____________________________________________</span>
+                            <span class="id-field"><strong>ID:</strong> __________________</span>
+                            <span class="id-field"><strong>Sec:</strong> ______</span>
+                        </div>
+                    </div>
+                    <div class="exam-instructions-bar">
+                        <span><strong>Duration:</strong> 90 Minutes</span>
+                        <span><strong>Total Questions:</strong> ${totalFiltered}</span>
+                        <span><strong>Term:</strong> 241 / 242</span>
+                        <span><strong>Exam Paper Bank:</strong> Sample &amp; Past Midterms</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            sheetHeaderHtml = `
+                <div class="exam-paper-running-header">
+                    <div class="running-header-left">KING FAHD UNIVERSITY OF PETROLEUM &amp; MINERALS &bull; ISE 291 Midterm Examination</div>
+                    <div class="running-header-right">Sheet ${pageNum} of ${totalPages}</div>
+                </div>
+            `;
+        }
 
-    // 5. Initialize interactivity and math/code on rendered cards in a single batch
+        let questionsHtml = '';
+        sheetQuestions.forEach((q, idx) => {
+            const globalQNum = startIndex + idx + 1;
+            const qId = q.id || 'Q' + globalQNum;
+
+            const codeBlock = q.code ? `
+                <div class="exam-q-code-academic">
+                    <button class="btn-copy-code-academic" onclick="copyCode(this)" title="Copy Python code">Copy</button>
+                    <pre><code class="language-python">${escapeHtml(q.code)}</code></pre>
+                </div>
+            ` : '';
+
+            const optionsHtml = (q.options || []).map(opt => `
+                <button class="portal-opt-btn" data-key="${opt.key}">
+                    <span class="opt-key">${opt.key}:</span>
+                    <span class="opt-text">${escapeHtml(opt.text)}</span>
+                </button>
+            `).join('');
+
+            let correctOptText = '';
+            (q.options || []).forEach(opt => {
+                if (opt.key === q.correctAnswer) correctOptText = opt.text;
+            });
+
+            const ansInfo = userAnswers[qId];
+            let solvedBadgeClass = '';
+            let solvedBadgeText = '';
+            let solvedBadgeDisplay = 'none';
+            if (ansInfo) {
+                solvedBadgeClass = ansInfo.isCorrect ? 'solved-correct' : 'solved-wrong';
+                solvedBadgeText = ansInfo.isCorrect ? 'Solved Correct' : 'Attempted';
+                solvedBadgeDisplay = 'inline-flex';
+            }
+
+            let reinforcementHtml = '';
+            if (q.reinforcementQuestion) {
+                const rq = q.reinforcementQuestion;
+                const rOpts = (rq.options || []).map(ropt => `
+                    <button class="portal-opt-btn" data-key="${ropt.key}">
+                        <span class="opt-key">${ropt.key}:</span>
+                        <span class="opt-text">${escapeHtml(ropt.text)}</span>
+                    </button>
+                `).join('');
+
+                reinforcementHtml = `
+                    <div class="reinforcement-card">
+                        <div class="reinforcement-header">&#128161; Concept Reinforcement Drill</div>
+                        <div class="exam-q-text"><strong>Q.</strong> ${escapeHtml(rq.questionText)}</div>
+                        ${rq.code ? `<div class="exam-q-code-academic"><pre><code class="language-python">${escapeHtml(rq.code)}</code></pre></div>` : ''}
+                        <div class="interactive-q" data-correct="${rq.correctAnswer}" data-source="${escapeHtml(q.sourceFile || '')}" data-qid="${qId}_reinf">
+                            <div class="q-options-grid">${rOpts}</div>
+                            <div class="q-feedback hidden"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            questionsHtml += `
+                <div class="exam-q-block" id="card-${qId}">
+                    <div class="exam-q-stamp-bar">
+                        <span class="exam-q-stamp">#${globalQNum}</span>
+                        <span class="exam-q-stamp">ID: ${escapeHtml(qId)}</span>
+                        <span class="exam-q-stamp">${escapeHtml(q.topic || 'General')}</span>
+                        <span class="exam-q-stamp">${escapeHtml(q.sourceFile || 'Sample Midterm')}</span>
+                        <span class="badge-solved-status ${solvedBadgeClass}" id="status-${qId}" style="display: ${solvedBadgeDisplay};">${solvedBadgeText}</span>
+                    </div>
+
+                    <div class="exam-q-text">
+                        <strong class="exam-q-num">Q ${globalQNum}.</strong> ${escapeHtml(q.questionText)}
+                    </div>
+
+                    ${codeBlock}
+
+                    <div class="interactive-q" data-correct="${q.correctAnswer}" data-source="${escapeHtml(q.sourceFile || '')}" data-qid="${qId}">
+                        <div class="q-options-grid">
+                            ${optionsHtml}
+                        </div>
+                        <div class="q-feedback hidden"></div>
+                    </div>
+
+                    <!-- Collapsible Step-by-Step Solution & Marking Rubric -->
+                    <button class="exam-accordion-toggle" id="btn-sol-${qId}" onclick="toggleExamSolution('${qId}')">
+                        <span class="toggle-label"><span class="chevron">&blacktriangleright;</span> Show Official Solution &amp; Marking Rubric</span>
+                    </button>
+                    <div class="exam-solution-body" id="sol-${qId}">
+                        <div class="box-ans">
+                            <div class="ans-mini-label">Verified Correct Option</div>
+                            <div class="ans-content"><strong>Option (${q.correctAnswer}):</strong> ${escapeHtml(correctOptText)}</div>
+                        </div>
+                        <div class="box-sol">
+                            <div class="sol-mini-label">Step-by-Step Marking Rubric &amp; Distractor Analysis</div>
+                            <div class="sol-content">${formatExplanation(q.explanation)}</div>
+                        </div>
+                        ${reinforcementHtml}
+                    </div>
+                </div>
+            `;
+        });
+
+        return `
+            <div class="exam-paper-sheet" id="sheet-page-${pageNum}" data-sheet="${pageNum}">
+                ${sheetHeaderHtml}
+                <div class="exam-sheet-questions-flow">
+                    ${questionsHtml}
+                </div>
+                <div class="exam-paper-footer">
+                    <div class="footer-left">ISE 291 Midterm Examination</div>
+                    <div class="footer-center">&mdash; Page ${pageNum} &mdash;</div>
+                    <div class="footer-right">Page ${pageNum} of ${totalPages}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    let sheetsOutputHtml = '';
+    if (examBankState.viewMode === 'continuous') {
+        // Continuous mode: render all sheets stacked
+        for (let p = 1; p <= totalPages; p++) {
+            const startIdx = (p - 1) * examBankState.pageSize;
+            const sliceQs = filtered.slice(startIdx, startIdx + examBankState.pageSize);
+            sheetsOutputHtml += renderSingleSheetHtml(p, sliceQs, startIdx);
+        }
+    } else {
+        // Paginated mode: render current sheet only (5 questions per sheet)
+        const startIdx = (examBankState.currentPage - 1) * examBankState.pageSize;
+        const sliceQs = filtered.slice(startIdx, startIdx + examBankState.pageSize);
+        sheetsOutputHtml = renderSingleSheetHtml(examBankState.currentPage, sliceQs, startIdx);
+    }
+
+    stream.innerHTML = buildNavDockHtml(false) + sheetsOutputHtml + buildNavDockHtml(true);
+
+    // Initialize interactivity and math/code on rendered questions
     initInteractiveQuestions(stream);
     initStemRenderers(stream);
     recalculateDocHeight();
-
-    // 6. Manage Load More button
-    if (loadMoreContainer) {
-        if (filtered.length > examBankState.limit) {
-            loadMoreContainer.style.display = 'block';
-            const btn = document.getElementById('btnLoadMoreExam');
-            if (btn) {
-                const remaining = filtered.length - examBankState.limit;
-                btn.textContent = `Load More Questions (${remaining} remaining)`;
-            }
-        } else {
-            loadMoreContainer.style.display = 'none';
-        }
-    }
 }
 
 function loadMoreExamQuestions() {
-    examBankState.limit += 20;
-    renderExamBank();
+    nextExamPage();
 }
 
 function updateExamStats() {
