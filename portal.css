@@ -1330,6 +1330,26 @@ tr:nth-child(even) {
     margin-inline-end: 4px;
 }
 
+/* Question Figures & Tables */
+.exam-q-figure-container {
+    margin: 14px 0 18px 0;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.exam-q-figure-img {
+    max-width: 100%;
+    height: auto;
+    max-height: 420px;
+    display: inline-block;
+    object-fit: contain;
+    border-radius: 2px;
+}
+
 /* Academic Code in Questions */
 .exam-q-code-academic {
     background: #f8fafc;

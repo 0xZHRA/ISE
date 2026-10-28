@@ -1508,6 +1508,13 @@ function renderExamBank() {
             const globalQNum = startIndex + idx + 1;
             const qId = q.id || 'Q' + globalQNum;
 
+            const imgUrl = q.image || (q.images && q.images.length > 0 ? q.images[0] : null);
+            const imageBlock = imgUrl ? `
+                <div class="exam-q-figure-container">
+                    <img src="${escapeHtml(imgUrl)}" alt="Figure for question ${escapeHtml(qId)}" class="exam-q-figure-img" loading="lazy" />
+                </div>
+            ` : '';
+
             const codeBlock = q.code ? `
                 <div class="exam-q-code-academic">
                     <button class="btn-copy-code-academic" onclick="copyCode(this)" title="Copy Python code">Copy</button>
@@ -1573,6 +1580,8 @@ function renderExamBank() {
                     <div class="exam-q-text">
                         <strong class="exam-q-num">Q ${globalQNum}.</strong> ${escapeHtml(q.questionText)}
                     </div>
+
+                    ${imageBlock}
 
                     ${codeBlock}
 
