@@ -1003,13 +1003,23 @@ function initInteractiveQuestions(container = document) {
 /* ==========================================================================
    Past Exam Bank Engine: Search, Filter, Pagination & Full 325 Bank
    ========================================================================== */
+let savedExamPage = 1;
+try {
+    savedExamPage = parseInt(localStorage.getItem('ise291_exam_page') || '1', 10) || 1;
+} catch (e) {}
+
+let savedExamViewMode = 'paginated';
+try {
+    savedExamViewMode = localStorage.getItem('ise291_exam_view_mode') || 'paginated';
+} catch (e) {}
+
 let examBankState = {
     initialized: false,
     activeFilter: 'all',
     searchQuery: '',
-    currentPage: 1,
+    currentPage: savedExamPage,
     pageSize: 5, // Authentic KFUPM exam booklet: 5 questions per physical printed sheet
-    viewMode: 'paginated', // 'paginated' (5 qs per sheet) or 'continuous' (all sheets stacked)
+    viewMode: savedExamViewMode, // 'paginated' (5 qs per sheet) or 'continuous' (all sheets stacked)
     filteredQuestions: []
 };
 
@@ -1211,6 +1221,9 @@ function setExamPage(pageNumber) {
     const totalPages = Math.max(1, Math.ceil((examBankState.filteredQuestions || []).length / examBankState.pageSize));
     const target = Math.max(1, Math.min(pageNumber, totalPages));
     examBankState.currentPage = target;
+    try {
+        localStorage.setItem('ise291_exam_page', String(target));
+    } catch (e) {}
     renderExamBank();
     const stream = document.getElementById('examQuestionsStream') || document.getElementById('videosContainer');
     if (stream) {
@@ -1233,6 +1246,9 @@ function jumpToExamPage(val) {
 
 function toggleExamViewMode(mode) {
     examBankState.viewMode = mode;
+    try {
+        localStorage.setItem('ise291_exam_view_mode', mode);
+    } catch (e) {}
     renderExamBank();
 }
 
