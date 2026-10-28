@@ -147,10 +147,8 @@ function updateSyncBadge(status, label) {
     const badge = document.getElementById('globalSyncBadge');
     if (!badge) return;
     badge.className = 'sync-badge-btn';
-    if (status === 'syncing') {
-        badge.classList.add('syncing');
-    } else if (status === 'offline') {
-        badge.classList.add('offline');
+    if (status) {
+        badge.classList.add(status);
     }
     const labelEl = badge.querySelector('.sync-label');
     if (labelEl) labelEl.textContent = label;
@@ -279,10 +277,10 @@ async function pullCloudState(isManual = false) {
             updateSyncBadge('synced', 'Synced');
         }
     } catch (err) {
-        console.warn('Cloud sync pull notice:', err);
-        updateSyncBadge('offline', 'Offline');
+        console.warn('Cloud sync pull notice (working in local mode):', err);
+        updateSyncBadge('local', 'Saved (Local)');
         if (isManual) {
-            setModalFeedback('Could not fetch cloud data. Check internet connection.', true);
+            setModalFeedback('Working in local storage mode. Progress is saved safely on this device.', false);
         }
     } finally {
         isCloudSyncing = false;
@@ -340,10 +338,10 @@ async function pushCloudState(isManual = false) {
             setModalFeedback('Progress auto-saved to cloud successfully!');
         }
     } catch (err) {
-        console.warn('Cloud sync push notice:', err);
-        updateSyncBadge('offline', 'Offline');
+        console.warn('Cloud sync push notice (working in local mode):', err);
+        updateSyncBadge('local', 'Saved (Local)');
         if (isManual) {
-            setModalFeedback('Cloud save failed. Check connection.', true);
+            setModalFeedback('Progress saved locally on this device.', false);
         }
     } finally {
         isCloudSyncing = false;
@@ -673,11 +671,13 @@ function scheduleSaveState() {
     saveTimer = setTimeout(() => {
         try {
             localStorage.setItem('course_portal_scroll_state', JSON.stringify(portalState));
-            fetch('/api/state', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(portalState)
-            }).catch(() => {});
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                fetch('/api/state', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(portalState)
+                }).catch(() => {});
+            }
         } catch (e) {}
     }, 300);
 }
@@ -1798,34 +1798,39 @@ window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { loadExamDataAsync(); }, 2500);
     }
 
-    // 6. Background server sync
-    fetch('/api/state')
-        .then(r => r.json())
-        .then(srvState => {
-            if (srvState && srvState.topicScroll) {
-                let updated = false;
-                Object.keys(srvState.topicScroll).forEach(k => {
-                    if ((!portalState.topicScroll[k] || portalState.topicScroll[k] === 0) && srvState.topicScroll[k] > 0) {
-                        portalState.topicScroll[k] = srvState.topicScroll[k];
+    // 6. Background server sync (localhost dev only)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        fetch('/api/state')
+            .then(r => {
+                if (!r.ok) throw new Error('Not available');
+                return r.json();
+            })
+            .then(srvState => {
+                if (srvState && srvState.topicScroll) {
+                    let updated = false;
+                    Object.keys(srvState.topicScroll).forEach(k => {
+                        if ((!portalState.topicScroll[k] || portalState.topicScroll[k] === 0) && srvState.topicScroll[k] > 0) {
+                            portalState.topicScroll[k] = srvState.topicScroll[k];
+                            updated = true;
+                        }
+                    });
+                    if ((!portalState.videosScroll || portalState.videosScroll === 0) && srvState.videosScroll > 0) {
+                        portalState.videosScroll = srvState.videosScroll;
                         updated = true;
                     }
-                });
-                if ((!portalState.videosScroll || portalState.videosScroll === 0) && srvState.videosScroll > 0) {
-                    portalState.videosScroll = srvState.videosScroll;
-                    updated = true;
+                    if (updated) {
+                        scheduleSaveState();
+                    }
                 }
-                if (updated) {
-                    scheduleSaveState();
-                }
-            }
-        })
-        .catch(() => {});
+            })
+            .catch(() => {});
+    }
 
     // 7. Multi-device Cloud Progress Sync initialization
     try {
         lastCloudSyncTime = localStorage.getItem('ise291_last_cloud_sync');
     } catch (e) {}
-    updateSyncBadge('synced', 'Synced');
+    updateSyncBadge('local', 'Saved (Local)');
     updateSyncModalTime();
 
     // Check if opened with ?cloud_sync=1 or ?sync=1

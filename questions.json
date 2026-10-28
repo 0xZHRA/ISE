@@ -693,8 +693,8 @@
     "sourceFile": "Sol-Practice Questions Topic2.docx",
     "topic": "Topic 2: Python Review",
     "category": "Practice Questions",
-    "questionText": "What is the output of the following code:\nnp.linspace(1,2,6)",
-    "code": "",
+    "questionText": "What is the output of the following code?",
+    "code": "import numpy as np\nnp.linspace(1, 2, 6)",
     "options": [
       {
         "key": "A",
@@ -1382,8 +1382,8 @@
     "sourceFile": "Sol-Practice Questions Topic2.docx",
     "topic": "Topic 2: Python Review",
     "category": "Practice Questions",
-    "questionText": "If given array is X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], then the values of X // 3 are:",
-    "code": "",
+    "questionText": "If given array is X, what are the values of X // 3?",
+    "code": "import numpy as np\nX = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])",
     "options": [
       {
         "key": "A",
@@ -2548,8 +2548,8 @@
     "sourceFile": "Sol-Practice Questions Topic3.docx",
     "topic": "Topic 3: Basic Statistics",
     "category": "Practice Questions",
-    "questionText": "The three values returned by the command “A, B, C = np.percentile(Score, [75 ,50 ,25])”  are,",
-    "code": "",
+    "questionText": "Which three values are returned by the following command?",
+    "code": "A, B, C = np.percentile(Score, [75, 50, 25])",
     "options": [
       {
         "key": "A",
@@ -2601,8 +2601,8 @@
     "sourceFile": "Sol-Practice Questions Topic3.docx",
     "topic": "Topic 3: Basic Statistics",
     "category": "Practice Questions",
-    "questionText": "The following data Score = [ 75, 81, 95, 85, 81, 82, 97, 89, 76, 100, 77, 50, 79, 87, 87, 79, 75, 100, 82, 120, 83, 98, 86, 87, 71, 78, 81] has",
-    "code": "",
+    "questionText": "How many outliers does the following score dataset contain?",
+    "code": "Score = [75, 81, 95, 85, 81, 82, 97, 89, 76, 100, 77, 50, 79, 87, 87, 79, 75, 100, 82, 120, 83, 98, 86, 87, 71, 78, 81]",
     "options": [
       {
         "key": "A",
@@ -3237,8 +3237,8 @@
     "sourceFile": "Sol-Practice Questions Topic5.docx",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Practice Questions",
-    "questionText": "The following command df[\"Population\"]=df[\"Population\"].apply(lambda x: int(x.replace(',' , ' ')))",
-    "code": "",
+    "questionText": "What does the following command do?",
+    "code": "df['Population'] = df['Population'].apply(lambda x: int(x.replace(',', ' ')))",
     "options": [
       {
         "key": "A",
@@ -4085,8 +4085,8 @@
     "sourceFile": "Quiz_2.docx",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Quiz 2",
-    "questionText": "What does this code display? print(df.select_dtypes(\"object\").describe().loc['unique', :])",
-    "code": "",
+    "questionText": "What does the following code display?",
+    "code": "print(df.select_dtypes('object').describe().loc['unique', :])",
     "options": [
       {
         "key": "A",
@@ -5784,8 +5784,8 @@
     "sourceFile": "Topic 4 and 5.pdf",
     "topic": "Topic 4: Structured Data and Visualization",
     "category": "Quiz Practice",
-    "questionText": "What is the purpose of the following code? \nseleted_rows = (df['Province']=='Eastern') & (df['Job Type']=='White-collar')",
-    "code": "",
+    "questionText": "What is the purpose of the following code?",
+    "code": "seleted_rows = (df['Province'] == 'Eastern') & (df['Job Type'] == 'White-collar')",
     "options": [
       {
         "key": "A",
@@ -6111,8 +6111,8 @@
     "sourceFile": "Topic 4 and 5.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Quiz Practice",
-    "questionText": "If you know that ‘default’,'housing' are binary variables and 'marital' contain 3 unique \nvalues. Also, the current data frame contains 7 columns, the final number of columns after \napply the following line of code will be? \ndf = pd.get_dummies(df, columns=['default','housing', 'marital'],drop_first=True)",
-    "code": "",
+    "questionText": "If you know that 'default' and 'housing' are binary variables and 'marital' contains 3 unique values, and the current DataFrame contains 7 columns, what will be the final number of columns after applying the following line of code?",
+    "code": "df = pd.get_dummies(df, columns=['default', 'housing', 'marital'], drop_first=True)",
     "options": [
       {
         "key": "A",
@@ -6800,8 +6800,8 @@
     "sourceFile": "Topic 4 and 5.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Review Questions",
-    "questionText": "For a DataFrame of ten records, df.dropna(axis=0,how='any', thresh=7, inplace=True) drops:",
-    "code": "",
+    "questionText": "For a DataFrame of ten records, what does the following code drop?",
+    "code": "df.dropna(axis=0, how='any', thresh=7, inplace=True)",
     "options": [
       {
         "key": "A",
@@ -7648,8 +7648,8 @@
     "sourceFile": "Mid exam v important questions.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Midterm Exam - High Priority",
-    "questionText": "arr = np.array([4, 7, 1, 8, 3]) \n \nGiven the above array arr, which of the following codes DOES NOT perform an element-wise \nmultiplication of the array by 2 and sorting the array in ascending order to produce an array \n[ 2  6  8 14 16]?",
-    "code": "",
+    "questionText": "Given the following array, which of the following codes DOES NOT perform an element-wise multiplication of the array by 2 and sorting the array in ascending order to produce [ 2  6  8 14 16]?",
+    "code": "arr = np.array([4, 7, 1, 8, 3])",
     "options": [
       {
         "key": "A",
@@ -8072,8 +8072,8 @@
     "sourceFile": "Mid exam v important questions.pdf",
     "topic": "Topic 3: Basic Statistics",
     "category": "Midterm Exam - High Priority",
-    "questionText": "Which of the following code snippets will correctly compute the sample variance of a list of numbers \ncalled ages? \nages = [23, 29, 22, 32, 30]",
-    "code": "",
+    "questionText": "Which of the following code snippets will correctly compute the sample variance of the following list of numbers?",
+    "code": "ages = [23, 29, 22, 32, 30]",
     "options": [
       {
         "key": "A",
@@ -8125,8 +8125,8 @@
     "sourceFile": "Mid exam v important questions.pdf",
     "topic": "Topic 3: Basic Statistics",
     "category": "Midterm Exam - High Priority",
-    "questionText": "In Python, which function can calculate the interquartile range (IQR) of a list called income? \nincome = [30000, 40000, 35000, 50000, 45000]",
-    "code": "",
+    "questionText": "In Python, which function can calculate the interquartile range (IQR) of the following list?",
+    "code": "income = [30000, 40000, 35000, 50000, 45000]",
     "options": [
       {
         "key": "A",
@@ -8231,8 +8231,8 @@
     "sourceFile": "Mid exam v important questions.pdf",
     "topic": "Topic 3: Basic Statistics",
     "category": "Midterm Exam - High Priority",
-    "questionText": "In the context of drawing a histogram for scores, which of the following commands creates bins of 41-\n60, 61-80, 81-100? \n \nScore = [48, 62, 79, 65, 81, 94, 56, 91, 69, 99, 60, 84]",
-    "code": "",
+    "questionText": "In the context of drawing a histogram for scores, which of the following commands creates bins of 41-60, 61-80, 81-100?",
+    "code": "Score = [48, 62, 79, 65, 81, 94, 56, 91, 69, 99, 60, 84]",
     "options": [
       {
         "key": "A",
@@ -9297,8 +9297,8 @@
     "sourceFile": "Mid exam v important questions.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Midterm Exam - High Priority",
-    "questionText": "For a Pandas Dataframe df, what is the CORRECT explanation for the following code? \ndf.dropna(axis =1, thresh = len(df.index)-3, inplace =True)",
-    "code": "",
+    "questionText": "For a Pandas DataFrame df, what is the CORRECT explanation for the following code?",
+    "code": "df.dropna(axis=1, thresh=len(df.index) - 3, inplace=True)",
     "options": [
       {
         "key": "A",
@@ -9406,8 +9406,8 @@
     "sourceFile": "Mid exam v important questions.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Midterm Exam - High Priority",
-    "questionText": "Assume a numeric attribute with title “balance”, and assume the following code: \nfrom sklearn.preprocessing import StandardScaler \nscaler = StandardScaler() \nscaler.fit(df[['balance']])",
-    "code": "df['balance']=scaler.transform(df[['balance']]) \n \nWhat will be the mean of “balance” after running the above code?",
+    "questionText": "Assume a numeric attribute with title 'balance'. What will be the mean of 'balance' after running the following code?",
+    "code": "from sklearn.preprocessing import StandardScaler\nscaler = StandardScaler()\nscaler.fit(df[['balance']])\ndf['balance'] = scaler.transform(df[['balance']])",
     "options": [
       {
         "key": "A",
@@ -10101,8 +10101,8 @@
     "sourceFile": "Sample Mid .pdf",
     "topic": "Topic 2: Python Review",
     "category": "Sample Midterm Exam",
-    "questionText": "Which of the following options would print the 2D NumPy array “AA” sort on the column axis in descending \norder, where \nAA = np.array([[1, 3, 2, 5], [7, 1, 6, 7], [4, 3, 1,2]])",
-    "code": "",
+    "questionText": "Which of the following options would print the 2D NumPy array 'AA' sorted on the column axis in descending order?",
+    "code": "AA = np.array([[1, 3, 2, 5], [7, 1, 6, 7], [4, 3, 1, 2]])",
     "options": [
       {
         "key": "A",
@@ -11002,8 +11002,8 @@
     "sourceFile": "Sample Mid .pdf",
     "topic": "Topic 3: Basic Statistics",
     "category": "Sample Midterm Exam",
-    "questionText": "We want to plot a pie chart for the following data. \nchoice = np.array([ 'B', 'C', 'C', 'B', 'A', 'D', 'D', 'A', 'B', 'C', 'A']) \n \nWhich of the following code segment can return the value of individual choices in the data and the \ncount of each choice in the array as needed to plot the pie chart?",
-    "code": "",
+    "questionText": "We want to plot a pie chart for the following data. Which of the following code segments can return the value of individual choices and the count of each choice in the array as needed to plot the pie chart?",
+    "code": "choice = np.array(['B', 'C', 'C', 'B', 'A', 'D', 'D', 'A', 'B', 'C', 'A'])",
     "options": [
       {
         "key": "A",
@@ -11161,8 +11161,8 @@
     "sourceFile": "Sample Mid .pdf",
     "topic": "Topic 3: Basic Statistics",
     "category": "Sample Midterm Exam",
-    "questionText": "The interquartile range (IQR) is computed as a measure of spread while removing extreme values. \nWhich of the code below computes the IQR for the list \nNum_of_cars = [0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 6, 6, 6]",
-    "code": "",
+    "questionText": "The interquartile range (IQR) is computed as a measure of spread while removing extreme values. Which of the following code snippets correctly computes the IQR for the following list?",
+    "code": "Num_of_cars = [0, 1, 1, 2, 3, 3, 3, 4, 4, 5, 6, 6, 6]",
     "options": [
       {
         "key": "A",
@@ -12062,8 +12062,8 @@
     "sourceFile": "Sample Mid .pdf",
     "topic": "Topic 4: Structured Data and Visualization",
     "category": "Sample Midterm Exam",
-    "questionText": "Given a data frame with 10 rows labeled from 0 to 9, and 4 columns labeled as C2, C3, C4, \nand C5. What will be the return of df.loc[:2,’c2’:’c4’] and df.iloc[:2,0:3]",
-    "code": "",
+    "questionText": "Given a DataFrame with 10 rows labeled from 0 to 9, and 4 columns labeled as C2, C3, C4, and C5. What will be the return of the following two operations?",
+    "code": "df.loc[:2, 'c2':'c4']\ndf.iloc[:2, 0:3]",
     "options": [
       {
         "key": "A",
@@ -12168,8 +12168,8 @@
     "sourceFile": "Sample Mid .pdf",
     "topic": "Topic 4: Structured Data and Visualization",
     "category": "Sample Midterm Exam",
-    "questionText": "Which of the following is False about the action of df.sort_values(by=['age','salary'], \ninplace=False, ascending=[False, True])",
-    "code": "",
+    "questionText": "Which of the following is False about the action of the following code?",
+    "code": "df.sort_values(by=['age', 'salary'], inplace=False, ascending=[False, True])",
     "options": [
       {
         "key": "A",
@@ -13081,8 +13081,8 @@
     "sourceFile": "Sample Mid .pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Sample Midterm Exam",
-    "questionText": "Given a dataframe df, what is the correct explanation for the following? \n \nc_null = df.loc[:, df.isna().any()].columns \nfor c in c_null: \n    value = df[c].mean() if df[c].dtype!='object' else df[c].mode()",
-    "code": "df[c].fillna(value,inplace=True)",
+    "questionText": "Given a DataFrame df, what is the CORRECT explanation for the following code?",
+    "code": "c_null = df.loc[:, df.isna().any()].columns\nfor c in c_null:\n    value = df[c].mean() if df[c].dtype != 'object' else df[c].mode()\n    df[c].fillna(value, inplace=True)",
     "options": [
       {
         "key": "A",
@@ -14985,7 +14985,7 @@
     "sourceFile": "Quiz2_Key_251.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Term 251 Quiz 2",
-    "questionText": "Assume a DataFrame contains 10 columns and one of them is a categorical attribute with title 'job'. Assume we run the following code:\n\njob_mapping = {'unemployed':'C1', 'self-employed':'C1', 'student':'C1', 'retired':'C1',\n               'services':'C2', 'blue-collar':'C2', 'technician':'C2', 'housemaid':'C2',\n               'management':'C3', 'entrepreneur':'C3', 'admin.':'C3'}\ndf['job'] = df['job'].map(job_mapping)\ndf = pd.get_dummies(df, columns=['job'], drop_first=True)\n\nThe total number of columns in the dataframe df will now be:",
+    "questionText": "Assume a DataFrame contains 10 columns and one of them is a categorical attribute with title 'job'. What will be the total number of columns in the DataFrame df after executing the following code?",
     "code": "job_mapping = {'unemployed':'C1', 'self-employed':'C1', 'student':'C1', 'retired':'C1',\n               'services':'C2', 'blue-collar':'C2', 'technician':'C2', 'housemaid':'C2',\n               'management':'C3', 'entrepreneur':'C3', 'admin.':'C3'}\ndf['job'] = df['job'].map(job_mapping)\ndf = pd.get_dummies(df, columns=['job'], drop_first=True)",
     "options": [
       {
@@ -15141,7 +15141,7 @@
     "sourceFile": "Sol_Quiz2_ISE291_S04_251.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Term 251 Quiz 2",
-    "questionText": "What is the effect of the following code:\n\nfrom sklearn.preprocessing import StandardScaler\nscaler2 = StandardScaler()\nscaler2.fit(df[['balance']])\ndf['balance'] = scaler2.transform(df[['balance']])",
+    "questionText": "What is the effect of the following code?",
     "code": "from sklearn.preprocessing import StandardScaler\nscaler2 = StandardScaler()\nscaler2.fit(df[['balance']])\ndf['balance'] = scaler2.transform(df[['balance']])",
     "options": [
       {
@@ -15193,7 +15193,7 @@
     "sourceFile": "Sol_Quiz2_ISE291_S04_251.pdf",
     "topic": "Topic 5: Data Understanding and Preparation",
     "category": "Term 251 Quiz 2",
-    "questionText": "The following code will:\n\nselected_cols = df.select_dtypes(include='number').columns\ndf[selected_cols] = df[selected_cols].applymap(lambda x: x if x >= 0 else abs(x))",
+    "questionText": "What is the effect of the following code?",
     "code": "selected_cols = df.select_dtypes(include='number').columns\ndf[selected_cols] = df[selected_cols].applymap(lambda x: x if x >= 0 else abs(x))",
     "options": [
       {
@@ -15973,7 +15973,7 @@
     "sourceFile": "223_Midterm_Exam.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Official Past Midterms",
-    "questionText": "What output will you get with this code?\n\nList1 = [x if x % 2 == 0 else x * 2 + 1 for x in range(2, 12)]\nprint(List1)",
+    "questionText": "What output will you get with the following code?",
     "code": "List1 = [x if x % 2 == 0 else x * 2 + 1 for x in range(2, 12)]\nprint(List1)",
     "options": [
       {
@@ -16025,7 +16025,7 @@
     "sourceFile": "223_Midterm_Exam.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Official Past Midterms",
-    "questionText": "Which of the following options can display every other column of 'arr' in order of 3rd row, 1st row, and 4th row, where:\narr = np.array([[1, 2, 2], [3, 1, 5], [9, 5, 2], [8, 8, 3]])",
+    "questionText": "Which of the following options displays every other column of 'arr' in order of 3rd row, 1st row, and 4th row for the array below?",
     "code": "arr = np.array([[1, 2, 2], [3, 1, 5], [9, 5, 2], [8, 8, 3]])",
     "options": [
       {
@@ -16077,7 +16077,7 @@
     "sourceFile": "223_Midterm_Exam.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Official Past Midterms",
-    "questionText": "What is the output of the following code:\n\nimport numpy as np\nx = np.array([1, 2, 4, 8, 9])\nmask = x % 2 != 0\nprint(x[mask])",
+    "questionText": "What is the output of the following code?",
     "code": "import numpy as np\nx = np.array([1, 2, 4, 8, 9])\nmask = x % 2 != 0\nprint(x[mask])",
     "options": [
       {
@@ -16129,7 +16129,7 @@
     "sourceFile": "MCQ_Practice_Topics_2_and_3.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Practice Questions",
-    "questionText": "What will be the result of the following statement?\n\nprint(dict(enumerate(range(1, 4))))",
+    "questionText": "What will be the result of the following statement?",
     "code": "print(dict(enumerate(range(1, 4))))",
     "options": [
       {
@@ -16181,7 +16181,7 @@
     "sourceFile": "MCQ_Practice_Topics_2_and_3.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Practice Questions",
-    "questionText": "What is the shape of the array arr2 created by the following line of code?\n\narr = np.array([[1, 2, 3, 4, 5, 6, 7]])\narr2 = arr.reshape(7)",
+    "questionText": "What is the shape of the array 'arr2' created by the following code?",
     "code": "arr = np.array([[1, 2, 3, 4, 5, 6, 7]])\narr2 = arr.reshape(7)",
     "options": [
       {
@@ -16805,7 +16805,7 @@
     "sourceFile": "Quiz4F06.pdf",
     "topic": "Topic 4: Basic Programming Concepts & Machine Learning",
     "category": "Term 251 Quiz 4",
-    "questionText": "Consider the following code:\n\nfrom sklearn.naive_bayes import GaussianNB\nNBClf = GaussianNB()\nNBClf.fit(X_train, y_train)\nprint(NBClf.classes_)\n\nWhat does the NBClf.classes_ attribute represent?",
+    "questionText": "Consider the following code. What does the NBClf.classes_ attribute represent?",
     "code": "from sklearn.naive_bayes import GaussianNB\nNBClf = GaussianNB()\nNBClf.fit(X_train, y_train)\nprint(NBClf.classes_)",
     "options": [
       {
@@ -17169,7 +17169,7 @@
     "sourceFile": "223_Midterm_Exam.pdf",
     "topic": "Topic 2: Python Review",
     "category": "Official Past Midterms",
-    "questionText": "What is the output of the following code:\n\nimport numpy as np\na = np.array([1, 2, 3, 4])\nb = np.array([[6, 4, 7, 9], [13, 5, 6, 8]])\nprint(b - 2 * a + min(a))",
+    "questionText": "What is the output of the following code?",
     "code": "import numpy as np\na = np.array([1, 2, 3, 4])\nb = np.array([[6, 4, 7, 9], [13, 5, 6, 8]])\nprint(b - 2 * a + min(a))",
     "options": [
       {

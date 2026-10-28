@@ -2164,6 +2164,43 @@ tr:nth-child(even) {
     border-color: #0f172a;
 }
 
+.sync-badge-btn.local {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+.sync-badge-btn.local .sync-dot {
+    background: #10b981;
+}
+
+.sync-badge-btn.synced {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+}
+.sync-badge-btn.synced .sync-dot {
+    background: #16a34a;
+}
+
+.sync-badge-btn.syncing {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+}
+.sync-badge-btn.syncing .sync-dot {
+    background: #3b82f6;
+    animation: spin 1s linear infinite;
+}
+
+.sync-badge-btn.offline {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+.sync-badge-btn.offline .sync-dot {
+    background: #94a3b8;
+}
+
 .sync-dot {
     width: 6.5px;
     height: 6.5px;
