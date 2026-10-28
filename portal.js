@@ -1217,7 +1217,7 @@ function clearExamSearch() {
     renderExamBank();
 }
 
-function setExamPage(pageNumber) {
+function setExamPage(pageNumber, skipScroll = false) {
     const totalPages = Math.max(1, Math.ceil((examBankState.filteredQuestions || []).length / examBankState.pageSize));
     const target = Math.max(1, Math.min(pageNumber, totalPages));
     examBankState.currentPage = target;
@@ -1225,10 +1225,12 @@ function setExamPage(pageNumber) {
         localStorage.setItem('ise291_exam_page', String(target));
     } catch (e) {}
     renderExamBank();
-    const stream = document.getElementById('examQuestionsStream') || document.getElementById('videosContainer');
-    if (stream) {
-        const topY = stream.getBoundingClientRect().top + window.pageYOffset - 70;
-        window.scrollTo({ top: Math.max(0, topY), behavior: 'smooth' });
+    if (!skipScroll) {
+        const stream = document.getElementById('examQuestionsStream') || document.getElementById('videosContainer');
+        if (stream) {
+            const topY = stream.getBoundingClientRect().top + window.pageYOffset - 70;
+            window.scrollTo({ top: Math.max(0, topY), behavior: 'smooth' });
+        }
     }
 }
 
@@ -1243,6 +1245,122 @@ function nextExamPage() {
 function jumpToExamPage(val) {
     setExamPage(parseInt(val, 10) || 1);
 }
+
+/**
+ * Jump to the furthest answered question in the currently active filter/search.
+ * Seamlessly adapts to whatever topic or search filter is currently applied.
+ */
+function jumpToLastAnsweredQuestion() {
+    // If not currently in exam bank tab, switch tab first
+    if (typeof portalState !== 'undefined' && portalState.activeTab !== 'videos') {
+        if (typeof switchTab === 'function') {
+            switchTab('videos');
+        }
+    }
+
+    // Ensure questions data is initialized
+    if (!window.QUESTIONS_DATA || !Array.isArray(window.QUESTIONS_DATA)) {
+        if (typeof initExamBank === 'function') initExamBank();
+        if (typeof loadExamDataAsync === 'function') {
+            loadExamDataAsync(() => {
+                jumpToLastAnsweredQuestion();
+            });
+        }
+        return;
+    }
+
+    const filtered = examBankState.filteredQuestions || [];
+    if (filtered.length === 0) {
+        if (typeof showToast === 'function') {
+            showToast('No questions found in this filter.', 'ℹ');
+        }
+        return;
+    }
+
+    // Inspect filteredQuestions and find all answered questions in userAnswers
+    let lastAnsweredIdx = -1;
+    let lastAnsweredQ = null;
+
+    filtered.forEach((q, idx) => {
+        const qId = q.id || ('Q' + (idx + 1));
+        if (userAnswers && userAnswers[qId]) {
+            lastAnsweredIdx = idx;
+            lastAnsweredQ = q;
+        }
+    });
+
+    // Helper: focus, center scroll, and add visual pulse highlight to a card
+    function focusAndPulseCard(cardId, toastMsg, toastIcon = '🎯') {
+        const applyFocus = () => {
+            const card = document.getElementById(cardId);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.add('pulse-focus-target');
+                setTimeout(() => {
+                    card.classList.remove('pulse-focus-target');
+                }, 2500);
+            } else {
+                // Secondary fallback retry for slower devices or math typesetting
+                setTimeout(() => {
+                    const retryCard = document.getElementById(cardId);
+                    if (retryCard) {
+                        retryCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        retryCard.classList.add('pulse-focus-target');
+                        setTimeout(() => retryCard.classList.remove('pulse-focus-target'), 2500);
+                    }
+                }, 140);
+            }
+        };
+
+        setTimeout(applyFocus, 70);
+        if (typeof showToast === 'function') {
+            showToast(toastMsg, toastIcon);
+        }
+    }
+
+    // Scenario A: No questions in the current filter are answered yet
+    if (lastAnsweredIdx === -1 || !lastAnsweredQ) {
+        const totalAnsweredOverall = Object.keys(userAnswers || {}).filter(k => !k.includes('_reinf')).length;
+        const firstQ = filtered[0];
+        const firstId = firstQ ? (firstQ.id || 'Q1') : 'Q1';
+
+        if (totalAnsweredOverall > 0) {
+            if (examBankState.currentPage !== 1) {
+                setExamPage(1, true);
+            }
+            focusAndPulseCard('card-' + firstId, 'No answered questions in current filter. Jumping to Question 1', 'ℹ');
+        } else {
+            if (examBankState.currentPage !== 1) {
+                setExamPage(1, true);
+            }
+            focusAndPulseCard('card-' + firstId, 'No questions answered yet. Start with Question 1!', '📝');
+        }
+        return;
+    }
+
+    // Scenario B: Found the furthest answered question in the current filter
+    const targetSheet = Math.floor(lastAnsweredIdx / examBankState.pageSize) + 1;
+    const targetQId = lastAnsweredQ.id || ('Q' + (lastAnsweredIdx + 1));
+    const targetCardId = 'card-' + targetQId;
+    const toastMsg = 'Resumed at Question ' + targetQId + ' (Sheet ' + targetSheet + ')';
+
+    if (examBankState.viewMode === 'continuous') {
+        examBankState.currentPage = targetSheet;
+        try {
+            localStorage.setItem('ise291_exam_page', String(targetSheet));
+        } catch (e) {}
+        document.querySelectorAll('.exam-sheet-select').forEach(sel => {
+            sel.value = String(targetSheet);
+        });
+        focusAndPulseCard(targetCardId, toastMsg, '🎯');
+    } else {
+        if (examBankState.currentPage !== targetSheet) {
+            setExamPage(targetSheet, true);
+        }
+        focusAndPulseCard(targetCardId, toastMsg, '🎯');
+    }
+}
+window.jumpToLastAnsweredQuestion = jumpToLastAnsweredQuestion;
 
 function toggleExamViewMode(mode) {
     examBankState.viewMode = mode;
@@ -1330,6 +1448,9 @@ function renderExamBank() {
                     </div>
                     <button class="btn-sheet-nav" onclick="nextExamPage()" ${examBankState.currentPage >= totalPages ? 'disabled' : ''} title="Next Sheet">
                         Next Sheet &rarr;
+                    </button>
+                    <button class="btn-sheet-resume" onclick="jumpToLastAnsweredQuestion()" title="Jump to the last question answered in this filter">
+                        🎯 Last Answered
                     </button>
                 </div>
                 <div class="exam-nav-right">
@@ -1538,6 +1659,36 @@ function updateExamStats() {
         const correctCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf') && userAnswers[k].isCorrect).length;
         scoreEl.textContent = `Solved: ${solvedCount} / ${allQuestions.length} (${correctCount} correct)`;
     }
+
+    // Check if any answered questions exist in examBankState.filteredQuestions
+    const answeredInFilter = filtered.filter(q => {
+        const qId = q.id;
+        return qId && userAnswers[qId];
+    });
+    const hasAnsweredInFilter = answeredInFilter.length > 0;
+
+    const resumeBtn = document.getElementById('btnResumeLastAnswered');
+    if (resumeBtn) {
+        if (hasAnsweredInFilter) {
+            resumeBtn.classList.remove('no-answers');
+            const lastQ = answeredInFilter[answeredInFilter.length - 1];
+            resumeBtn.setAttribute('title', `Jump to last answered question (${lastQ.id}) in this filter`);
+        } else {
+            resumeBtn.classList.add('no-answers');
+            resumeBtn.setAttribute('title', 'No questions answered in this filter yet. Click to jump to Question 1');
+        }
+    }
+
+    document.querySelectorAll('.btn-sheet-resume').forEach(btn => {
+        if (hasAnsweredInFilter) {
+            btn.classList.remove('no-answers');
+            const lastQ = answeredInFilter[answeredInFilter.length - 1];
+            btn.setAttribute('title', `Jump to last answered question (${lastQ.id}) in this filter`);
+        } else {
+            btn.classList.add('no-answers');
+            btn.setAttribute('title', 'No questions answered in this filter yet. Click to jump to Question 1');
+        }
+    });
 }
 
 function resetUserAnswers() {

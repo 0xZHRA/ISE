@@ -920,6 +920,54 @@ tr:nth-child(even) {
     font-weight: 800;
 }
 
+.stats-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-resume-exam {
+    background: #f0f9ff;
+    border: 1.5px solid #0284c7;
+    color: #0369a1;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+}
+
+.btn-resume-exam:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.btn-resume-exam:focus-visible {
+    outline: 2px solid #0284c7;
+    outline-offset: 2px;
+}
+
+.btn-resume-exam.no-answers {
+    opacity: 0.85;
+    border-style: dashed;
+}
+
+[dir="rtl"] .btn-resume-exam svg.icon-resume {
+    transform: scaleX(-1);
+}
+
+[dir="rtl"] .btn-resume-exam:hover svg.icon-resume {
+    transform: scaleX(-1) scale(1.15);
+}
+
 .btn-reset-stats {
     background: #ffffff;
     border: 1px solid #cbd5e1;
@@ -991,6 +1039,40 @@ tr:nth-child(even) {
     opacity: 0.35;
     cursor: not-allowed;
     background: #f1f5f9;
+}
+
+.btn-sheet-resume {
+    background: #f0f9ff;
+    border: 1.5px solid #0284c7;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0369a1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    margin-inline-start: 4px;
+}
+
+.btn-sheet-resume:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.btn-sheet-resume:focus-visible {
+    outline: 2px solid #0284c7;
+    outline-offset: 2px;
+}
+
+.btn-sheet-resume.no-answers {
+    opacity: 0.85;
+    border-style: dashed;
 }
 
 .exam-sheet-indicator {
@@ -2195,4 +2277,40 @@ tr:nth-child(even) {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+
+/* ==========================================================================
+   Exam Question Pulse Focus Target (Paper Highlighter Effect)
+   ========================================================================== */
+@keyframes paperPulseFocus {
+    0% {
+        box-shadow: 0 0 0 0 rgba(217, 119, 6, 0);
+        background-color: transparent;
+    }
+    15% {
+        box-shadow: 0 0 0 6px rgba(217, 119, 6, 0.38), 0 4px 18px rgba(217, 119, 6, 0.2);
+        background-color: rgba(254, 243, 199, 0.45);
+        border-radius: 6px;
+    }
+    40% {
+        box-shadow: 0 0 0 5px rgba(217, 119, 6, 0.28), 0 3px 12px rgba(217, 119, 6, 0.15);
+        background-color: rgba(254, 243, 199, 0.3);
+    }
+    70% {
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        background-color: rgba(254, 243, 199, 0.15);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(217, 119, 6, 0);
+        background-color: transparent;
+    }
+}
+
+.pulse-focus-target,
+.exam-q-block.pulse-focus-target,
+.exam-card.pulse-focus-target {
+    animation: paperPulseFocus 2.4s ease-out forwards;
+    scroll-margin-top: 90px;
+    scroll-margin-bottom: 90px;
 }

@@ -2365,7 +2365,15 @@ C   22     79</code></pre></div></div>
                             <span id="examStatsCount">Showing 325 questions</span>
                             <span class="stats-score" id="examStatsScore">Solved: 0 / 325</span>
                         </div>
-                        <button class="btn-reset-stats" onclick="resetUserAnswers()" title="Reset your answered questions to re-practice">Reset Progress</button>
+                        <div class="stats-actions">
+                            <button id="btnResumeLastAnswered" class="btn-resume-exam" onclick="jumpToLastAnsweredQuestion()" title="Jump to the last question you answered in this filter">
+                                <svg class="icon-resume" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                <span>Jump to Last Answered</span>
+                            </button>
+                            <button class="btn-reset-stats" onclick="resetUserAnswers()" title="Reset your answered questions to re-practice">Reset Progress</button>
+                        </div>
                     </div>
                 </div>
             </div>
