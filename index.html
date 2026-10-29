@@ -121,6 +121,18 @@
             <button class="topic-sheet-close" onclick="closeSyncModal()">&times;</button>
         </div>
         <div class="sync-modal-body">
+            <!-- Master Device Role Card -->
+            <div class="sync-role-card" id="syncRoleCard">
+                <div class="sync-role-info">
+                    <span class="sync-role-badge" id="syncRoleBadge">📱 Standard Device</span>
+                    <div class="sync-role-title" id="syncRoleTitle">Sync Mode: Receiver</div>
+                    <div class="sync-role-desc" id="syncRoleDesc">This device auto-mirrors progress from your Master Tablet in real time.</div>
+                </div>
+                <button class="btn-toggle-master" id="btnToggleMaster" onclick="toggleMasterDevice()">
+                    ⭐ Set as Main Device (Master Tablet)
+                </button>
+            </div>
+
             <div class="sync-status-card">
                 <div class="sync-status-indicator">
                     <span class="sync-pulse-ring"></span>
@@ -137,9 +149,21 @@
             </p>
 
             <div class="sync-action-grid">
-                <button class="sync-action-btn" onclick="copySyncLink(this)">
-                    <span class="action-icon">📱</span>
-                    <span class="action-text">Copy Sync Link for Phone</span>
+                <button class="sync-action-btn sync-btn-highlight" onclick="copyDirectSyncLink(this)">
+                    <span class="action-icon">🔗</span>
+                    <span class="action-text">Copy Master Sync Link for Phone</span>
+                </button>
+                <button class="sync-action-btn" onclick="toggleSyncQrCode()">
+                    <span class="action-icon">📷</span>
+                    <span class="action-text">Show Phone QR Code (Scan with Camera)</span>
+                </button>
+                <button class="sync-action-btn" onclick="copySyncCode(this)">
+                    <span class="action-icon">📋</span>
+                    <span class="action-text">Copy Sync Code</span>
+                </button>
+                <button class="sync-action-btn" onclick="promptImportSyncCode()">
+                    <span class="action-icon">📥</span>
+                    <span class="action-text">Paste Sync Code</span>
                 </button>
                 <button class="sync-action-btn" onclick="forceCloudPush(this)">
                     <span class="action-icon">⬆️</span>
@@ -150,6 +174,8 @@
                     <span class="action-text">Force Pull from Cloud</span>
                 </button>
             </div>
+
+            <div id="syncQrContainer" style="display:none;" class="sync-qr-container"></div>
 
             <div class="sync-backup-section">
                 <div class="backup-header">
@@ -2443,6 +2469,7 @@ C   22     79</code></pre></div></div>
 </nav>
 
 <script src="questions_data.js"></script>
+<script src="qrcode.min.js"></script>
 <script src="portal.js"></script>
 </body>
 </html>

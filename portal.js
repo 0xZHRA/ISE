@@ -45,11 +45,72 @@ const CLOUD_SYNC_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a09d98f
 let lastCloudSyncTime = null;
 let isCloudSyncing = false;
 let cloudPushTimer = null;
+let liveSyncInterval = null;
+
+/**
+ * Master Device Status: The Android tablet designated as Master pushes authoritative progress.
+ */
+let isMasterDevice = false;
+try {
+    isMasterDevice = localStorage.getItem('ise291_is_master') === 'true';
+} catch (e) {}
+
+/**
+ * Toggle Master Device Mode
+ */
+function toggleMasterDevice() {
+    isMasterDevice = !isMasterDevice;
+    try {
+        localStorage.setItem('ise291_is_master', isMasterDevice ? 'true' : 'false');
+    } catch (e) {}
+    updateMasterUI();
+    updateSyncBadge(isCloudSyncing ? 'syncing' : 'synced');
+    if (isMasterDevice) {
+        showToast('⭐ Master Tablet enabled! All devices will sync from here.', '⭐');
+        setModalFeedback('This device is now the MASTER TABLET. Cloud updates from this device take top priority.');
+        pushCloudState(true);
+    } else {
+        showToast('📱 Standard Device mode active.', '📱');
+        setModalFeedback('Set to Standard Device (Receiver). Auto-mirrors progress from the Master Tablet.');
+        updateSyncBadge('local', 'Saved (Local)');
+    }
+}
+
+/**
+ * Update Master UI Banner and Badges
+ */
+function updateMasterUI() {
+    const card = document.getElementById('syncRoleCard');
+    const badge = document.getElementById('syncRoleBadge');
+    const title = document.getElementById('syncRoleTitle');
+    const desc = document.getElementById('syncRoleDesc');
+    const btn = document.getElementById('btnToggleMaster');
+
+    if (isMasterDevice) {
+        if (card) card.classList.add('is-master');
+        if (badge) {
+            badge.className = 'sync-role-badge is-master';
+            badge.textContent = '⭐ MASTER TABLET (MAIN)';
+        }
+        if (title) title.textContent = 'Sync Mode: Master Progress Source';
+        if (desc) desc.textContent = 'All questions solved on this tablet push immediately to cloud to update your phone in real time.';
+        if (btn) btn.textContent = '⭐ Master Active (Click to Demote)';
+    } else {
+        if (card) card.classList.remove('is-master');
+        if (badge) {
+            badge.className = 'sync-role-badge';
+            badge.textContent = '📱 Standard Device';
+        }
+        if (title) title.textContent = 'Sync Mode: Receiver';
+        if (desc) desc.textContent = 'Auto-mirrors and pulls progress from your Master Tablet every 4 seconds.';
+        if (btn) btn.textContent = '⭐ Set as Main Device (Master Tablet)';
+    }
+}
 
 /**
  * Smart merge local answers with cloud answers
  */
-function smartMergeAnswers(localMap, remoteMap) {
+function smartMergeAnswers(localMap, remoteMap, remoteIsMaster = false) {
     const merged = Object.assign({}, localMap || {});
     let localChanged = false;
     let remoteChanged = false;
@@ -66,20 +127,30 @@ function smartMergeAnswers(localMap, remoteMap) {
             merged[k] = rItem;
             localChanged = true;
         } else {
-            // Keep correct answer if one of them is right
-            if (rItem.isCorrect && !lItem.isCorrect) {
-                merged[k] = rItem;
-                localChanged = true;
-            } else if (!rItem.isCorrect && lItem.isCorrect) {
-                remoteChanged = true;
-            } else {
+            // If remote is Master and this device is not master, remote takes priority!
+            if (remoteIsMaster && !isMasterDevice) {
                 const rTime = rItem.answeredAt || 0;
                 const lTime = lItem.answeredAt || 0;
-                if (rTime > lTime) {
+                if (rTime >= lTime || rItem.selectedKey !== lItem.selectedKey) {
                     merged[k] = rItem;
                     localChanged = true;
-                } else if (lTime > rTime) {
+                }
+            } else {
+                // Keep correct answer if one of them is right
+                if (rItem.isCorrect && !lItem.isCorrect) {
+                    merged[k] = rItem;
+                    localChanged = true;
+                } else if (!rItem.isCorrect && lItem.isCorrect) {
                     remoteChanged = true;
+                } else {
+                    const rTime = rItem.answeredAt || 0;
+                    const lTime = lItem.answeredAt || 0;
+                    if (rTime > lTime) {
+                        merged[k] = rItem;
+                        localChanged = true;
+                    } else if (lTime > rTime) {
+                        remoteChanged = true;
+                    }
                 }
             }
         }
@@ -135,6 +206,25 @@ function applyAnswersToDOM() {
                 feedback.innerHTML = `<strong>&#10007; Incorrect.</strong> The correct answer is <strong>${escapeHtml(correctKey)}: ${escapeHtml(correctText)}</strong>.`;
             }
         }
+
+        // CRITICAL FIX: Update question status badge in DOM
+        const statusBadge = document.getElementById('status-' + qId);
+        if (statusBadge) {
+            statusBadge.className = 'badge-solved-status ' + (ans.isCorrect ? 'solved-correct' : 'solved-wrong');
+            statusBadge.textContent = ans.isCorrect ? 'Solved Correct' : 'Attempted';
+            statusBadge.style.display = 'inline-flex';
+        }
+    });
+
+    // Also update any standalone question status badges (e.g. paginated exam bank cards)
+    Object.keys(userAnswers).forEach(qId => {
+        const ans = userAnswers[qId];
+        const statusBadge = document.getElementById('status-' + qId);
+        if (statusBadge && ans) {
+            statusBadge.className = 'badge-solved-status ' + (ans.isCorrect ? 'solved-correct' : 'solved-wrong');
+            statusBadge.textContent = ans.isCorrect ? 'Solved Correct' : 'Attempted';
+            statusBadge.style.display = 'inline-flex';
+        }
     });
 
     updateExamStats();
@@ -147,11 +237,28 @@ function updateSyncBadge(status, label) {
     const badge = document.getElementById('globalSyncBadge');
     if (!badge) return;
     badge.className = 'sync-badge-btn';
+    if (isMasterDevice) {
+        badge.classList.add('master');
+    }
     if (status) {
         badge.classList.add(status);
     }
     const labelEl = badge.querySelector('.sync-label');
-    if (labelEl) labelEl.textContent = label;
+    if (labelEl) {
+        if (label) {
+            labelEl.textContent = label;
+        } else if (isMasterDevice) {
+            labelEl.textContent = (status === 'syncing') ? 'Master Syncing...' : 'Master Tablet';
+        } else if (status === 'synced') {
+            labelEl.textContent = 'Synced w/ Tablet';
+        } else if (status === 'syncing') {
+            labelEl.textContent = 'Syncing...';
+        } else if (status === 'local') {
+            labelEl.textContent = 'Local Ready';
+        } else {
+            labelEl.textContent = 'Cloud Sync';
+        }
+    }
 }
 
 function updateSyncModalTime() {
@@ -178,6 +285,7 @@ function updateSyncModalTime() {
 function openSyncModal() {
     const modal = document.getElementById('syncModal');
     if (modal) {
+        updateMasterUI();
         updateSyncModalTime();
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -226,25 +334,35 @@ function showToast(msg, icon = '☁️') {
 }
 
 /**
- * Background GET pull from cloud endpoint
+ * Background GET pull from cloud endpoint with active cache busting
  */
 async function pullCloudState(isManual = false) {
     if (isCloudSyncing) return;
     isCloudSyncing = true;
-    updateSyncBadge('syncing', 'Syncing...');
+    updateSyncBadge('syncing');
 
     try {
-        const response = await fetch(CLOUD_SYNC_ENDPOINT, { cache: 'no-store' });
+        const response = await fetch(CLOUD_SYNC_ENDPOINT + '?_cb=' + Date.now(), {
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
+            }
+        });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const remoteDoc = await response.json();
         const remoteData = (remoteDoc && remoteDoc.data) ? remoteDoc.data : null;
 
         if (remoteData) {
             const remoteAnswers = remoteData.userAnswers || {};
-            const { merged, localChanged, remoteChanged } = smartMergeAnswers(userAnswers, remoteAnswers);
+            const isRemoteMaster = !!remoteData.isMaster;
+            const { merged, localChanged, remoteChanged } = smartMergeAnswers(userAnswers, remoteAnswers, isRemoteMaster);
 
-            userAnswers = merged;
-            saveUserAnswers();
+            if (localChanged) {
+                userAnswers = merged;
+                saveUserAnswers();
+                applyAnswersToDOM();
+            }
 
             if (remoteData.portalState && typeof remoteData.portalState === 'object') {
                 const rs = remoteData.portalState;
@@ -261,20 +379,20 @@ async function pullCloudState(isManual = false) {
                 localStorage.setItem('ise291_last_cloud_sync', String(lastCloudSyncTime));
             } catch (e) {}
 
-            applyAnswersToDOM();
-            updateSyncBadge('synced', 'Synced');
+            updateSyncBadge('synced');
             updateSyncModalTime();
 
             if (isManual) {
-                showToast('Progress successfully loaded from cloud!', '⬇️');
-                setModalFeedback('Cloud data loaded and merged successfully!');
+                showToast(isRemoteMaster ? 'Progress updated from Master Tablet!' : 'Progress loaded from cloud!', '⬇️');
+                setModalFeedback(`Synced successfully! Loaded ${Object.keys(remoteAnswers).length} answers from ${isRemoteMaster ? 'Master Tablet' : 'cloud'}.`);
             }
 
-            if (remoteChanged) {
-                scheduleCloudPush(2000);
+            // Only push back if local has newer data and this device is master
+            if (remoteChanged && isMasterDevice) {
+                scheduleCloudPush(600);
             }
         } else {
-            updateSyncBadge('synced', 'Synced');
+            updateSyncBadge('synced');
         }
     } catch (err) {
         console.warn('Cloud sync pull notice (working in local mode):', err);
@@ -288,12 +406,12 @@ async function pullCloudState(isManual = false) {
 }
 
 /**
- * Background PUT push to cloud endpoint
+ * Background PUT push to cloud endpoint with immediate dispatch
  */
 async function pushCloudState(isManual = false) {
     if (isCloudSyncing) return;
     isCloudSyncing = true;
-    updateSyncBadge('syncing', 'Syncing...');
+    updateSyncBadge('syncing');
 
     const solvedCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf')).length;
     const correctCount = Object.keys(userAnswers).filter(k => !k.includes('_reinf') && userAnswers[k].isCorrect).length;
@@ -302,6 +420,8 @@ async function pushCloudState(isManual = false) {
         name: 'ISE291_0xZHRA_GLOBAL_SYNC',
         data: {
             updatedAt: Date.now(),
+            isMaster: isMasterDevice,
+            device: isMasterDevice ? 'Android Tablet (Master)' : (navigator.userAgent.includes('Mobile') ? 'Mobile Phone' : 'Web Client'),
             userAnswers: userAnswers,
             portalState: {
                 activeTopic: portalState.activeTopic,
@@ -317,9 +437,13 @@ async function pushCloudState(isManual = false) {
     };
 
     try {
-        const response = await fetch(CLOUD_SYNC_ENDPOINT, {
+        const response = await fetch(CLOUD_SYNC_ENDPOINT + '?_cb=' + Date.now(), {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
+            },
             body: JSON.stringify(payload)
         });
 
@@ -330,11 +454,11 @@ async function pushCloudState(isManual = false) {
             localStorage.setItem('ise291_last_cloud_sync', String(lastCloudSyncTime));
         } catch (e) {}
 
-        updateSyncBadge('synced', 'Synced');
+        updateSyncBadge('synced');
         updateSyncModalTime();
 
         if (isManual) {
-            showToast('Progress saved to cloud!', '⬆️');
+            showToast(isMasterDevice ? '⭐ Master Tablet state saved to cloud!' : 'Progress saved to cloud!', '⬆️');
             setModalFeedback('Progress auto-saved to cloud successfully!');
         }
     } catch (err) {
@@ -349,11 +473,11 @@ async function pushCloudState(isManual = false) {
 }
 
 /**
- * Debounced automatic cloud push (1.2s delay)
+ * Fast Debounced automatic cloud push (200ms default for instant cross-device updates)
  */
-function scheduleCloudPush(delay = 1200) {
+function scheduleCloudPush(delay = 200) {
     clearTimeout(cloudPushTimer);
-    updateSyncBadge('syncing', 'Syncing...');
+    updateSyncBadge('syncing');
     cloudPushTimer = setTimeout(() => {
         pushCloudState(false);
     }, delay);
@@ -373,14 +497,247 @@ function forceCloudPull(btn) {
     });
 }
 
-function copySyncLink(btn) {
-    const cleanUrl = window.location.origin + window.location.pathname + '?cloud_sync=1';
-    navigator.clipboard.writeText(cleanUrl).then(() => {
-        showToast('Sync link copied! Open on your phone to sync.', '📱');
-        setModalFeedback('Link copied to clipboard! Open on your phone to synchronize immediately.');
-    }).catch(() => {
-        prompt('Copy this sync link to your mobile device:', cleanUrl);
+/**
+ * Export compact sync token containing all answered questions and state
+ */
+function exportCompactSyncToken() {
+    try {
+        const payload = {
+            t: Date.now(),
+            m: isMasterDevice,
+            a: userAnswers || {},
+            s: {
+                activeTopic: portalState.activeTopic,
+                activeTab: portalState.activeTab,
+                topicScroll: portalState.topicScroll
+            }
+        };
+        const str = JSON.stringify(payload);
+        return btoa(unescape(encodeURIComponent(str)));
+    } catch (e) {
+        console.error('Error generating sync token:', e);
+        return '';
+    }
+}
+
+/**
+ * Decode compact sync token
+ */
+function decodeCompactSyncToken(raw) {
+    if (!raw) return null;
+    let clean = String(raw).trim();
+    if (clean.startsWith('ISE-SYNC:')) clean = clean.slice(9).trim();
+    try {
+        const str = decodeURIComponent(escape(atob(clean)));
+        return JSON.parse(str);
+    } catch (e) {
+        try {
+            return JSON.parse(clean);
+        } catch (e2) {
+            console.error('Error decoding sync token:', e);
+            return null;
+        }
+    }
+}
+
+/**
+ * Copy Master Sync Link for direct phone import (works even when cloud fetch is blocked)
+ */
+function copyDirectSyncLink(btn) {
+    const token = exportCompactSyncToken();
+    if (!token) {
+        showToast('Failed to generate sync data', '⚠️');
+        return;
+    }
+    const targetUrl = window.location.origin + window.location.pathname + '?sync_data=' + encodeURIComponent(token);
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(targetUrl).then(() => {
+            showToast('📱 Master Sync Link copied! Open on phone.', '📱');
+            setModalFeedback('Master Sync Link copied! Open or paste this URL on your phone to instantly mirror tablet progress.');
+        }).catch(() => {
+            prompt('Copy this Master Sync Link for your phone:', targetUrl);
+        });
+    } else {
+        prompt('Copy this Master Sync Link for your phone:', targetUrl);
+    }
+}
+
+/**
+ * Copy Sync Code to clipboard
+ */
+function copySyncCode(btn) {
+    const token = exportCompactSyncToken();
+    if (!token) return;
+    const code = 'ISE-SYNC:' + token;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+            showToast('📋 Sync Code copied to clipboard!', '📋');
+            setModalFeedback('Sync Code copied! On your phone, tap "Paste Sync Code" to apply immediately.');
+        }).catch(() => {
+            prompt('Copy this Sync Code:', code);
+        });
+    } else {
+        prompt('Copy this Sync Code:', code);
+    }
+}
+
+/**
+ * Paste / import sync code manually
+ */
+function promptImportSyncCode() {
+    const code = prompt('Paste the ISE Sync Code or Sync Link from your tablet here:');
+    if (code) {
+        importSyncCode(code);
+    }
+}
+
+/**
+ * Import Sync Code and apply progress immediately
+ */
+function importSyncCode(rawInput) {
+    if (!rawInput) return false;
+    let token = String(rawInput).trim();
+    
+    if (token.includes('sync_data=')) {
+        try {
+            const url = new URL(token);
+            token = url.searchParams.get('sync_data') || token;
+        } catch (e) {
+            const match = token.match(/sync_data=([^&]+)/);
+            if (match) token = decodeURIComponent(match[1]);
+        }
+    }
+
+    const decoded = decodeCompactSyncToken(token);
+    if (!decoded || !decoded.a) {
+        alert('Invalid Sync Code. Please make sure you copied the complete code from your tablet.');
+        return false;
+    }
+
+    const { merged } = smartMergeAnswers(userAnswers, decoded.a, decoded.m);
+    userAnswers = merged;
+    saveUserAnswers();
+
+    if (decoded.s && typeof decoded.s === 'object') {
+        if (decoded.s.activeTopic) portalState.activeTopic = decoded.s.activeTopic;
+        if (decoded.s.activeTab) portalState.activeTab = decoded.s.activeTab;
+        if (decoded.s.topicScroll) {
+            portalState.topicScroll = Object.assign({}, decoded.s.topicScroll, portalState.topicScroll);
+        }
+        scheduleSaveState();
+    }
+
+    applyAnswersToDOM();
+    updateSyncBadge('synced', 'Synced w/ Tablet');
+    scheduleCloudPush(300);
+    showToast('✅ Progress loaded from Master Tablet!', '✅');
+    setModalFeedback(`Successfully imported ${Object.keys(decoded.a).length} answers from ${decoded.m ? 'Master Tablet' : 'device'}!`);
+    return true;
+}
+
+/**
+ * Toggle Phone QR Code for instant camera scanning
+ */
+function toggleSyncQrCode() {
+    const container = document.getElementById('syncQrContainer');
+    if (!container) return;
+    
+    if (container.style.display !== 'none' && container.innerHTML.trim() !== '') {
+        container.style.display = 'none';
+        return;
+    }
+
+    pushCloudState(false);
+
+    const token = exportCompactSyncToken();
+    let targetUrl;
+    if (token && token.length <= 1600) {
+        targetUrl = window.location.origin + window.location.pathname + '?sync_data=' + encodeURIComponent(token);
+    } else {
+        targetUrl = window.location.origin + window.location.pathname + '?cloud_sync=1&t=' + Date.now();
+    }
+
+    try {
+        if (typeof qrcode === 'function') {
+            const qr = qrcode(0, 'M');
+            qr.addData(targetUrl);
+            qr.make();
+            const svgTag = qr.createSvgTag({ scalable: true, cellSize: 4, margin: 2 });
+            container.innerHTML = `
+                <div class="qr-preview-box">
+                    <div class="qr-svg-wrapper">${svgTag}</div>
+                    <div class="qr-instructions">
+                        <strong>Scan with Phone Camera</strong>
+                        <span>Point your phone camera at this QR code to instantly mirror all tablet answers on your phone!</span>
+                    </div>
+                </div>
+            `;
+            container.style.display = 'block';
+        } else {
+            container.innerHTML = `
+                <div style="padding: 10px; color: #b45309; font-size: 13px;">
+                    QR Generator not loaded. Use <strong>Copy Master Sync Link</strong> above to open on your phone.
+                </div>
+            `;
+            container.style.display = 'block';
+        }
+    } catch (e) {
+        console.error('Error generating QR code:', e);
+        container.innerHTML = `
+            <div style="padding: 10px; color: #b45309; font-size: 13px;">
+                Use <strong>Copy Master Sync Link</strong> above to open on your phone.
+            </div>
+        `;
+        container.style.display = 'block';
+    }
+}
+
+/**
+ * Real-Time Active Polling Loop & Multi-Tab Synchronization
+ */
+function startLiveSyncLoop() {
+    if (liveSyncInterval) clearInterval(liveSyncInterval);
+
+    // Poll every 4 seconds when page is active
+    liveSyncInterval = setInterval(() => {
+        if (document.visibilityState === 'visible' && !isCloudSyncing) {
+            pullCloudState(false);
+        }
+    }, 4000);
+
+    // Wake up and refresh immediately when tab becomes visible or focused
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            pullCloudState(false);
+        }
     });
+
+    window.addEventListener('focus', () => {
+        pullCloudState(false);
+    });
+
+    window.addEventListener('pageshow', () => {
+        pullCloudState(false);
+    });
+
+    // Cross-tab sync within same browser
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'ise291_user_answers') {
+            try {
+                userAnswers = JSON.parse(e.newValue || '{}');
+                applyAnswersToDOM();
+            } catch (err) {}
+        } else if (e.key === 'ise291_is_master') {
+            isMasterDevice = (e.newValue === 'true');
+            updateMasterUI();
+            updateSyncBadge();
+        }
+    });
+}
+
+function copySyncLink(btn) {
+    copyDirectSyncLink(btn);
 }
 
 function exportProgressJSON() {
@@ -413,7 +770,7 @@ function importProgressJSON(event) {
         try {
             const data = JSON.parse(e.target.result);
             if (data && data.userAnswers) {
-                const { merged } = smartMergeAnswers(userAnswers, data.userAnswers);
+                const { merged } = smartMergeAnswers(userAnswers, data.userAnswers, true);
                 userAnswers = merged;
                 saveUserAnswers();
                 if (data.portalState && typeof data.portalState === 'object') {
@@ -421,7 +778,7 @@ function importProgressJSON(event) {
                     if (data.portalState.topicScroll) portalState.topicScroll = Object.assign({}, portalState.topicScroll, data.portalState.topicScroll);
                 }
                 applyAnswersToDOM();
-                scheduleCloudPush(400);
+                scheduleCloudPush(200);
                 showToast('Progress imported and synced!', '📤');
                 setModalFeedback('Backup successfully imported and synchronized!');
             } else {
@@ -434,6 +791,7 @@ function importProgressJSON(event) {
     reader.readAsText(file);
     event.target.value = '';
 }
+
 
 /**
  * Initialize topic labels from DOM
@@ -839,7 +1197,7 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
             delete userAnswers[resolvedQId];
             saveUserAnswers();
             updateExamStats();
-            scheduleCloudPush(800);
+            scheduleCloudPush(200);
 
             // Re-enable all buttons and remove state classes
             const allBtns = grid.querySelectorAll('.portal-opt-btn');
@@ -942,7 +1300,7 @@ function setupInteractiveQuestionElement(qEl, qId = null) {
             };
             saveUserAnswers();
             updateExamStats();
-            scheduleCloudPush(1200);
+            scheduleCloudPush(200);
 
             shuffledButtons.forEach(b => {
                 b.disabled = true;
@@ -1826,20 +2184,36 @@ window.addEventListener('DOMContentLoaded', () => {
             .catch(() => {});
     }
 
-    // 7. Multi-device Cloud Progress Sync initialization
+        // 7. Multi-device Cloud Progress Sync initialization
     try {
         lastCloudSyncTime = localStorage.getItem('ise291_last_cloud_sync');
     } catch (e) {}
-    updateSyncBadge('local', 'Saved (Local)');
+    updateMasterUI();
+    updateSyncBadge(isMasterDevice ? 'synced' : 'local');
     updateSyncModalTime();
 
-    // Check if opened with ?cloud_sync=1 or ?sync=1
-    const urlSync = urlParams.get('cloud_sync') || urlParams.get('sync') || urlParams.get('pull');
-    if (urlSync) {
-        pullCloudState(true);
+    // Check for direct sync data in URL (?sync_data=... or ?sync_code=...)
+    const directSyncData = urlParams.get('sync_data') || urlParams.get('sync_code');
+    if (directSyncData) {
+        const imported = importSyncCode(directSyncData);
+        if (imported) {
+            try {
+                const cleanUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+                window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+            } catch (e) {}
+        }
     } else {
-        pullCloudState(false);
+        // Check if opened with ?cloud_sync=1 or ?sync=1
+        const urlSync = urlParams.get('cloud_sync') || urlParams.get('sync') || urlParams.get('pull');
+        if (urlSync) {
+            pullCloudState(true);
+        } else {
+            pullCloudState(false);
+        }
     }
+
+    // Start 4-second live sync loop and visibility change triggers
+    startLiveSyncLoop();
 });
 
 /**

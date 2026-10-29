@@ -2164,6 +2164,175 @@ tr:nth-child(even) {
     border-color: #0f172a;
 }
 
+.sync-badge-btn.master {
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    color: #b45309;
+}
+.sync-badge-btn.master .sync-dot {
+    background: #d97706;
+    box-shadow: 0 0 6px rgba(217, 119, 6, 0.6);
+}
+.sync-badge-btn.master.syncing {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+}
+.sync-badge-btn.master.syncing .sync-dot {
+    background: #d97706;
+    animation: spin 1s linear infinite;
+}
+
+.sync-role-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: all 0.2s ease;
+}
+
+.sync-role-card.is-master {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.5px solid #f59e0b;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
+}
+
+.sync-role-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sync-role-badge {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.sync-role-card.is-master .sync-role-badge {
+    background: #fef08a;
+    color: #854d0e;
+    border: 1px solid #facc15;
+}
+
+.sync-role-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.sync-role-desc {
+    font-size: 12.5px;
+    color: #475569;
+    line-height: 1.45;
+}
+
+.btn-toggle-master {
+    background: #0f172a;
+    color: #ffffff;
+    border: none;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-toggle-master:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+}
+
+.sync-role-card.is-master .btn-toggle-master {
+    background: #d97706;
+    color: #ffffff;
+}
+
+.sync-role-card.is-master .btn-toggle-master:hover {
+    background: #b45309;
+}
+
+.sync-action-btn.sync-btn-highlight {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #166534;
+    font-weight: 700;
+}
+
+.sync-action-btn.sync-btn-highlight:hover {
+    background: #dcfce7;
+    border-color: #22c55e;
+}
+
+.sync-qr-container {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    margin-top: 4px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.qr-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.qr-svg-wrapper {
+    background: #ffffff;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 220px;
+    max-height: 220px;
+}
+
+.qr-svg-wrapper svg {
+    width: 190px;
+    height: 190px;
+    display: block;
+}
+
+.qr-instructions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.qr-instructions strong {
+    font-size: 13.5px;
+    color: #0f172a;
+}
+
+.qr-instructions span {
+    font-size: 12px;
+    color: #64748b;
+    max-width: 320px;
+}
+    background: #f1f5f9;
+    border-color: #0f172a;
+}
+
 .sync-badge-btn.local {
     background: #f1f5f9;
     border: 1px solid #cbd5e1;
