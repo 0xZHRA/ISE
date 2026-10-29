@@ -280,9 +280,6 @@ body {
 }
 
 .topic-sheet-item.selected {
-    background: #f1f5f9;
-    border-color: #0f172a;
-}
 
 .topic-sheet-item.selected .topic-sheet-num {
     background: #0f172a;
@@ -2328,9 +2325,6 @@ tr:nth-child(even) {
     font-size: 12px;
     color: #64748b;
     max-width: 320px;
-}
-    background: #f1f5f9;
-    border-color: #0f172a;
 }
 
 .sync-badge-btn.local {
